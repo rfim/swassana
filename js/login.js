@@ -2,6 +2,7 @@
 // or bypass this code, so it keeps casual visitors out but protects nothing secret.
 // Only a SHA-256 hash of "id:password" is stored here, never the plain credentials.
 import { makeLogo } from './logo.js';
+import { crest } from './crests.js';
 
 const HASH = 'b58f51929f7fe337cebc3a7fc162673d510b757fdfc439d7aed4947f7561fc90';
 const KEY = 'sw-auth';
@@ -190,10 +191,10 @@ function startHello(gate) {
       let k; do { k = Math.floor(Math.random() * KAMUS.length); } while (k === lastWord && KAMUS.length > 1);
       lastWord = k;
       const [tag, lang, word, mean] = KAMUS[k];
-      tagEl.innerHTML = `<b class="lc">${lang.slice(0, 3).toUpperCase()}</b>Kamus · ${tag}`; l1.textContent = word; l2.textContent = mean; h1.lang = lang;
+      tagEl.innerHTML = `${crest(lang)}Kamus · ${tag}`; l1.textContent = word; l2.textContent = mean; h1.lang = lang;
     } else {
       const g = HELLO[li % HELLO.length]; li++;
-      tagEl.innerHTML = `<b class="lc">${g.lang.slice(0, 3).toUpperCase()}</b>${g.tag}`; l1.textContent = g.hi + ','; l2.textContent = g.sub; h1.lang = g.lang;
+      tagEl.innerHTML = `${crest(g.lang)}${g.tag}`; l1.textContent = g.hi + ','; l2.textContent = g.sub; h1.lang = g.lang;
     }
     h1.classList.toggle('dict', dict);
     if (!reduce) { [tagEl, h1].forEach((el) => { el.classList.remove('swap'); void el.offsetWidth; el.classList.add('swap'); }); }

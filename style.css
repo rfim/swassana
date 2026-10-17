@@ -943,3 +943,6 @@ a:active > .sa-ic::after, .sa-svc:active .sa-ic::after, .sa-ic.shine::after { ba
 .gate h1.hello { min-height: 2.12em; }
 @media (max-height: 920px) { .gate-inner { gap: 12px; } }
 @media (max-height: 600px) { .gate-inner { gap: 8px; } }
+
+.hello-tag .crest { flex: none; width: 20px; height: 22px; filter: drop-shadow(0 2px 3px rgba(58, 42, 34, .25)); }
+.hello-tag { gap: 9px; }
