@@ -1056,20 +1056,6 @@ html.intro-bye body > *:not(.intro) { animation: intro-bye .75s cubic-bezier(.7,
 .gate .hello-tag { justify-content: center; }
 .gate h1.hello { text-align: center; }
 
-/* Login greeting in its own face: Instrument Serif (upright greeting, italic second line) */
-.gate h1.hello { font-family: "Instrument Serif", var(--display); font-weight: 400; letter-spacing: -.01em; line-height: 1.05; }
-.gate h1.hello .h1l { font-size: 1.22em; }
-.gate h1.hello .h2l { font-style: italic; font-weight: 400; font-size: 1.02em; }
-.gate h1.hello.dict .h1l { font-family: "Instrument Serif", var(--display); font-style: italic; font-weight: 400; font-size: 1.3em; letter-spacing: -.01em; }
-.gate h1.hello.dict .h2l { font-family: var(--sans); font-style: normal; font-size: .5em; }
-.gate h1.hello:lang(ja) { font-family: "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif; }
-.gate h1.hello:lang(ja) .h1l { font-size: 1em; }
-.gate h1.hello:lang(ja) .h2l { font-size: .78em; }
-.gate h1.hello.dict:lang(ja) .h1l { font-size: 1.1em; }
-.gate h1.hello.dict:lang(ja) .h2l { font-family: var(--sans); font-size: .5em; }
-/* the whole quote in one face: the meaning under a dictionary word too */
-.gate h1.hello.dict .h2l, .gate h1.hello.dict:lang(ja) .h2l { font-family: "Instrument Serif", var(--display); font-style: italic; font-size: .66em; line-height: 1.25; letter-spacing: 0; color: var(--muted); }
-
 /* Kalimat minute change: only the words that changed swap; the rest of the sentence stays still */
 .gkal p span.leave { animation: kal-leave .36s cubic-bezier(.5, 0, .75, 0) calc(var(--k) * 40ms) both; }
 .gkal p span.enter { animation: kal-enter .9s cubic-bezier(.2, .8, .2, 1) calc(var(--k) * 90ms) both; }
