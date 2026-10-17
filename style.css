@@ -890,7 +890,7 @@ a:active > .sa-ic::after, .sa-svc:active .sa-ic::after, .sa-ic.shine::after { ba
 .gkal p { margin: 0; font: 650 clamp(28px, 8.4vw, 38px)/1.08 var(--sans); letter-spacing: -.035em; color: var(--text); }
 .gkal p span { display: inline-block; }
 .gkal p .num { color: var(--accent); }
-.gkal p.rise span { animation: kal-rise .6s cubic-bezier(.34, 1.56, .64, 1) both; }
+.gkal p.rise span { animation: kal-rise .6s cubic-bezier(.34, 1.56, .64, 1) calc(var(--k) * 70ms) both; }
 @keyframes kal-rise { from { opacity: 0; transform: translateY(10px); } }
 .gkal small { display: block; margin-top: 10px; color: var(--muted); font-size: 14px; letter-spacing: .02em; }
 @media (max-height: 700px) { .gkal p { font-size: clamp(22px, 7vw, 28px); } .gkal small { margin-top: 6px; font-size: 12.5px; } }
@@ -1069,3 +1069,10 @@ html.intro-bye body > *:not(.intro) { animation: intro-bye .75s cubic-bezier(.7,
 .gate h1.hello.dict:lang(ja) .h2l { font-family: var(--sans); font-size: .5em; }
 /* the whole quote in one face: the meaning under a dictionary word too */
 .gate h1.hello.dict .h2l, .gate h1.hello.dict:lang(ja) .h2l { font-family: "Instrument Serif", var(--display); font-style: italic; font-size: .66em; line-height: 1.25; letter-spacing: 0; color: var(--muted); }
+
+/* Kalimat minute change: only the words that changed swap; the rest of the sentence stays still */
+.gkal p span.leave { animation: kal-leave .36s cubic-bezier(.5, 0, .75, 0) calc(var(--k) * 40ms) both; }
+.gkal p span.enter { animation: kal-enter .9s cubic-bezier(.2, .8, .2, 1) calc(var(--k) * 90ms) both; }
+@keyframes kal-leave { to { opacity: 0; transform: translateY(-.28em); letter-spacing: .02em; } }
+@keyframes kal-enter { 0% { opacity: 0; transform: translateY(.32em); letter-spacing: .06em; } 55% { opacity: 1; } 100% { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .gkal p span.leave, .gkal p span.enter { animation: none; } }

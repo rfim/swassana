@@ -112,7 +112,30 @@ function startClock(gate) {
   const box = gate.querySelector('.gate-clock');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const fmtDate = new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'long' });
-  let last = '', spin = 0, lastSec = -1;
+  let last = '', spin = 0, lastSec = -1, prev = [], swapT;
+  const kalTxt = gate.querySelector('#gkalTxt');
+  const html = (seq, from = 0, to = -1, cls = '') => seq.map(([w, num], n) => {
+    const c = [num ? 'num' : '', n >= from && n < to ? cls : ''].join(' ').trim();
+    return `<span class="${c}" style="--k:${Math.max(0, n - from)}">${w}</span>`;
+  }).join(' ');
+  const kalimat = (seq, full) => {
+    const old = prev; prev = seq;
+    clearTimeout(swapT);
+    kalTxt.classList.remove('rise');
+    if (full || reduce || !old.length) {
+      kalTxt.innerHTML = html(seq);
+      if (!reduce) { void kalTxt.offsetWidth; kalTxt.classList.add('rise'); }
+      return;
+    }
+    // common words at the start and the end stay put; only the words between them change
+    const same = (a, b) => a && b && a[0] === b[0] && a[1] === b[1];
+    let p = 0; while (p < old.length && p < seq.length && same(old[p], seq[p])) p++;
+    let q = 0; while (q < old.length - p && q < seq.length - p && same(old[old.length - 1 - q], seq[seq.length - 1 - q])) q++;
+    if (p === seq.length && p === old.length) return;
+    const spans = kalTxt.querySelectorAll('span');
+    for (let i = p; i < old.length - q; i++) { spans[i].style.setProperty('--k', i - p); spans[i].classList.add('leave'); }
+    swapT = setTimeout(() => { kalTxt.innerHTML = html(seq, p, seq.length - q, 'enter'); }, old.length - q > p ? 380 : 0);
+  };
   const tick = () => {
     if (!gate.isConnected) return;
     const now = new Date(), h = now.getHours(), m = now.getMinutes(), sec = now.getSeconds();
@@ -125,7 +148,6 @@ function startClock(gate) {
       const h12 = h % 12 || 12, part = h < 11 ? 'pagi' : h < 15 ? 'siang' : h < 18 ? 'sore' : 'malam';
       const hw = words(h12).split(' '), mw = m ? words(m).split(' ') : [];
       const seq = [['sekarang', 0], ['pukul', 0], ...hw.map((w) => [w, 1]), ...(m ? [['lewat', 0], ...mw.map((w) => [w, 1])] : [['tepat', 0]]), [part, 0]];
-      gate.querySelector('#gkalTxt').innerHTML = seq.map(([w, num], n) => `<span class="${num ? 'num' : ''}" style="animation-delay:${n * 70}ms">${w}</span>`).join(' ');
       gate.querySelector('#gkalDate').textContent = dateEl.textContent;
       // Alternate every 5 minutes: Kalimat first, then Lensa
       const mode = Math.floor((h * 60 + m) / 5) % 2 === 0 ? 'kal' : 'lens';
@@ -133,10 +155,9 @@ function startClock(gate) {
       box.dataset.mode = mode;
       gate.querySelector('#gkal').setAttribute('aria-hidden', mode !== 'kal');
       lens.setAttribute('aria-hidden', mode !== 'lens');
-      if (!reduce && (switched || mode === 'kal')) {
-        const el = mode === 'kal' ? gate.querySelector('#gkalTxt') : lens, cls = mode === 'kal' ? 'rise' : 'focus';
-        el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls);
-      }
+      // Kalimat: whole sentence rises in when it appears; after that each minute only the changed words swap
+      kalimat(seq, !last || (switched && mode === 'kal'));
+      if (!reduce && switched && mode === 'lens') { lens.classList.remove('focus'); void lens.offsetWidth; lens.classList.add('focus'); }
       last = str;
     }
     if (sec !== lastSec) {
