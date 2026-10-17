@@ -173,8 +173,22 @@ if (root) {
     if (haptic) buzz(6);
   }
 
+  // Swipe the icon row like a scroller; a tap on the empty space to the right moves to the next icon
+  let rx = null, ry = null, rowSwiped = false;
+  $('psRow').addEventListener('pointerdown', (e) => { rx = e.clientX; ry = e.clientY; rowSwiped = false; });
+  $('psRow').addEventListener('pointerup', (e) => {
+    if (rx === null) return;
+    const dx = e.clientX - rx, dy = e.clientY - ry; rx = null;
+    if (Math.abs(dx) > 30 && Math.abs(dx) > Math.abs(dy)) { rowSwiped = true; setFocus(focus + (dx < 0 ? 1 : -1)); }
+  });
   $('psRow').addEventListener('click', (e) => {
-    const t = e.target.closest('.ps-tile'); if (!t) return;
+    if (rowSwiped) { rowSwiped = false; return; }
+    const t = e.target.closest('.ps-tile:not(.gone)');
+    if (!t) {
+      const last = $('psRow').querySelector('.ps-tile.n2') || $('psRow').querySelector('.ps-tile.on');
+      if (last && e.clientX > last.getBoundingClientRect().right) setFocus(focus + 1);
+      return;
+    }
     const i = +t.dataset.i;
     if (i === focus) { $('psGo').click(); return; } // second tap opens, like pressing X on a focused tile
     setFocus(i);
