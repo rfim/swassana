@@ -1051,3 +1051,7 @@ html.intro-bye body > *:not(.intro) { animation: intro-bye .75s cubic-bezier(.7,
 @media (max-height: 700px) { .glens-dial { width: min(38vw, 148px); } .glens-time b { font-size: 24px; } }
 @media (max-height: 600px) { .glens { gap: 4px; } .glens-dial { width: 106px; } .glens-time b { font-size: 20px; } .glens-time i { font-size: 9.5px; } .glens-cap { font-size: 11.5px; } }
 @media (prefers-reduced-motion: reduce) { .glens-rot { transition: none; } .glens *, .glens { animation: none !important; } }
+
+/* Login greeting ("quotes") centred */
+.gate .hello-tag { justify-content: center; }
+.gate h1.hello { text-align: center; }
