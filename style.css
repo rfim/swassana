@@ -502,3 +502,43 @@ button.ig-btn { font: inherit; color: inherit; cursor: pointer; text-align: left
 .app-mode body { padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
 .app-info { display: none; text-decoration: none; }
 .app-mode .app-info { display: inline-grid; }
+
+/* Login clock */
+.gate-clock { text-align: center; margin-top: 8px; }
+.clk { display: inline-flex; align-items: center; font-family: var(--display); font-weight: 300; font-size: clamp(76px, 25vw, 112px); line-height: 1; letter-spacing: -.02em; color: var(--text);
+  text-shadow: 0 10px 40px rgba(233, 193, 157, .25); font-variant-numeric: tabular-nums; }
+.dg { display: inline-block; height: 1em; overflow: hidden; width: .62em; text-align: center; }
+.dg-track { display: flex; flex-direction: column; transition: transform .7s cubic-bezier(.34, 1.56, .64, 1); }
+.dg-track b { height: 1em; font-weight: 300; }
+.colon { display: inline-block; margin: 0 .04em; transform: translateY(-.06em); color: var(--accent); animation: colon 2s ease-in-out infinite; }
+@keyframes colon { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+.gate-date { margin: 10px 0 0; font-size: 15px; letter-spacing: .06em; color: var(--muted); text-transform: capitalize; }
+.gate h1 { font-size: clamp(30px, 9vw, 40px); }
+@media (max-height: 700px) { .clk { font-size: 62px; } .gate-date { margin-top: 4px; font-size: 13px; } .gate h1 { font-size: 26px; } }
+@media (prefers-reduced-motion: reduce) { .dg-track { transition: none; } .colon { animation: none; } }
+
+/* ===== Logo (login + app header) ===== */
+.logo { display: inline-flex; align-items: center; gap: 10px; border: 0; background: none; padding: 6px 8px; color: var(--text); cursor: pointer; text-decoration: none; font: inherit; -webkit-tap-highlight-color: transparent; }
+.logo-mark { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font: italic 400 21px/1 var(--display); color: #2a1810;
+  background: linear-gradient(150deg, #f3d3b4, #c98a60); box-shadow: inset 0 1px 0 rgba(255, 250, 244, .7), 0 6px 16px -6px rgba(0, 0, 0, .6); padding-bottom: 2px; }
+.logo-word { display: inline-flex; font: 500 15px/1 var(--sans); letter-spacing: .32em; margin-right: -.32em; }
+.logo-word i { font-style: normal; display: inline-block; }
+.logo:active .logo-mark { transform: scale(.9); }
+.logo.pop .logo-mark { animation: logo-spin .8s cubic-bezier(.34, 1.56, .64, 1); }
+.logo.pop .logo-word i { animation: logo-wave .6s cubic-bezier(.34, 1.56, .64, 1) both; animation-delay: calc(var(--i) * 45ms + 80ms); }
+@keyframes logo-spin { from { transform: rotate(0) scale(.85); } to { transform: rotate(360deg) scale(1); } }
+@keyframes logo-wave { 0% { transform: none; } 40% { transform: translateY(-7px); color: var(--accent); } 100% { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .logo.pop .logo-mark, .logo.pop .logo-word i { animation: none; } }
+.gate .logo { align-self: center; }
+.app-mode .nav-inner { justify-content: center; position: relative; }
+.app-mode .nav-actions { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); }
+.app-mode .nav .brand { font-size: inherit; }
+/* very short screens (iPhone SE) */
+@media (max-height: 600px) {
+  .gate-inner { gap: 10px; }
+  .clk { font-size: 52px; }
+  .gate h1 { font-size: 22px; margin-bottom: 0; }
+  .gate .muted { display: none; }
+  .gate form { gap: 8px; }
+  .gate label { gap: 4px; }
+}

@@ -11,6 +11,8 @@ const TABS = []; // No tabs in the bar: tapping "Swassana" goes home, the ⓘ bu
 // Which tab an in-page anchor lives in
 const ANCHOR_TAB = { top: 'beranda', lokasi: 'beranda', cara: 'info', arah: 'lokasi', main: 'main', ide: 'main', jurnal: 'jurnal', faq: 'info', ig: 'info' };
 
+import { makeLogo } from './logo.js';
+
 const home = new URL('../', import.meta.url);
 const onHome = !!document.querySelector('[data-tab]');
 // Decided by device type, not width: touch devices always get the app layout, mouse devices never do.
@@ -116,6 +118,7 @@ function fromHash() {
 function apply() {
   const app = mq.matches;
   root.classList.toggle('app-mode', app);
+  if (app) { const b = document.querySelector('.nav .brand'); if (b && !b.dataset.logo) { b.setAttribute('aria-label', 'Swassana, ke beranda'); makeLogo(b); } }
   if (!onHome) { mark(page); return; }
   if (app) { const { k, target } = fromHash(); current = null; show(k, { push: false, target }); }
   else document.querySelectorAll('[data-tab]').forEach((el) => el.classList.remove('tab-on', 'tab-first', 'tab-anim'));

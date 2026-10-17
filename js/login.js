@@ -1,6 +1,8 @@
 // Login gate for the phone/app layout. This is a client-side gate only: on a static site anyone can read
 // or bypass this code, so it keeps casual visitors out but protects nothing secret.
 // Only a SHA-256 hash of "id:password" is stored here, never the plain credentials.
+import { makeLogo } from './logo.js';
+
 const HASH = 'b58f51929f7fe337cebc3a7fc162673d510b757fdfc439d7aed4947f7561fc90';
 const KEY = 'sw-auth';
 const root = document.documentElement;
@@ -21,11 +23,14 @@ function render() {
   gate.className = 'gate'; gate.id = 'gate';
   gate.innerHTML = `
     <div class="gate-inner">
-      <span class="brand">Swassana</span>
+      <button class="logo" type="button" aria-label="Swassana"></button>
+      <div class="gate-clock" aria-live="off">
+        <div class="clk" id="clk" role="timer"></div>
+        <p class="gate-date" id="gateDate"></p>
+      </div>
       <div>
-        <p class="eyebrow">Studio Foto · Surabaya &amp; Malang</p>
-        <h1>Selamat datang<br><em>kembali</em></h1>
-        <p class="muted">Masuk untuk melanjutkan.</p>
+        <h1><span id="gateGreet">Selamat datang</span>,<br><em>senang melihatmu lagi</em></h1>
+        <p class="muted">Masuk untuk melanjutkan ke Swassana.</p>
       </div>
       <form id="gateForm" novalidate>
         <label>ID Pengguna
@@ -42,6 +47,8 @@ function render() {
       </form>
     </div>`;
   document.body.appendChild(gate);
+  startClock(gate);
+  makeLogo(gate.querySelector('.logo'));
   const form = gate.querySelector('#gateForm'), err = gate.querySelector('#gateErr'), btn = gate.querySelector('#gateBtn');
   const pw = gate.querySelector('#gatePw');
   gate.querySelector('#gateShow').addEventListener('click', (e) => {
@@ -67,6 +74,30 @@ function render() {
       form.pw.value = ''; form.pw.focus();
     }
   });
+}
+
+// Lock-screen style clock: each digit rolls to its new value; colon blinks softly.
+function startClock(gate) {
+  const clk = gate.querySelector('#clk'), dateEl = gate.querySelector('#gateDate'), greetEl = gate.querySelector('#gateGreet');
+  const digit = () => `<span class="dg"><span class="dg-track">${[...Array(10).keys()].map((n) => `<b>${n}</b>`).join('')}</span></span>`;
+  clk.innerHTML = digit() + digit() + '<span class="colon">:</span>' + digit() + digit();
+  const tracks = [...clk.querySelectorAll('.dg-track')];
+  const fmtDate = new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'long' });
+  let last = '';
+  const tick = () => {
+    if (!gate.isConnected) return;
+    const now = new Date(), h = now.getHours(), m = now.getMinutes();
+    const str = String(h).padStart(2, '0') + String(m).padStart(2, '0');
+    if (str !== last) {
+      [...str].forEach((d, i) => { tracks[i].style.transform = `translateY(${-d * 10}%)`; });
+      clk.setAttribute('aria-label', `Pukul ${str.slice(0, 2)}.${str.slice(2)}`);
+      dateEl.textContent = fmtDate.format(now);
+      greetEl.textContent = h < 11 ? 'Selamat pagi' : h < 15 ? 'Selamat siang' : h < 18 ? 'Selamat sore' : 'Selamat malam';
+      last = str;
+    }
+    setTimeout(tick, 1000 - now.getMilliseconds());
+  };
+  tick();
 }
 
 export function logout() {
