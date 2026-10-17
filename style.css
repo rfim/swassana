@@ -915,3 +915,4 @@ a:active > .sa-ic::after, .sa-svc:active .sa-ic::after, .sa-ic.shine::after { ba
 @media (max-height: 700px) { .gkal p { font-size: clamp(22px, 7vw, 28px); } .gkal small { margin-top: 6px; font-size: 12.5px; } }
 @media (prefers-reduced-motion: reduce) { .gate-clock > *, .gkal p.rise span { transition: none; animation: none !important; } }
 .gkal p .num { font-family: var(--display); font-style: italic; font-weight: 500; font-size: 1.04em; letter-spacing: -.02em; color: var(--accent); }
+@media (max-height: 920px) { .gate-inner { gap: 14px; } .gate .muted { display: none; } .gate form { gap: 10px; } .gkal p { font-size: clamp(26px, 7.6vw, 34px); } }
