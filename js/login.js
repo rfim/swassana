@@ -227,7 +227,7 @@ function startHello(gate) {
       if (turn === 1) k = KAMUS.findIndex(([, , w]) => w === 'fika'); // fika always follows the first greeting
       else do { k = Math.floor(Math.random() * KAMUS.length); } while (k === lastWord && KAMUS.length > 1);
       lastWord = k;
-      [tag, lang, word, sub] = KAMUS[k]; tag = `Kamus · ${tag}`;
+      [tag, lang, word, sub] = KAMUS[k];
     } else {
       const g = HELLO[li % HELLO.length]; li++;
       tag = g.tag; lang = g.lang; word = g.hi + ','; sub = g.sub;
