@@ -27,9 +27,9 @@ function render() {
     <div class="gate-inner">
       <button class="logo" type="button" aria-label="Swassana"></button>
       <div class="gate-clock" aria-live="off">
-        <div class="gpol" id="gpol">
-          <div class="gpol-ph" id="clk" role="timer"></div>
-          <p class="gpol-cap" id="gateDate"></p>
+        <div class="glens" id="glens">
+          <div class="glens-dial">${lensSvg()}<span class="glens-time"><b id="clk" role="timer"></b><i id="lensS"></i></span></div>
+          <p class="glens-cap" id="gateDate"></p>
         </div>
         <div class="gkal" id="gkal" aria-hidden="true"><p id="gkalTxt"></p><p class="gkal-sec" id="gkalSec" aria-hidden="true"></p><small id="gkalDate"></small></div>
       </div>
@@ -83,25 +83,41 @@ function render() {
   });
 }
 
-// Login clock: alternates every 5 minutes between Kalimat (time in words) and Polaroid
-// (a fresh print drops in and develops). Tint follows the time of day.
+// Login clock: alternates every 5 minutes between Kalimat (time in words, seconds spelled out) and
+// Lensa (a lens barrel: the focus ring turns with the seconds, the aperture ring with the minutes).
 const SAT = ['', 'satu', 'dua', 'tiga', 'empat', 'lima', 'enam', 'tujuh', 'delapan', 'sembilan', 'sepuluh', 'sebelas'];
 const words = (n) => n < 12 ? SAT[n] : n < 20 ? `${n === 12 ? 'dua' : SAT[n - 10]} belas` : `${SAT[Math.floor(n / 10)]} puluh${n % 10 ? ' ' + SAT[n % 10] : ''}`;
+const pad = (n) => String(n).padStart(2, '0');
+function lensSvg() {
+  const ticks = (r, n, len, w, every, lbl) => [...Array(n)].map((_, i) => {
+    const a = i / n * Math.PI * 2, big = i % every === 0, l = big ? len : len / 2;
+    const x1 = 100 + Math.sin(a) * r, y1 = 100 - Math.cos(a) * r, x2 = 100 + Math.sin(a) * (r - l), y2 = 100 - Math.cos(a) * (r - l);
+    const t = big && lbl ? `<text x="${(100 + Math.sin(a) * (r - len - 7)).toFixed(1)}" y="${(100 - Math.cos(a) * (r - len - 7) + 2.4).toFixed(1)}" font-size="6.5" text-anchor="middle" fill="#f6efe8" opacity=".85">${lbl(i)}</text>` : '';
+    return `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="#f6efe8" stroke-width="${big ? w * 1.6 : w}" opacity="${big ? .9 : .45}"/>${t}`;
+  }).join('');
+  return `<svg viewBox="0 0 200 200" aria-hidden="true">
+    <defs><radialGradient id="glensGlass" cx="35%" cy="30%" r="80%"><stop offset="0" stop-color="#f4b79a"/><stop offset=".45" stop-color="#b86b4b"/><stop offset="1" stop-color="#2c201b"/></radialGradient></defs>
+    <circle cx="100" cy="100" r="98" fill="#2c201b"/>
+    <g class="glens-rot" id="lensSec">${ticks(94, 60, 8, .8, 5, (i) => pad(i))}</g>
+    <circle cx="100" cy="100" r="66" fill="#3a2a22"/>
+    <g class="glens-rot" id="lensMin">${ticks(64, 12, 6, 1.2, 1, (i) => ['1.4', '2', '2.8', '4', '5.6', '8', '11', '16', '22', '16', '8', '2'][i])}</g>
+    <circle class="glens-glass" cx="100" cy="100" r="44" fill="url(#glensGlass)"/>
+    <ellipse cx="86" cy="80" rx="16" ry="9" fill="#fff" opacity=".18" transform="rotate(-30 86 80)"/>
+    <polygon points="100,4 96,12 104,12" fill="#f4b79a"/>
+  </svg>`;
+}
 function startClock(gate) {
-  const pol = gate.querySelector('#gpol'), ph = gate.querySelector('#clk'), dateEl = gate.querySelector('#gateDate');
+  const lens = gate.querySelector('#glens'), ph = gate.querySelector('#clk'), dateEl = gate.querySelector('#gateDate');
+  const secRing = gate.querySelector('#lensSec'), minRing = gate.querySelector('#lensMin'), lensS = gate.querySelector('#lensS');
+  const box = gate.querySelector('.gate-clock');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const fmtDate = new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'long' });
-  const pad = (n) => String(n).padStart(2, '0');
-  const restart = (cls) => { pol.classList.remove(cls); void pol.offsetWidth; pol.classList.add(cls); };
-  let last = '';
+  let last = '', spin = 0, lastSec = -1;
   const tick = () => {
     if (!gate.isConnected) return;
-    const now = new Date(), h = now.getHours(), m = now.getMinutes();
+    const now = new Date(), h = now.getHours(), m = now.getMinutes(), sec = now.getSeconds();
     const str = pad(h) + ':' + pad(m);
     if (str !== last) {
-      // tint follows the time of day: dawn gold, day sky, late-afternoon peach, night dusk
-      const tint = h < 6 || h >= 19 ? ['#6b5a7e', '#3a2a3e'] : h < 10 ? ['#f3d6a1', '#f4b79a'] : h < 15 ? ['#bfd5ef', '#f2b6c3'] : ['#f4b79a', '#e46f6f'];
-      pol.style.setProperty('--p1', tint[0]); pol.style.setProperty('--p2', tint[1]);
       ph.textContent = str;
       ph.setAttribute('aria-label', `Pukul ${pad(h)}.${pad(m)}`);
       dateEl.textContent = fmtDate.format(now);
@@ -111,26 +127,29 @@ function startClock(gate) {
       const seq = [['sekarang', 0], ['pukul', 0], ...hw.map((w) => [w, 1]), ...(m ? [['lewat', 0], ...mw.map((w) => [w, 1])] : [['tepat', 0]]), [part, 0]];
       gate.querySelector('#gkalTxt').innerHTML = seq.map(([w, num], n) => `<span class="${num ? 'num' : ''}" style="animation-delay:${n * 70}ms">${w}</span>`).join(' ');
       gate.querySelector('#gkalDate').textContent = dateEl.textContent;
-      // Alternate every 5 minutes: Kalimat first, then Polaroid
-      const mode = Math.floor((h * 60 + m) / 5) % 2 === 0 ? 'kal' : 'pol';
-      const box = gate.querySelector('.gate-clock');
+      // Alternate every 5 minutes: Kalimat first, then Lensa
+      const mode = Math.floor((h * 60 + m) / 5) % 2 === 0 ? 'kal' : 'lens';
       const switched = box.dataset.mode !== mode;
       box.dataset.mode = mode;
       gate.querySelector('#gkal').setAttribute('aria-hidden', mode !== 'kal');
-      pol.setAttribute('aria-hidden', mode !== 'pol');
-      if (!reduce) {
-        if (mode === 'pol') { if (last) restart('drop'); restart('dev'); }
-        else { const t = gate.querySelector('#gkalTxt'); t.classList.remove('rise'); void t.offsetWidth; t.classList.add('rise'); }
+      lens.setAttribute('aria-hidden', mode !== 'lens');
+      if (!reduce && (switched || mode === 'kal')) {
+        const el = mode === 'kal' ? gate.querySelector('#gkalTxt') : lens, cls = mode === 'kal' ? 'rise' : 'focus';
+        el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls);
       }
       last = str;
     }
-    // seconds, every tick: in words under the Kalimat sentence (old word lifts out, new one rises in),
-    // and as a small counter on the Polaroid
-    const sec = now.getSeconds();
-    const sw = `${sec ? words(sec) : 'nol'} detik`;
-    ph.dataset.s = pad(sec);
-    const sBox = gate.querySelector('#gkalSec'), cur = sBox.lastElementChild;
-    if (!cur || cur.textContent !== sw) {
+    if (sec !== lastSec) {
+      // Lensa: the focus ring clicks one notch per second (always forward, so 59 -> 00 does not spin back),
+      // the aperture ring drifts with the minutes
+      spin += lastSec < 0 ? sec : (sec - lastSec + 60) % 60;
+      secRing.style.transform = `rotate(${-spin * 6}deg)`;
+      minRing.style.transform = `rotate(${(m * 60 + sec) * .1}deg)`;
+      lensS.textContent = pad(sec);
+      lensS.classList.remove('tk'); void lensS.offsetWidth; lensS.classList.add('tk');
+      // Kalimat: the seconds in words, old word lifts out, new one rises in
+      const sw = `${sec ? words(sec) : 'nol'} detik`;
+      const sBox = gate.querySelector('#gkalSec'), cur = sBox.lastElementChild;
       const el = document.createElement('span');
       el.textContent = sw;
       if (cur && !reduce) {
@@ -139,12 +158,16 @@ function startClock(gate) {
         el.className = 'come';
       } else sBox.textContent = '';
       sBox.appendChild(el);
+      lastSec = sec;
     }
     setTimeout(tick, 1000 - now.getMilliseconds());
   };
   tick();
-  // a tap on the polaroid "shakes" it, like waving a fresh print
-  pol.addEventListener('click', () => { if (!reduce) restart('shake'); try { navigator.vibrate && navigator.vibrate(10); } catch (e) {} });
+  // a tap on the lens racks focus: the rings spin a full turn and settle back
+  lens.addEventListener('click', () => {
+    if (!reduce) { lens.classList.remove('rack'); void lens.offsetWidth; lens.classList.add('rack'); }
+    try { navigator.vibrate && navigator.vibrate(10); } catch (e) {}
+  });
 }
 
 // Greeting in eleven languages (incl. Javanese, Sundanese, Balinese, Madurese, Japanese), rotating every 7 seconds; time-neutral words.

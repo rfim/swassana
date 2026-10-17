@@ -879,32 +879,13 @@ a:active > .sa-ic::after, .sa-svc:active .sa-ic::after, .sa-ic.shine::after { ba
 
 /* Login polaroid clock */
 .gate-clock { display: grid; place-items: center; margin-top: 4px; }
-.gpol { width: min(56vw, 220px); background: #fff; padding: 9px 9px 0; border-radius: 4px; box-shadow: 0 22px 40px -22px rgba(58, 42, 34, .55), 0 2px 6px rgba(58, 42, 34, .08); transform: rotate(-3deg); cursor: pointer; -webkit-tap-highlight-color: transparent; }
-.gpol-ph { aspect-ratio: 1; display: grid; place-items: center; position: relative; overflow: hidden; border-radius: 1px;
-  background: radial-gradient(80% 70% at 30% 20%, rgba(255, 255, 255, .45), transparent 60%), linear-gradient(150deg, var(--p1, #f4b79a), var(--p2, #e46f6f));
-  font: 600 clamp(40px, 13vw, 54px)/1 var(--sans); letter-spacing: -.05em; color: rgba(255, 255, 255, .95); font-variant-numeric: tabular-nums; }
-.gpol-ph::after { content: ""; position: absolute; inset: 0; background: #2c201b; opacity: 0; pointer-events: none; }
-.gpol.dev .gpol-ph::after { animation: pol-develop 3.2s ease-out forwards; }
-@keyframes pol-develop { from { opacity: 1; } 35% { opacity: .75; } to { opacity: 0; } }
-.gpol-cap { margin: 0; padding: 10px 4px 13px; text-align: center; font: italic 400 15px/1.2 var(--display); color: #3a2a22; }
-.gpol.drop { animation: pol-drop .9s cubic-bezier(.34, 1.56, .64, 1); }
-@keyframes pol-drop { from { transform: translateY(-60px) rotate(-14deg); opacity: 0; } to { transform: rotate(-3deg); opacity: 1; } }
-.gpol.shake { animation: pol-shake .6s ease; }
-@keyframes pol-shake { 20% { transform: rotate(4deg) translateX(4px); } 45% { transform: rotate(-8deg) translateX(-4px); } 70% { transform: rotate(1deg); } 100% { transform: rotate(-3deg); } }
-@media (max-height: 700px) { .gpol { width: min(42vw, 170px); padding: 7px 7px 0; } .gpol-ph { font-size: clamp(32px, 10vw, 42px); } .gpol-cap { padding: 7px 4px 9px; font-size: 13px; } }
-@media (max-height: 600px) { .gpol { width: 120px; } .gpol-ph { font-size: 28px; } .gpol-cap { font-size: 11.5px; } }
-@media (prefers-reduced-motion: reduce) { .gpol, .gpol-ph::after { animation: none !important; } }
-.gpol { width: min(46vw, 190px); }
-.gpol-ph { font-size: clamp(36px, 11vw, 48px); }
-@media (max-height: 800px) { .gate-inner { gap: 20px; } .gpol { width: min(40vw, 160px); } .gpol-ph { font-size: clamp(32px, 9.5vw, 40px); } .gpol-cap { font-size: 13px; padding: 8px 4px 10px; } }
-@media (max-height: 600px) { .gpol { width: 120px; } .gpol-ph { font-size: 28px; } }
+@media (max-height: 800px) { .gate-inner { gap: 20px; } }
 @media (max-height: 820px) { .gate-inner { gap: 14px; padding-top: calc(14px + env(safe-area-inset-top)); padding-bottom: calc(18px + env(safe-area-inset-bottom)); } .gate .muted { display: none; } .gate form { gap: 10px; } }
 @media (max-height: 600px) { .gate-inner { gap: 10px; } .gate h1 { font-size: 20px; } .gate input, .gate .big-btn { min-height: 44px; } }
 
 /* Login clock modes: Kalimat <-> Polaroid every 5 minutes, crossfading in the same spot */
 .gate-clock { display: grid; place-items: center; }
 .gate-clock > * { grid-area: 1 / 1; transition: opacity .6s ease, transform .6s cubic-bezier(.2, .8, .2, 1); }
-.gate-clock[data-mode="kal"] .gpol, .gate-clock[data-mode="pol"] .gkal { opacity: 0; transform: scale(.94); pointer-events: none; }
 .gkal { width: 100%; text-align: left; align-self: center; }
 .gkal p { margin: 0; font: 650 clamp(28px, 8.4vw, 38px)/1.08 var(--sans); letter-spacing: -.035em; color: var(--text); }
 .gkal p span { display: inline-block; }
@@ -916,7 +897,7 @@ a:active > .sa-ic::after, .sa-svc:active .sa-ic::after, .sa-ic.shine::after { ba
 @media (prefers-reduced-motion: reduce) { .gate-clock > *, .gkal p.rise span { transition: none; animation: none !important; } }
 .gkal p .num { font-family: var(--display); font-style: italic; font-weight: 500; font-size: 1.04em; letter-spacing: -.02em; color: var(--accent); }
 @media (max-height: 920px) { .gate-inner { gap: 14px; } .gate .muted { display: none; } .gate form { gap: 10px; } .gkal p { font-size: clamp(26px, 7.6vw, 34px); } }
-@media (max-height: 600px) { .gate-inner { gap: 10px; } .gpol { width: 116px; } .gpol-ph { font-size: 27px; } .gpol-cap { padding: 5px 2px 7px; font-size: 11px; } .gkal p { font-size: 22px; } }
+@media (max-height: 600px) { .gate-inner { gap: 10px; } .gkal p { font-size: 22px; } }
 
 /* the icon row is a touch target across its full width (empty space = "next") */
 .app-mode .ps-row { touch-action: pan-y; cursor: pointer; -webkit-user-select: none; user-select: none; }
@@ -1043,4 +1024,38 @@ html.intro-bye body > *:not(.intro) { animation: intro-bye .75s cubic-bezier(.7,
 @keyframes sec-out { to { transform: translateY(-100%) rotateX(70deg); opacity: 0; } }
 @media (max-height: 700px) { .gkal .gkal-sec { margin-top: 6px; font-size: 16px; } }
 /* Polaroid seconds counter */
-.gpol-ph::before { content: attr(data-s); position: absolute; z-index: 1; right: 9px; bottom: 7px; font: 600 12px/1 var(--sans); letter-spacing: .04em; color: rgba(255, 255, 255, .78); font-variant-numeric: tabular-nums; }
+
+/* ---------- Login Lensa clock (replaces the Polaroid; alternates with Kalimat every 5 minutes) ---------- */
+.gate-clock[data-mode="kal"] .glens, .gate-clock[data-mode="lens"] .gkal { opacity: 0; transform: scale(.94); pointer-events: none; }
+.glens { display: grid; justify-items: center; gap: 10px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.glens-dial { position: relative; width: min(46vw, 190px); aspect-ratio: 1; border-radius: 50%;
+  box-shadow: 0 22px 40px -20px rgba(58, 42, 34, .6), 0 0 0 1px rgba(58, 42, 34, .08); }
+.glens-dial svg { display: block; width: 100%; height: 100%; }
+.glens-dial text { font-family: var(--sans); }
+.glens-rot { transform-origin: 100px 100px; transition: transform .7s cubic-bezier(.34, 1.56, .64, 1); }
+.glens-glass { transform-origin: 100px 100px; }
+.glens-time { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 2px; pointer-events: none; color: #fbefe4; }
+.glens-time b { font: 650 clamp(22px, 7.4vw, 31px)/1 var(--sans); letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
+.glens-time i { font: 600 11px/1 var(--sans); font-style: normal; letter-spacing: .14em; opacity: .75; font-variant-numeric: tabular-nums; }
+.glens-time i.tk { animation: lens-tk .45s cubic-bezier(.2, .8, .2, 1); }
+@keyframes lens-tk { from { transform: translateY(5px); opacity: 0; } }
+.glens-cap { margin: 0; font: italic 400 15px/1.2 var(--display); color: var(--muted); }
+/* mode switch: the lens arrives like a lens being mounted — a quarter turn on the bayonet, the aperture opens,
+   then the time appears */
+.glens.focus .glens-dial { animation: lens-mount .95s cubic-bezier(.34, 1.4, .64, 1) both; }
+.glens.focus .glens-glass { animation: lens-aperture 1.1s cubic-bezier(.2, .8, .2, 1) .15s both; }
+.glens.focus .glens-time { animation: intro-fade .6s ease .55s both; }
+.glens.focus .glens-cap { animation: intro-fade .6s ease .7s both; }
+@keyframes lens-mount { from { transform: rotate(-90deg) scale(.82); opacity: 0; } 60% { opacity: 1; } to { transform: none; opacity: 1; } }
+@keyframes lens-aperture { from { transform: scale(.15); } to { transform: none; } }
+/* tap: rack focus, the barrel twists and the glass breathes */
+.glens.rack .glens-dial { animation: lens-rack .9s cubic-bezier(.34, 1.56, .64, 1); }
+.glens.rack .glens-glass { animation: lens-breathe .9s ease; }
+@keyframes lens-rack { 35% { transform: rotate(-28deg) scale(.97); } }
+@keyframes lens-breathe { 35% { transform: scale(.7); } }
+/* Kalimat leaving/arriving: words already rise in one by one; the outgoing view slides down a little */
+.gate-clock[data-mode="lens"] .gkal { transform: translateY(8px) scale(.97); }
+@media (max-height: 800px) { .glens-dial { width: min(40vw, 160px); } .glens { gap: 7px; } .glens-cap { font-size: 13px; } }
+@media (max-height: 700px) { .glens-dial { width: min(38vw, 148px); } .glens-time b { font-size: 24px; } }
+@media (max-height: 600px) { .glens { gap: 4px; } .glens-dial { width: 106px; } .glens-time b { font-size: 20px; } .glens-time i { font-size: 9.5px; } .glens-cap { font-size: 11.5px; } }
+@media (prefers-reduced-motion: reduce) { .glens-rot { transition: none; } .glens *, .glens { animation: none !important; } }
