@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Kuis: Kamu Tipe Sesi Apa? | Swassana</title>
+  <meta name="description" content="Lima pertanyaan singkat untuk tahu tipe sesi foto dan studio Swassana yang paling cocok untukmu. Hasilnya siap dibagikan ke Instagram Story.">
+  <meta property="og:title" content="Kamu tipe sesi apa? Kuis Swassana">
+  <meta property="og:description" content="Lima pertanyaan, satu hasil yang bisa kamu bagikan ke Story.">
+  <link rel="canonical" href="https://rfim.github.io/swassana/kuis.html">
+  <meta name="theme-color" content="#fbf7f2">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Instrument+Sans:wght@400..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="games.css">
+  <script>try { const t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
+  <style>
+    .stage { perspective: 1200px; width: min(100%, 520px); }
+    .qcard { padding: 26px 22px 22px; text-align: left; transform-style: preserve-3d; }
+    .progress { display: flex; gap: 6px; margin-bottom: 18px; }
+    .progress i { flex: 1; height: 4px; border-radius: 4px; background: var(--line); overflow: hidden; position: relative; }
+    .progress i::after { content: ""; position: absolute; inset: 0; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform .5s cubic-bezier(.2,.7,.2,1); }
+    .progress i.on::after { transform: scaleX(1); }
+    .qnum { font-size: 12px; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); }
+    .qtext { font-family: var(--display); font-weight: 400; font-size: clamp(28px, 7vw, 38px); line-height: 1.1; margin: 8px 0 20px; letter-spacing: -.02em; }
+    .opts { display: grid; gap: 10px; }
+    .opt { display: flex; align-items: center; gap: 14px; width: 100%; text-align: left; border: 1px solid var(--line); background: var(--surface); color: var(--text); border-radius: 18px; padding: 14px 16px; font: inherit; font-size: 16px; cursor: pointer; transition: border-color .2s; }
+    .opt:hover { border-color: var(--accent); }
+    .opt .dot { flex: none; width: 34px; height: 34px; border-radius: 12px; display: grid; place-items: center; font-size: 18px; }
+    .shake-hint { font-size: 12.5px; color: var(--muted); margin: 14px 0 0; text-align: center; }
+    .result { padding: 0; overflow: hidden; text-align: center; transform-style: preserve-3d; }
+    .result-top { padding: 30px 22px 26px; color: #fbf7f2; position: relative; }
+    .result-top .eyebrow { color: rgba(251,247,242,.75); margin: 0; }
+    .result-top h2 { font-family: var(--display); font-weight: 300; font-style: italic; font-size: clamp(44px, 12vw, 64px); line-height: 1; margin: 10px 0 12px; letter-spacing: -.03em; }
+    .result-top p { margin: 0 auto; max-width: 360px; opacity: .92; }
+    .result-body { padding: 22px; }
+    .match { display: flex; align-items: center; gap: 14px; text-align: left; border: 1px solid var(--line); border-radius: 18px; padding: 14px; background: var(--surface); }
+    .match .pct { font-family: var(--display); font-size: 34px; color: var(--accent); min-width: 78px; }
+    .match small { display: block; color: var(--muted); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; }
+    .match b { font-family: var(--display); font-weight: 400; font-size: 21px; }
+    .tip { color: var(--muted); font-size: 14.5px; margin: 14px 0 18px; }
+    .start-card { padding: 30px 24px; width: min(100%, 520px); }
+  </style>
+</head>
+<body class="game">
+  <canvas class="fx" id="fx" aria-hidden="true"></canvas>
+  <div class="toast" id="toast" role="status"></div>
+
+  <div class="app">
+    <header class="topbar">
+      <a class="brand" href="./">Swassana</a>
+      <a class="pill pill-outline" href="photobooth.html">Photobooth →</a>
+    </header>
+
+    <section class="screen" id="intro">
+      <p class="eyebrow">Game · Kuis</p>
+      <h1 class="title-xl"><span class="split" data-split>Kamu tipe</span><br><em class="split" data-split>sesi apa?</em></h1>
+      <p class="sub">Lima pertanyaan singkat. Miringkan HP-mu dan lihat dunia Swassana ikut bergerak.</p>
+      <button class="pill pill-solid big-btn" id="start" type="button">Mulai kuis</button>
+      <p class="note">± 30 detik · hasilnya siap untuk Instagram Story</p>
+    </section>
+
+    <section class="screen" id="quiz" hidden>
+      <div class="stage">
+        <div class="qcard glass" id="qcard">
+          <div class="progress" id="progress"><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="qnum" id="qnum"></div>
+          <h2 class="qtext" id="qtext"></h2>
+          <div class="opts" id="opts"></div>
+          <p class="shake-hint">Goyangkan HP untuk mengacak urutan jawaban</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="done" hidden>
+      <div class="stage">
+        <div class="result glass" id="rcard">
+          <div class="result-top" id="rtop">
+            <p class="eyebrow">Tipe sesimu</p>
+            <h2 id="rname"></h2>
+            <p id="rdesc"></p>
+          </div>
+          <div class="result-body">
+            <div class="match">
+              <span class="pct" id="rpct"></span>
+              <span><small>Paling cocok di</small><b id="rstudio"></b><br><span class="muted" style="font-size:13px" id="rtag"></span></span>
+            </div>
+            <p class="tip" id="rtip"></p>
+            <div class="row-btns">
+              <a class="pill pill-solid" id="rbook">Booking studio ini</a>
+              <button class="pill pill-outline" id="story" type="button">Bagikan ke Story</button>
+              <button class="pill pill-ghost" id="retry" type="button">Ulangi</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script type="module">
+    import { createScene, enableMotion, onShake, buzz, tick, shareOrDownload } from './js/fx.js';
+
+    const fx = createScene(document.getElementById('fx'), { cards: 14 });
+    const $ = (id) => document.getElementById(id);
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const toast = (m) => { const t = $('toast'); t.textContent = m; t.classList.add('show'); clearTimeout(toast.h); toast.h = setTimeout(() => t.classList.remove('show'), 2600); };
+
+    document.querySelectorAll('[data-split]').forEach((el) => { el.innerHTML = [...el.textContent].map((c) => `<span>${c === ' ' ? '&nbsp;' : c}</span>`).join(''); });
+    if (!reduce) {
+      gsap.from('[data-split] > span', { y: 90, rotateX: -100, opacity: 0, duration: 1.1, stagger: .04, ease: 'expo.out' });
+      gsap.from('#intro > *:not(h1)', { y: 24, opacity: 0, duration: .8, stagger: .1, delay: .4, ease: 'power3.out' });
+    }
+
+    // B: Bold Editorial, R: Warm Candid (Surabaya) · M: Modern Minimalis, S: Squad Goals (Malang)
+    const TYPES = {
+      B: { name: 'Bold Editorial', color: '#2e1b16', grad: ['#5a3728', '#1a110e'], desc: 'Kamu suka foto yang tegas, berkarakter, dan bikin orang berhenti scroll.', studio: 'Swassana Studio', city: 'Surabaya', tag: 'Bold, Authentic, & Most-Wanted', tip: 'Coba outfit monokrom dan pose dengan sudut tajam. Biarkan bayangan jendela jadi drama.' },
+      R: { name: 'Warm Candid', color: '#c06a45', grad: ['#c06a45', '#6f4531'], desc: 'Tawa spontan dan momen yang tulus adalah kekuatanmu.', studio: 'Swassana Studio', city: 'Surabaya', tag: 'Bold, Authentic, & Most-Wanted', tip: 'Ngobrol terus selama sesi. Candid terbaik datang setelah kamu lupa sedang difoto.' },
+      M: { name: 'Modern Minimalis', color: '#7d8f6c', grad: ['#9caf88', '#4f5d43'], desc: 'Bersih, lapang, dan rapi. Kamu menghargai detail yang tenang.', studio: 'Casa de Swassana', city: 'Malang', tag: 'More Spacious, Modern, & KOL/Brand Approved', tip: 'Pilih satu warna netral dan satu tekstur. Ruang yang lega akan melakukan sisanya.' },
+      S: { name: 'Squad Goals', color: '#a3745a', grad: ['#c29a82', '#8a5a42'], desc: 'Makin ramai makin seru. Kamu butuh ruang untuk semua orang tersayang.', studio: 'Casa de Swassana', city: 'Malang', tag: 'More Spacious, Modern, & KOL/Brand Approved', tip: 'Samakan palet warna, bukan bajunya. Atur formasi segitiga supaya semua wajah terlihat.' },
+    };
+    const Q = [
+      { q: 'Kamu datang ke studio bersama…', a: [['🙋', 'Sendiri saja', { B: 2, R: 1 }, '#5a3728'], ['💞', 'Pasangan', { R: 2 }, '#c06a45'], ['👨‍👩‍👧', 'Keluarga atau geng', { S: 2 }, '#c29a82'], ['💼', 'Tim brand atau klien', { M: 2, S: 1 }, '#9caf88']] },
+      { q: 'Outfit andalanmu?', a: [['🖤', 'Hitam total, statement', { B: 2 }, '#2e1b16'], ['🧶', 'Rajutan earth tone', { R: 2 }, '#c06a45'], ['🤍', 'Putih bersih, potongan simpel', { M: 2 }, '#dcc2b0'], ['👯', 'Kembaran satu geng', { S: 2 }, '#a3745a']] },
+      { q: 'Mood foto impianmu?', a: [['⚡', 'Tajam dan percaya diri', { B: 2 }, '#432820'], ['☀️', 'Hangat dan penuh tawa', { R: 2 }, '#d8955f'], ['🌿', 'Tenang dan lapang', { M: 2 }, '#9caf88'], ['🎉', 'Ramai dan seru', { S: 2 }, '#c29a82']] },
+      { q: 'Pilih satu properti', a: [['🪑', 'Kursi vintage', { B: 2 }, '#6f4531'], ['💐', 'Bunga kering', { R: 2 }, '#c06a45'], ['📦', 'Satu produk favorit', { M: 2 }, '#9caf88'], ['🎂', 'Balon dan kue', { S: 2 }, '#dcc2b0']] },
+      { q: 'Fotonya untuk apa?', a: [['📱', 'Feed Instagram yang estetik', { B: 2 }, '#5a3728'], ['💌', 'Kenangan berdua', { R: 2 }, '#c06a45'], ['🛍️', 'Konten atau katalog', { M: 2 }, '#7d8f6c'], ['📸', 'Album keluarga', { S: 2 }, '#a3745a']] },
+    ];
+
+    let i = 0, score = {}, locked = false;
+    const shuffle = (a) => { a = a.slice(); for (let k = a.length - 1; k > 0; k--) { const j = Math.floor(Math.random() * (k + 1)); [a[k], a[j]] = [a[j], a[k]]; } return a; };
+
+    function show(id) {
+      ['intro', 'quiz', 'done'].forEach((s) => { $(s).hidden = s !== id; });
+    }
+
+    function render(order) {
+      const item = Q[i];
+      $('qnum').textContent = `Pertanyaan ${i + 1} dari ${Q.length}`;
+      $('qtext').textContent = item.q;
+      [...$('progress').children].forEach((el, k) => el.classList.toggle('on', k < i));
+      const opts = order || shuffle(item.a);
+      $('opts').innerHTML = opts.map((o) => `<button class="opt" type="button" data-k="${item.a.indexOf(o)}"><span class="dot" style="background:${o[3]}22">${o[0]}</span>${o[1]}</button>`).join('');
+      if (!reduce) {
+        gsap.fromTo('#qcard', { rotateY: 70, x: 120, opacity: 0 }, { rotateY: 0, x: 0, opacity: 1, duration: .8, ease: 'expo.out' });
+        gsap.fromTo('.opt', { y: 26, opacity: 0 }, { y: 0, opacity: 1, duration: .55, stagger: .06, delay: .15, ease: 'back.out(1.7)' });
+      }
+    }
+
+    $('opts').addEventListener('click', (e) => {
+      const b = e.target.closest('.opt'); if (!b || locked) return;
+      locked = true;
+      const o = Q[i].a[+b.dataset.k];
+      for (const [t, v] of Object.entries(o[2])) score[t] = (score[t] || 0) + v;
+      fx.setColor(o[3]); fx.burst(.7); buzz(18); tick(700 + i * 120);
+      const next = () => { locked = false; i++; if (i < Q.length) render(); else finish(); };
+      if (reduce) return next();
+      gsap.to(b, { scale: 1.04, duration: .15, yoyo: true, repeat: 1 });
+      gsap.to([...document.querySelectorAll('.opt')].filter((x) => x !== b), { opacity: .25, x: -10, duration: .25 });
+      gsap.to('#qcard', { rotateY: -70, x: -120, opacity: 0, duration: .5, delay: .35, ease: 'power3.in', onComplete: next });
+    });
+
+    // Shake to reshuffle answers
+    onShake(() => {
+      if ($('quiz').hidden || locked) return;
+      buzz([15, 30, 15]); fx.burst(.5);
+      if (!reduce) gsap.fromTo('#qcard', { x: -14 }, { x: 0, duration: .5, ease: 'elastic.out(1.2, .25)' });
+      render(shuffle(Q[i].a));
+      toast('Jawaban diacak!');
+    });
+
+    let result;
+    function finish() {
+      [...$('progress').children].forEach((el) => el.classList.add('on'));
+      const order = ['B', 'R', 'M', 'S'];
+      const top = order.reduce((best, t) => (score[t] || 0) > (score[best] || 0) ? t : best, order[0]);
+      const total = Object.values(score).reduce((a, b) => a + b, 0) || 1;
+      const pct = Math.min(99, Math.round(60 + 39 * (score[top] / total)));
+      result = { ...TYPES[top], key: top, pct };
+      const r = result;
+      $('rtop').style.background = `linear-gradient(150deg, ${r.grad[0]}, ${r.grad[1]})`;
+      $('rname').textContent = r.name; $('rdesc').textContent = r.desc;
+      $('rstudio').textContent = r.studio; $('rtag').textContent = r.city + ' · ' + r.tag;
+      $('rtip').textContent = '💡 ' + r.tip;
+      $('rbook').href = 'https://swassanastudio.com/booking/' + r.city.toLowerCase();
+      show('done');
+      fx.setColor(r.color); fx.burst(1.5); buzz([30, 60, 30, 60, 80]); tick(1320);
+      if (!reduce) {
+        gsap.fromTo('#rcard', { rotateY: 180, rotateX: 20, scale: .7, opacity: 0 }, { rotateY: 0, rotateX: 0, scale: 1, opacity: 1, duration: 1.3, ease: 'expo.out' });
+        gsap.fromTo('#rname', { letterSpacing: '.3em', opacity: 0 }, { letterSpacing: '-.03em', opacity: 1, duration: 1.2, delay: .3, ease: 'expo.out' });
+        const p = { v: 0 }; gsap.to(p, { v: r.pct, duration: 1.4, delay: .5, ease: 'power2.out', onUpdate: () => { $('rpct').textContent = Math.round(p.v) + '%'; } });
+      } else $('rpct').textContent = r.pct + '%';
+    }
+
+    $('start').addEventListener('click', () => {
+      enableMotion(); buzz(10);
+      i = 0; score = {}; show('quiz'); render(); fx.burst(.8);
+    });
+    $('retry').addEventListener('click', () => $('start').click());
+
+    // 1080x1920 card for Instagram Stories
+    function wrap(g, text, x, y, maxW, lh) {
+      const words = text.split(' '); let line = '';
+      for (const w of words) {
+        const test = line ? line + ' ' + w : w;
+        if (g.measureText(test).width > maxW && line) { g.fillText(line, x, y); line = w; y += lh; } else line = test;
+      }
+      g.fillText(line, x, y); return y;
+    }
+    async function storyCard() {
+      await Promise.all([document.fonts.load('italic 300 150px Fraunces'), document.fonts.load('500 40px "Instrument Sans"')]).catch(() => {});
+      const r = result, c = document.createElement('canvas'); c.width = 1080; c.height = 1920;
+      const g = c.getContext('2d');
+      const bg = g.createLinearGradient(0, 0, 1080, 1920); bg.addColorStop(0, r.grad[0]); bg.addColorStop(1, r.grad[1]);
+      g.fillStyle = bg; g.fillRect(0, 0, 1080, 1920);
+      // floating polaroids as decoration
+      for (let k = 0; k < 7; k++) {
+        g.save(); g.translate(120 + Math.random() * 840, 200 + Math.random() * 1500); g.rotate((Math.random() - .5) * .8);
+        g.globalAlpha = .12; g.fillStyle = '#fbf7f2'; g.fillRect(-90, -110, 180, 215); g.restore();
+      }
+      g.globalAlpha = 1; g.strokeStyle = 'rgba(251,247,242,.5)'; g.lineWidth = 3; g.strokeRect(50, 50, 980, 1820);
+      g.fillStyle = '#fbf7f2'; g.textAlign = 'center';
+      g.font = '500 34px "Instrument Sans", system-ui'; g.fillText('K A M U   T I P E   S E S I', 540, 360);
+      g.font = 'italic 300 150px Fraunces, Georgia, serif';
+      const parts = r.name.split(' '); g.fillText(parts[0], 540, 560); g.fillText(parts.slice(1).join(' '), 540, 710);
+      g.font = '400 44px "Instrument Sans", system-ui'; g.globalAlpha = .92;
+      let y = wrap(g, r.desc, 540, 860, 820, 62);
+      g.globalAlpha = 1;
+      g.fillStyle = 'rgba(251,247,242,.14)'; g.beginPath(); g.roundRect(140, y + 90, 800, 300, 40); g.fill();
+      g.fillStyle = '#fbf7f2';
+      g.font = '500 30px "Instrument Sans", system-ui'; g.globalAlpha = .75; g.fillText(`COCOK ${r.pct}% DI`, 540, y + 170); g.globalAlpha = 1;
+      g.font = '400 72px Fraunces, Georgia, serif'; g.fillText(r.studio, 540, y + 265);
+      g.font = '500 36px "Instrument Sans", system-ui'; g.fillText(r.city, 540, y + 330);
+      g.font = 'italic 300 64px Fraunces, Georgia, serif'; g.fillText('Swassana', 540, 1690);
+      g.font = '500 30px "Instrument Sans", system-ui'; g.globalAlpha = .8; g.fillText('Cari tipemu: rfim.github.io/swassana/kuis', 540, 1760);
+      return new Promise((res) => c.toBlob(res, 'image/png'));
+    }
+    $('story').addEventListener('click', async () => {
+      const blob = await storyCard();
+      const r = await shareOrDownload(blob, 'swassana-tipe-sesi.png', `Aku tipe ${result.name}! Kamu tipe apa? @swassanastudio`);
+      if (r === 'downloaded') toast('Gambar Story tersimpan.');
+    });
+  </script>
+</body>
+</html>

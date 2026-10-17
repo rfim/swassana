@@ -236,3 +236,8 @@ button.pill { border: 0; cursor: pointer; font-family: inherit; }
 .member .ig-link { display: inline-block; margin-top: 10px; font-size: 14px; color: var(--accent); text-decoration: none; }
 .page-hero { padding-top: clamp(48px, 8vw, 96px); }
 .page-hero h1 { font-size: clamp(40px, 7vw, 76px); }
+
+/* Game cards */
+.game-card .card-media { aspect-ratio: 16 / 9; display: grid; place-items: center; }
+.game-emoji { font-size: 72px; filter: drop-shadow(0 12px 24px rgba(0,0,0,.25)); transition: transform .5s cubic-bezier(.2,.7,.2,1); }
+.game-card:hover .game-emoji { transform: scale(1.15) rotate(-8deg); }
