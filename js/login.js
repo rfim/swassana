@@ -131,7 +131,7 @@ function startClock(gate) {
 }
 
 // Greeting in eleven languages (incl. Javanese, Sundanese, Balinese, Madurese, Japanese), rotating every 7 seconds; time-neutral words.
-// Every third turn shows a "kamus" word from one of those languages with its meaning in Indonesian.
+// Every third turn (starting with the second) shows a "kamus" word from one of those languages with its meaning in Indonesian.
 const HELLO = [
   { tag: 'Indonesia', lang: 'id', hi: 'Halo', sub: 'senang melihatmu lagi' },
   { tag: 'Jawa', lang: 'jv', hi: 'Sugeng rawuh', sub: 'monggo pinarak' },
@@ -183,7 +183,7 @@ const KAMUS = [
 function startHello(gate) {
   const tagEl = gate.querySelector('#helloTag'), h1 = gate.querySelector('#hello'), l1 = gate.querySelector('#gateGreet'), l2 = gate.querySelector('#helloSub');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let turn = 0, li = 0, lastWord = -1;
+  let turn = 0, li = Math.floor(Math.random() * HELLO.length), lastWord = -1;
   // Title split into words (never broken) made of letters, so letters can animate one by one
   const letters = (text) => text.split(' ').map((w, wi, arr) => {
     const chars = Array.from(w).map((ch) => `<span class="ch">${ch}</span>`).join('');
@@ -191,11 +191,11 @@ function startHello(gate) {
   }).join('');
   const index = (el) => el.querySelectorAll('.ch').forEach((c, i) => c.style.setProperty('--i', i));
   const next = () => {
-    const dict = turn === 0 || turn % 3 === 2;
+    const dict = turn % 3 === 1; // a random greeting first, then fika, then every third turn
     let tag, word, sub, lang;
     if (dict) {
       let k;
-      if (turn === 0) k = KAMUS.findIndex(([, , w]) => w === 'fika'); // fika always opens the rotation
+      if (turn === 1) k = KAMUS.findIndex(([, , w]) => w === 'fika'); // fika always follows the first greeting
       else do { k = Math.floor(Math.random() * KAMUS.length); } while (k === lastWord && KAMUS.length > 1);
       lastWord = k;
       [tag, lang, word, sub] = KAMUS[k]; tag = `Kamus · ${tag}`;
