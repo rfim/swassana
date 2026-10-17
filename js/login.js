@@ -31,7 +31,7 @@ function render() {
           <div class="glens-dial">${lensSvg()}<span class="glens-time"><b id="clk" role="timer"></b><i id="lensS"></i></span></div>
           <p class="glens-cap" id="gateDate"></p>
         </div>
-        <div class="gkal" id="gkal" aria-hidden="true"><p id="gkalTxt"></p><p class="gkal-sec" id="gkalSec" aria-hidden="true"></p><small id="gkalDate"></small></div>
+        <div class="gkal" id="gkal" aria-hidden="true"><p id="gkalTxt"></p><small id="gkalDate"></small></div>
       </div>
       <div>
         <p class="hello-tag" id="helloTag" aria-hidden="true"></p>
@@ -83,7 +83,7 @@ function render() {
   });
 }
 
-// Login clock: alternates every 5 minutes between Kalimat (time in words, seconds spelled out) and
+// Login clock: alternates every 5 minutes between Kalimat (time in words) and
 // Lensa (a lens barrel: the focus ring turns with the seconds, the aperture ring with the minutes).
 const SAT = ['', 'satu', 'dua', 'tiga', 'empat', 'lima', 'enam', 'tujuh', 'delapan', 'sembilan', 'sepuluh', 'sebelas'];
 const words = (n) => n < 12 ? SAT[n] : n < 20 ? `${n === 12 ? 'dua' : SAT[n - 10]} belas` : `${SAT[Math.floor(n / 10)]} puluh${n % 10 ? ' ' + SAT[n % 10] : ''}`;
@@ -147,17 +147,6 @@ function startClock(gate) {
       minRing.style.transform = `rotate(${(m * 60 + sec) * .1}deg)`;
       lensS.textContent = pad(sec);
       lensS.classList.remove('tk'); void lensS.offsetWidth; lensS.classList.add('tk');
-      // Kalimat: the seconds in words, old word lifts out, new one rises in
-      const sw = `${sec ? words(sec) : 'nol'} detik`;
-      const sBox = gate.querySelector('#gkalSec'), cur = sBox.lastElementChild;
-      const el = document.createElement('span');
-      el.textContent = sw;
-      if (cur && !reduce) {
-        cur.className = 'go';
-        setTimeout(() => cur.remove(), 450);
-        el.className = 'come';
-      } else sBox.textContent = '';
-      sBox.appendChild(el);
       lastSec = sec;
     }
     setTimeout(tick, 1000 - now.getMilliseconds());
