@@ -42,6 +42,22 @@
     .stack .row-btns > * { flex: 1; justify-content: center; }
     .others { font-size: 13px; margin-top: 14px; }
     .others a { color: var(--accent); }
+    /* Short screens (landscape phones): compact panels so nothing is cut off */
+    .panel { max-height: calc(100dvh - 24px); overflow-y: auto; }
+    @media (max-height: 560px) {
+      .panel { padding: 16px 18px; display: grid; grid-template-columns: auto 1fr; gap: 0 16px; text-align: left; align-items: center; width: min(100%, 620px); }
+      .panel > * { grid-column: 2; }
+      .gicon { grid-column: 1; grid-row: 1 / span 6; width: 64px; height: 64px; margin: 0; }
+      .panel h1 { font-size: 26px; margin: 2px 0 6px; }
+      .panel p { font-size: 14px; margin-bottom: 12px; }
+      .big-btn { padding: 12px 22px; font-size: 15px; }
+      #endCard { grid-template-columns: auto 1fr; }
+      #endScore { grid-column: 1; grid-row: 1 / span 3; align-self: end; font-size: 48px; text-align: center; }
+      #endUnit { grid-column: 1; grid-row: 4 / span 2; align-self: start; text-align: center; }
+      #endTitle { font-size: 24px; margin: 0 0 4px; }
+      .stack { gap: 8px; }
+      .others, .best { margin-top: 8px; }
+    }
     /* picker */
     .picker { position: fixed; inset: 0; overflow-y: auto; padding: calc(20px + env(safe-area-inset-top)) 16px 40px; background: var(--bg); }
     .picker .wrap { max-width: 900px; padding: 0; }
@@ -119,7 +135,7 @@
       couple:   { tag: 'Couple', title: 'Love Sync', icon: 'lovers', color: '#b5524a', sub: 'Berdua di satu HP, ketuk hati bersamaan.' },
       keluarga: { tag: 'Keluarga', title: 'Semua Lihat Kamera!', icon: 'meepleGroup', color: '#a3745a', sub: 'Ketuk yang menoleh sebelum shutter.' },
       wisuda:   { tag: 'Wisuda', title: 'Lempar Toga', icon: 'cap', color: '#5a3728', sub: 'Lempar setinggi mungkin, lalu tangkap.' },
-      brand:    { tag: 'Konten Brand', title: 'Fokus!', icon: 'bag', color: '#7d8f6c', sub: 'Jepret tepat saat produk tajam.' },
+      brand:    { tag: 'Konten Brand', title: 'Flat Lay', icon: 'bag', color: '#7d8f6c', sub: 'Susun produk ke bayangannya di meja.' },
       kol:      { tag: 'KOL', title: 'Viral Hype', icon: 'megaphone', color: '#c06a45', sub: 'Teriak ke mikrofon, jadi viral.' },
     };
     const key = new URLSearchParams(location.search).get('g');

@@ -9,12 +9,13 @@ export default {
 
   resize(api) { if (this.fam) this.layout(api); },
   layout(api) {
-    const n = this.fam.length, cols = api.w < 520 ? 3 : 5, rows = Math.ceil(n / cols);
-    const size = Math.min(api.w / (cols + 1), 110);
+    const n = this.fam.length, cols = api.w > api.h ? n : api.w < 520 ? 3 : 5, rows = Math.ceil(n / cols);
+    const top = 170, bottom = api.h * .8;
+    const size = Math.min(api.w / (cols + 1), 110, (bottom - top) / (rows * 1.35));
     this.fam.forEach((f, i) => {
       const r = Math.floor(i / cols), c = i % cols, inRow = Math.min(cols, n - r * cols);
       f.x = api.w / 2 + (c - (inRow - 1) / 2) * size * 1.15;
-      f.y = api.h * .5 + (r - (rows - 1) / 2) * size * 1.35;
+      f.y = (top + bottom) / 2 + (r - (rows - 1) / 2) * size * 1.35;
       f.size = size * f.scale;
     });
   },
@@ -63,7 +64,7 @@ export default {
     g.fillStyle = '#e4d3c4'; g.fillRect(0, h * .72, w, h * .28);
     if (!this.fam) { drawIcon(g, 'meepleGroup', w / 2, h / 2, 140, '#a3745a'); return; }
     // shutter countdown
-    const cx = w / 2, cy = 120, r = 30, frac = this.nextShot / SHOT_EVERY;
+    const cx = w / 2, cy = 112, r = 28, frac = this.nextShot / SHOT_EVERY;
     g.strokeStyle = 'rgba(90,55,40,.15)'; g.lineWidth = 6; g.beginPath(); g.arc(cx, cy, r, 0, 7); g.stroke();
     g.strokeStyle = frac < .3 ? '#c0392b' : '#5a3728'; g.beginPath(); g.arc(cx, cy, r, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * frac); g.stroke();
     drawIcon(g, 'camera', cx, cy, 30, '#5a3728');
@@ -80,7 +81,7 @@ export default {
     }
     if (this.msg) {
       g.fillStyle = '#5a3728'; g.font = 'italic 400 24px Fraunces, Georgia, serif'; g.textAlign = 'center';
-      g.fillText(this.msg, w / 2, h * .86);
+      g.fillText(this.msg, w / 2, h * .8 + (h - h * .8) / 2 + 8);
     }
   },
 

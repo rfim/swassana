@@ -48,9 +48,13 @@ export default {
     this.wave += dt * (2 + this.hype * 10);
     api.add(Math.pow(this.hype, 2) * 9000 * dt);
     if (Math.random() < dt * .8 && this.tags.length < 3) {
-      this.tags.push({ text: TAGS[Math.floor(rand(0, TAGS.length))], x: rand(80, api.w - 80), y: rand(api.h * .2, api.h * .45), life: 2.6 });
+      const top = 100, bot = Math.max(top + 40, api.h * .62 - Math.min(api.w, api.h) * .2);
+      for (let tries = 0; tries < 8; tries++) {
+        const t = { text: TAGS[Math.floor(rand(0, TAGS.length))], x: rand(110, api.w - 80), y: rand(top, bot), life: 2.6 };
+        if (this.tags.every((o) => Math.abs(o.x - t.x) > 140 || Math.abs(o.y - t.y) > 50)) { this.tags.push(t); break; }
+      }
     }
-    for (let i = this.tags.length - 1; i >= 0; i--) { this.tags[i].life -= dt; this.tags[i].y -= dt * 12; if (this.tags[i].life <= 0) this.tags.splice(i, 1); }
+    for (let i = this.tags.length - 1; i >= 0; i--) { this.tags[i].life -= dt; this.tags[i].y = Math.max(96, this.tags[i].y - dt * 12); if (this.tags[i].life <= 0) this.tags.splice(i, 1); }
     if (this.hype > .85 && Math.random() < dt * 6) api.burst(api.w / 2 + 60, api.h * .62, '#ffb36b', 2);
   },
 
@@ -69,7 +73,7 @@ export default {
     }
     drawIcon(g, 'megaphone', cx, cy, size, '#fbf7f2', -.08 + Math.sin((this.wave || 0) * 2) * hype * .06);
     // hype meter
-    const bx = 24, by = h * .2, bh = h * .55;
+    const bx = 24, by = Math.max(h * .2, 96), bh = Math.min(h * .55, h - by - 60);
     g.fillStyle = 'rgba(251,247,242,.15)'; g.fillRect(bx, by, 14, bh);
     const mg = g.createLinearGradient(0, by + bh, 0, by); mg.addColorStop(0, '#c06a45'); mg.addColorStop(1, '#ffd08a');
     g.fillStyle = mg; g.fillRect(bx, by + bh * (1 - hype), 14, bh * hype);
