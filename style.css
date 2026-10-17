@@ -1067,3 +1067,9 @@ html.intro-bye body > *:not(.intro) { animation: intro-bye .75s cubic-bezier(.7,
    Keyboard focus still shows a ring (:focus-visible). */
 html, * { -webkit-tap-highlight-color: transparent; }
 :focus:not(:focus-visible) { outline: none; }
+
+/* sbctv. badge next to the Swassana wordmark on the website (nav and footer); the app logo has its own */
+.brand:not([data-logo]) { display: inline-flex; align-items: center; gap: .42em; }
+.brand:not([data-logo])::before { content: ""; flex: none; width: 1.7em; height: 1.7em; border-radius: 50%;
+  background: url(icons/sbctv-128.png) center / cover no-repeat; box-shadow: 0 3px 8px -3px rgba(58, 42, 34, .45); transition: transform .5s cubic-bezier(.34, 1.56, .64, 1); }
+a.brand:not([data-logo]):hover::before { transform: rotate(-12deg) scale(1.06); }
