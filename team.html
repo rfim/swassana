@@ -22,7 +22,7 @@
   <script>
     // Phone/app layout starts behind the login screen (see js/login.js).
     (function () {
-      var app = matchMedia('(display-mode: standalone), (hover: none) and (pointer: coarse)').matches, ok = false;
+      var app = self !== top || matchMedia('(display-mode: standalone), (hover: none) and (pointer: coarse)').matches, ok = false; // inside a frame (preview.html) = app
       try { ok = localStorage.getItem('sw-auth') === 'b58f51929f7fe337cebc3a7fc162673d510b757fdfc439d7aed4947f7561fc90'; } catch (e) {}
       if (app && !ok) document.documentElement.classList.add('locked');
     })();

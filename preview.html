@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Swassana Device Preview</title>
+  <meta name="description" content="Coba aplikasi Swassana di bingkai iPhone dan Android.">
   <meta name="robots" content="noindex">
   <link rel="icon" href="icons/favicon-32.png?v=sbctv" type="image/png" sizes="32x32">
   <link rel="icon" href="icons/favicon-96.png?v=sbctv" type="image/png" sizes="96x96">
@@ -21,7 +22,9 @@
     header { max-width: 1100px; margin: 0 auto; padding: 40px 16px 8px; text-align: center; }
     h1 { font-family: Fraunces, Georgia, serif; font-weight: 400; font-size: clamp(30px, 5vw, 48px); margin: 0; letter-spacing: -.02em; }
     h1 em { color: var(--accent); font-weight: 300; }
-    header p { color: var(--muted); margin: 8px 0 18px; }
+    header p { color: var(--muted); margin: 8px auto 18px; max-width: 560px; }
+    header p b { color: var(--text); font-weight: 600; }
+    .badge { display: block; margin: 0 auto 14px; width: 56px; height: 56px; border-radius: 50%; box-shadow: 0 10px 24px -12px rgba(58, 42, 34, .6); }
     .controls { display: inline-flex; gap: 6px; padding: 5px; border-radius: 999px; background: rgba(90,55,40,.08); flex-wrap: wrap; justify-content: center; }
     .controls button, .controls a { border: 0; background: transparent; color: var(--text); font: inherit; font-size: 14px; padding: 8px 14px; border-radius: 999px; cursor: pointer; text-decoration: none; }
     .controls button[aria-pressed="true"] { background: var(--accent); color: var(--bg); }
@@ -69,12 +72,14 @@
 </head>
 <body>
   <header>
+    <img class="badge" src="icons/sbctv-128.png" width="56" height="56" alt="">
     <h1>Swassana di <em>iOS</em> &amp; <em>Android</em></h1>
-    <p>Preview interaktif. Scroll, ketuk, dan coba fiturnya langsung di dalam ponsel.</p>
+    <p>Aplikasi yang sama seperti di ponsel, langsung bisa dicoba: ketuk, geser, dan masuk dengan <b>Nomor HP 1234</b> dan <b>kata sandi 1234</b>.</p>
     <div class="controls" role="group" aria-label="Mode tampilan">
       <button type="button" data-mode="browser" aria-pressed="true">Browser</button>
       <button type="button" data-mode="standalone" aria-pressed="false">Aplikasi (Home Screen)</button>
       <button type="button" id="reload">Muat ulang</button>
+      <button type="button" id="restart" title="Keluar dan putar animasi pembuka lagi">Mulai dari awal</button>
       <a href="./">Buka situs ↗</a>
     </div>
   </header>
@@ -134,6 +139,10 @@
   <section class="notes">
     <div class="note"><h2>Pasang di iPhone</h2><p>Buka situs di <b>Safari</b>, ketuk <b>Bagikan</b>, lalu <b>Tambah ke Layar Utama</b>. Swassana terbuka layar penuh seperti aplikasi.</p></div>
     <div class="note"><h2>Pasang di Android</h2><p>Buka di <b>Chrome</b>, ketuk <b>⋮</b>, lalu <b>Instal aplikasi</b>. Tekan lama ikonnya untuk shortcut Booking Surabaya &amp; Malang.</p></div>
+    <div class="note"><h2>Layar masuk</h2><p>Jam <b>Kalimat</b> dan <b>Lensa</b> bergantian tiap 5 menit, sapaan 11 bahasa berganti tiap 30 detik. <b>Ketuk dua kali</b> sapaannya untuk lanjut.</p></div>
+    <div class="note"><h2>Tanpa masuk</h2><p>Ketuk salah satu sesi di <b>banner game</b> di bawah logo untuk langsung main, tanpa perlu masuk.</p></div>
+    <div class="note"><h2>Setelah masuk</h2><p>Beranda gaya PS5: geser ikon, ketuk lagi untuk buka. <b>Booking</b> selalu ada di bawah, <b>Keluar</b> di pojok atas.</p></div>
+    <div class="note"><h2>Di komputer</h2><p>Situs utama tetap tampil sebagai website biasa. Halaman ini menampilkan versi aplikasinya di dalam bingkai ponsel.</p></div>
   </section>
 
   <script>
@@ -148,7 +157,13 @@
       document.querySelectorAll('[data-mode]').forEach((x) => x.setAttribute('aria-pressed', x === b));
       document.getElementById('stage').classList.toggle('standalone', b.dataset.mode === 'standalone');
     }));
-    document.getElementById('reload').addEventListener('click', () => document.querySelectorAll('iframe').forEach((f) => f.src = f.src));
+    const reload = () => document.querySelectorAll('iframe').forEach((f) => f.src = f.src);
+    document.getElementById('reload').addEventListener('click', reload);
+    // log out and forget that the opening splash was seen, so both phones start from the very beginning
+    document.getElementById('restart').addEventListener('click', () => {
+      try { localStorage.removeItem('sw-auth'); sessionStorage.removeItem('sw-intro'); } catch (e) {}
+      reload();
+    });
   </script>
 </body>
 </html>

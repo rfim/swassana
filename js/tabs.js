@@ -16,7 +16,9 @@ import { makeLogo } from './logo.js';
 const home = new URL('../', import.meta.url);
 const onHome = !!document.querySelector('[data-tab]');
 // Decided by device type, not width: touch devices always get the app layout, mouse devices never do.
+// Inside a frame (the phone mockups on preview.html) the app layout is shown too.
 const mq = matchMedia('(display-mode: standalone), (hover: none) and (pointer: coarse)');
+const framed = self !== top;
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const root = document.documentElement;
 
@@ -116,7 +118,7 @@ function fromHash() {
 }
 
 function apply() {
-  const app = mq.matches;
+  const app = framed || mq.matches;
   root.classList.toggle('app-mode', app);
   if (app) { const b = document.querySelector('.nav .brand'); if (b && !b.dataset.logo) { b.setAttribute('aria-label', 'Swassana, ke beranda'); makeLogo(b); } }
   if (!onHome) {
