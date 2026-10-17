@@ -695,3 +695,10 @@ a:active > .sa-ic::after, .sa-svc:active .sa-ic::after, .sa-ic.shine::after { ba
   .ps-tile .sa-ic { width: 34px; height: 34px; border-radius: 11px; }
   .ps-tile.on .sa-ic { width: 50px; height: 50px; border-radius: 15px; }
 }
+
+/* Only the focused (leftmost) tile is sharp; the others sit back, softly blurred and dimmed */
+.ps-row { justify-content: flex-start; gap: 8px; }
+.ps-tile .sa-ic { filter: blur(1.6px) saturate(.85); opacity: .6; transition: width .4s var(--ps-spring), height .4s var(--ps-spring), border-radius .4s, box-shadow .3s, transform .2s, filter .35s ease, opacity .35s ease; }
+.ps-tile.on .sa-ic { filter: none; opacity: 1; }
+.ps-tile.on { margin-right: 6px; }
+@media (max-width: 360px) { .ps-row { gap: 5px; } .ps-tile.on { margin-right: 3px; } }

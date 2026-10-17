@@ -95,11 +95,28 @@ if (root) {
   let cat = 'studio', items = CATS.studio(), focus = 0, bgFlip = false;
 
   // ---------- tiles ----------
+  // The focused tile always sits at the far left (sharp); the rest follow in order, softly blurred.
   function renderRow() {
     $('psRow').innerHTML = items.map((it, i) => `
-      <button type="button" class="ps-tile${i === focus ? ' on' : ''}" role="option" aria-selected="${i === focus}" data-i="${i}" aria-label="${it.title}">
+      <button type="button" class="ps-tile" role="option" data-i="${i}" aria-label="${it.title}">
         <span class="sa-ic" style="--c:${it.c}">${icon(it.icon)}</span>
       </button>`).join('');
+    arrangeRow(false);
+  }
+  function arrangeRow(animate = true) {
+    const row = $('psRow');
+    const tiles = [...row.children];
+    const first = new Map(tiles.map((t) => [t, t.getBoundingClientRect().left]));
+    const order = items.map((_, n) => (focus + n) % items.length);
+    order.forEach((i) => row.appendChild(tiles.find((t) => +t.dataset.i === i)));
+    tiles.forEach((t) => { const on = +t.dataset.i === focus; t.classList.toggle('on', on); t.setAttribute('aria-selected', on); });
+    if (!animate || reduce) return;
+    // FLIP: slide each tile from its old spot to its new one
+    tiles.forEach((t) => {
+      const dx = first.get(t) - t.getBoundingClientRect().left;
+      if (!dx) return;
+      t.animate([{ transform: `translateX(${dx}px)` }, { transform: 'none' }], { duration: 420, easing: 'cubic-bezier(.2,.8,.2,1)' });
+    });
   }
 
   // ---------- hero ----------
@@ -131,7 +148,7 @@ if (root) {
     i = (i + items.length) % items.length;
     if (i === focus) return;
     focus = i;
-    $('psRow').querySelectorAll('.ps-tile').forEach((t, n) => { t.classList.toggle('on', n === focus); t.setAttribute('aria-selected', n === focus); });
+    arrangeRow();
     renderHero();
     if (haptic) buzz(6);
   }
