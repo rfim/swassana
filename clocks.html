@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="id" data-pal="latte">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Pilihan Jam | Swassana</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Instrument+Sans:wght@400..700&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg: #f6efe8; --ink: #3a2a22; --muted: rgba(58, 42, 34, .58); --line: rgba(58, 42, 34, .1); --accent: #b86b4b; --card: rgba(255, 255, 255, .72);
+      --sans: "Instrument Sans", system-ui, sans-serif; --serif: "Fraunces", Georgia, serif; --spring: cubic-bezier(.34, 1.56, .64, 1); --ease: cubic-bezier(.2, .8, .2, 1); }
+    * { box-sizing: border-box; }
+    body { margin: 0; color: var(--ink); font: 15px/1.5 var(--sans); -webkit-font-smoothing: antialiased;
+      background: radial-gradient(70% 40% at 10% 0%, rgba(244, 183, 154, .35), transparent 70%), radial-gradient(60% 40% at 100% 30%, rgba(242, 182, 195, .3), transparent 70%), var(--bg); min-height: 100vh; }
+    header { max-width: 1100px; margin: 0 auto; padding: 32px 16px 8px; }
+    h1 { font-weight: 650; letter-spacing: -.035em; font-size: clamp(30px, 6vw, 46px); margin: 0; }
+    header p { color: var(--muted); margin: 6px 0 0; }
+    .grid { max-width: 1100px; margin: 0 auto; padding: 18px 16px 60px; display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr)); }
+    .cl-card { border: 1px solid var(--line); background: var(--card); border-radius: 24px; padding: 12px; cursor: pointer; text-align: left; color: inherit; font: inherit; display: flex; flex-direction: column; gap: 10px; transition: transform .25s var(--spring), box-shadow .25s; }
+    .cl-card:hover { transform: translateY(-3px); box-shadow: 0 18px 40px -26px rgba(58, 42, 34, .5); }
+    .cl-card:active { transform: scale(.97); }
+    .cl-card .meta b { display: block; font-weight: 650; letter-spacing: -.02em; font-size: 16px; }
+    .cl-card .meta span { color: var(--muted); font-size: 13px; }
+    .stage { position: relative; aspect-ratio: 4 / 5; border-radius: 18px; overflow: hidden; container-type: inline-size; display: grid; place-items: center; background: #fbf6f1; }
+    /* full-screen preview */
+    .cl-card.full { position: fixed; inset: 0; z-index: 50; border-radius: 0; padding: 0; background: var(--bg); cursor: zoom-out; }
+    .cl-card.full .stage { aspect-ratio: auto; height: 100%; border-radius: 0; }
+    .cl-card.full .meta { position: absolute; left: 20px; bottom: calc(20px + env(safe-area-inset-bottom)); z-index: 3; }
+    .letter { position: absolute; top: 10px; left: 12px; z-index: 3; font: 700 12px var(--sans); letter-spacing: .12em; color: var(--muted); }
+    .date { font-size: 4.2cqw; color: var(--muted); letter-spacing: .04em; margin-top: 2cqw; text-align: center; }
+
+    /* A. Rolling */
+    .roll { display: flex; align-items: center; font: 500 22cqw/1 var(--sans); letter-spacing: -.05em; font-variant-numeric: tabular-nums; }
+    .roll .dg { height: 1em; overflow: hidden; width: .6em; text-align: center; }
+    .roll .tr { display: flex; flex-direction: column; transition: transform .7s var(--spring); }
+    .roll .tr b { height: 1em; font-weight: 500; }
+    .roll .co { color: var(--accent); animation: blink 2s ease-in-out infinite; margin: 0 .02em; }
+    @keyframes blink { 50% { opacity: .3; } }
+
+    /* B. Split-flap */
+    .flaps { display: flex; gap: 1.6cqw; align-items: center; perspective: 400px; }
+    .flap { position: relative; width: 17cqw; height: 24cqw; font: 600 19cqw/24cqw var(--sans); text-align: center; color: #fbf3ec; }
+    .flap .h { position: absolute; left: 0; right: 0; height: 50%; overflow: hidden; background: #3a2a22; }
+    .flap .t { top: 0; border-radius: 2.4cqw 2.4cqw 0 0; border-bottom: .4cqw solid rgba(0, 0, 0, .35); }
+    .flap .b { bottom: 0; border-radius: 0 0 2.4cqw 2.4cqw; }
+    .flap .h span { display: block; height: 24cqw; }
+    .flap .b span { transform: translateY(-50%); }
+    .flap .ft { transform-origin: bottom; z-index: 2; }
+    .flap .fb { transform-origin: top; z-index: 2; transform: rotateX(90deg); }
+    .flap.go .ft { animation: ftop .3s ease-in forwards; }
+    .flap.go .fb { animation: fbot .3s ease-out .3s forwards; }
+    @keyframes ftop { to { transform: rotateX(-90deg); } }
+    @keyframes fbot { to { transform: rotateX(0); } }
+    .flaps .sep { font: 600 14cqw var(--sans); color: var(--accent); }
+
+    /* C. Film strip */
+    .film { position: absolute; inset: 22% 0; background: #2c201b; display: flex; align-items: center; overflow: hidden; }
+    .film::before, .film::after { content: ""; position: absolute; left: 0; right: 0; height: 7cqw; background: repeating-linear-gradient(90deg, transparent 0 3cqw, #f6efe8 3cqw 7cqw, transparent 7cqw 10cqw); background-size: 10cqw 3.4cqw; background-repeat: repeat-x; background-position: 0 50%; z-index: 2; }
+    .film::before { top: 0; } .film::after { bottom: 0; }
+    .reel { display: flex; gap: 3cqw; padding: 0 30cqw; transition: transform 1s var(--ease); }
+    .frame { flex: none; width: 50cqw; height: 34cqw; border-radius: 1.6cqw; display: grid; place-items: center; font: 600 15cqw var(--sans); letter-spacing: -.04em; color: #fbefe4;
+      background: linear-gradient(140deg, #f2b6c3, #f4b79a 60%, #f3d6a1); }
+    .frame.old { filter: sepia(.6) brightness(.75); }
+    .film-cap { position: absolute; bottom: 10%; left: 0; right: 0; text-align: center; font: 600 3.6cqw var(--sans); letter-spacing: .3em; color: var(--muted); }
+
+    /* D. Lensa */
+    .lens { width: 86cqw; height: 86cqw; }
+    .lens .rot { transform-origin: 50% 50%; transition: transform .9s var(--spring); }
+    .lens text { font-family: var(--sans); }
+    .lens-time { position: absolute; font: 600 13cqw var(--sans); letter-spacing: -.04em; color: #fbefe4; }
+
+    /* E. Polaroid */
+    .pol { width: 66cqw; background: #fff; padding: 4cqw 4cqw 14cqw; border-radius: 1.4cqw; box-shadow: 0 6cqw 12cqw -6cqw rgba(58, 42, 34, .45); transform: rotate(-3deg); position: relative; }
+    .pol.drop { animation: drop .9s var(--spring); }
+    @keyframes drop { from { transform: translateY(-40cqw) rotate(-14deg); opacity: 0; } }
+    .pol .ph { aspect-ratio: 1; display: grid; place-items: center; font: 600 15cqw var(--sans); letter-spacing: -.04em; color: rgba(255, 255, 255, .92); position: relative; overflow: hidden;
+      background: linear-gradient(150deg, var(--p1), var(--p2)); }
+    .pol .ph::after { content: ""; position: absolute; inset: 0; background: #2c201b; opacity: 0; }
+    .pol.dev .ph::after { animation: develop 3.2s ease-out forwards; }
+    @keyframes develop { from { opacity: 1; } to { opacity: 0; } }
+    .pol .cap { position: absolute; left: 0; right: 0; bottom: 3.6cqw; text-align: center; font: italic 400 6cqw var(--serif); color: var(--ink); }
+
+    /* F. Golden Hour */
+    .gh { position: absolute; inset: 0; transition: background 1.5s; }
+    .gh svg { position: absolute; left: 6%; right: 6%; top: 12%; width: 88%; }
+    .gh-time { position: absolute; left: 0; right: 0; top: 52%; text-align: center; font: 600 17cqw/1 var(--sans); letter-spacing: -.05em; }
+    .gh-msg { position: absolute; left: 8%; right: 8%; top: 74%; text-align: center; font-size: 4.4cqw; line-height: 1.35; }
+
+    /* G. Kalimat */
+    .kal { padding: 9cqw 8cqw; font: 650 9.4cqw/1.12 var(--sans); letter-spacing: -.035em; }
+    .kal .w { display: inline-block; opacity: .16; transition: opacity .5s, color .5s, transform .5s var(--spring); }
+    .kal .w.on { opacity: 1; }
+    .kal .w.num { color: var(--accent); }
+    .kal .w.pop { animation: pop .6s var(--spring); }
+    @keyframes pop { from { transform: translateY(2cqw); opacity: 0; } }
+
+    /* H. Bokeh */
+    .bok { display: flex; gap: 3cqw; align-items: center; }
+    .bok .ch { display: grid; grid-template-columns: repeat(3, 4.6cqw); gap: 1cqw; }
+    .bok i { width: 4.6cqw; height: 4.6cqw; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #fff, var(--c) 40%, color-mix(in oklab, var(--c) 70%, #b86b4b) 70%, transparent 74%); opacity: .05; transform: scale(.45); transition: opacity .6s, transform .6s var(--spring); transition-delay: var(--dl); }
+    .bok i.on { opacity: 1; transform: scale(1); }
+    .bok i.tw { transform: scale(1.35); }
+    .bok .col { display: grid; gap: 4cqw; }
+    .bok .col i { opacity: 1; transform: scale(.8); animation: blink 2s ease-in-out infinite; }
+
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Pilihan animasi jam</h1>
+    <p>Delapan gaya untuk layar masuk. Semua berjalan langsung; ketuk untuk melihat layar penuh.</p>
+  </header>
+  <main class="grid" id="grid"></main>
+
+  <script>
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const pad = (n) => String(n).padStart(2, '0');
+    const fmtDate = new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'long' });
+    const CLOCKS = [
+      ['A', 'Rolling', 'Angka berputar seperti slot, versi yang sekarang.'],
+      ['B', 'Split-Flap', 'Papan jadwal bandara; tiap angka terbalik.'],
+      ['C', 'Film Strip', 'Waktu tercetak di frame film yang bergeser tiap menit.'],
+      ['D', 'Lensa', 'Cincin fokus dan aperture lensa berputar mengikuti detik.'],
+      ['E', 'Polaroid', 'Setiap menit, polaroid baru "dicetak" dan perlahan muncul.'],
+      ['F', 'Golden Hour', 'Matahari bergerak di busur langit + hitung mundur golden hour.'],
+      ['G', 'Kalimat', 'Waktu ditulis dalam kata-kata Bahasa Indonesia.'],
+      ['H', 'Bokeh', 'Angka dari titik cahaya bokeh yang berkelip.'],
+    ];
+    document.getElementById('grid').innerHTML = CLOCKS.map(([l, n, d]) => `
+      <button class="cl-card" type="button" data-c="${l}" aria-label="Opsi ${l}: ${n}">
+        <div class="stage" id="st${l}"><span class="letter">${l}</span></div>
+        <div class="meta"><b>${l}. ${n}</b><span>${d}</span></div>
+      </button>`).join('');
+    document.querySelectorAll('.cl-card').forEach((c) => c.addEventListener('click', () => c.classList.toggle('full')));
+    addEventListener('keydown', (e) => { if (e.key === 'Escape') document.querySelectorAll('.cl-card.full').forEach((c) => c.classList.remove('full')); });
+    const st = (l) => document.getElementById('st' + l);
+    const add = (l, html) => st(l).insertAdjacentHTML('beforeend', html);
+    const restart = (el, cls) => { el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); };
+
+    // A. Rolling
+    const digit = () => `<span class="dg"><span class="tr">${[...Array(10).keys()].map((n) => `<b>${n}</b>`).join('')}</span></span>`;
+    add('A', `<div><div class="roll">${digit()}${digit()}<span class="co">:</span>${digit()}${digit()}</div><div class="date" data-date></div></div>`);
+    const rollTr = [...st('A').querySelectorAll('.tr')];
+
+    // B. Split-flap
+    const flap = () => `<span class="flap"><span class="h t"><span></span></span><span class="h b"><span></span></span><span class="h t ft"><span></span></span><span class="h b fb"><span></span></span></span>`;
+    add('B', `<div><div class="flaps">${flap()}${flap()}<span class="sep">:</span>${flap()}${flap()}</div><div class="date" data-date></div></div>`);
+    const flaps = [...st('B').querySelectorAll('.flap')];
+    const setFlap = (el, v) => {
+      const [t, b, ft, fb] = el.querySelectorAll('.h span');
+      const old = el.dataset.v;
+      if (old === v) return;
+      el.dataset.v = v;
+      if (old === undefined || reduce) { t.textContent = b.textContent = ft.textContent = fb.textContent = v; return; }
+      t.textContent = v; b.textContent = old; ft.textContent = old; fb.textContent = v;
+      restart(el, 'go');
+      setTimeout(() => { b.textContent = v; ft.textContent = v; el.classList.remove('go'); }, 650);
+    };
+
+    // C. Film strip
+    add('C', `<div class="film"><div class="reel" id="reel"></div></div><div class="film-cap" id="filmCap"></div>`);
+    const reel = document.getElementById('reel');
+
+    // D. Lensa
+    const ticks = (r, n, len, w, every, lbl) => [...Array(n)].map((_, i) => {
+      const a = i / n * Math.PI * 2, big = i % every === 0, x1 = 100 + Math.sin(a) * r, y1 = 100 - Math.cos(a) * r, x2 = 100 + Math.sin(a) * (r - (big ? len : len / 2)), y2 = 100 - Math.cos(a) * (r - (big ? len : len / 2));
+      const t = big && lbl ? `<text x="${100 + Math.sin(a) * (r - len - 7)}" y="${100 - Math.cos(a) * (r - len - 7) + 2.4}" font-size="6.5" text-anchor="middle" fill="#f6efe8" opacity=".85">${lbl(i)}</text>` : '';
+      return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#f6efe8" stroke-width="${big ? w * 1.6 : w}" opacity="${big ? .9 : .5}"/>${t}`;
+    }).join('');
+    add('D', `<svg class="lens" viewBox="0 0 200 200" aria-hidden="true">
+      <circle cx="100" cy="100" r="98" fill="#2c201b"/>
+      <g class="rot" id="lensSec">${ticks(94, 60, 8, .8, 5, (i) => pad(i))}</g>
+      <circle cx="100" cy="100" r="66" fill="#3a2a22"/>
+      <g class="rot" id="lensMin">${ticks(64, 12, 6, 1.2, 1, (i) => ['1.4', '2', '2.8', '4', '5.6', '8', '11', '16', '22', '16', '8', '2'][i])}</g>
+      <circle cx="100" cy="100" r="44" fill="url(#lensGlass)"/>
+      <defs><radialGradient id="lensGlass" cx="35%" cy="30%" r="80%"><stop offset="0" stop-color="#f4b79a"/><stop offset=".45" stop-color="#b86b4b"/><stop offset="1" stop-color="#2c201b"/></radialGradient></defs>
+      <polygon points="100,4 96,12 104,12" fill="#f4b79a"/>
+    </svg><span class="lens-time" id="lensTime"></span>`);
+
+    // E. Polaroid
+    add('E', `<div class="pol" id="pol"><div class="ph" id="polPh"></div><div class="cap" id="polCap"></div></div>`);
+
+    // F. Golden Hour (approximate sun times for Surabaya/Malang, ~05:30 and ~17:30)
+    add('F', `<div class="gh" id="gh"><svg viewBox="0 0 200 100" aria-hidden="true">
+      <path d="M10 95 A90 90 0 0 1 190 95" fill="none" stroke="rgba(58,42,34,.25)" stroke-width="1.2" stroke-dasharray="2 3"/>
+      <line x1="0" y1="95" x2="200" y2="95" stroke="rgba(58,42,34,.2)" stroke-width="1"/>
+      <circle id="sun" r="7" fill="#ffb347"/></svg>
+      <div class="gh-time" id="ghTime"></div><div class="gh-msg" id="ghMsg"></div></div>`);
+
+    // G. Kalimat
+    add('G', `<div class="kal" id="kal"></div>`);
+    const SAT = ['', 'satu', 'dua', 'tiga', 'empat', 'lima', 'enam', 'tujuh', 'delapan', 'sembilan', 'sepuluh', 'sebelas'];
+    const words = (n) => n < 12 ? SAT[n] : n < 20 ? `${n === 12 ? 'dua' : SAT[n - 10]} belas` : `${SAT[Math.floor(n / 10)]} puluh${n % 10 ? ' ' + SAT[n % 10] : ''}`;
+
+    // H. Bokeh (3x5 dot font)
+    const FONT = { 0: '111101101101111', 1: '010110010010111', 2: '111001111100111', 3: '111001111001111', 4: '101101111001001', 5: '111100111001111', 6: '111100111101111', 7: '111001010010010', 8: '111101111101111', 9: '111101111001111' };
+    const BCOL = ['#f4b79a', '#f2b6c3', '#f3d6a1', '#e8a07a'];
+    const ch = () => `<span class="ch">${[...Array(15)].map((_, i) => `<i style="--c:${BCOL[i % 4]};--dl:${i * 18}ms"></i>`).join('')}</span>`;
+    add('H', `<div><div class="bok">${ch()}${ch()}<span class="col"><i style="--c:#b86b4b"></i><i style="--c:#b86b4b"></i></span>${ch()}${ch()}</div><div class="date" data-date></div></div>`);
+    const bchars = [...st('H').querySelectorAll('.ch')];
+
+    let lastMin = '';
+    function tick() {
+      const d = new Date(), h = d.getHours(), m = d.getMinutes(), s = d.getSeconds();
+      const hhmm = pad(h) + pad(m), changed = hhmm !== lastMin;
+      // per-second motion
+      document.getElementById('lensSec').style.transform = `rotate(${-s * 6}deg)`;
+      document.getElementById('lensMin').style.transform = `rotate(${(m * 60 + s) * .1}deg)`;
+      if (Math.random() < .5) { const dots = st('H').querySelectorAll('.ch i.on'); const dot = dots[Math.floor(Math.random() * dots.length)]; if (dot && !reduce) { dot.classList.add('tw'); setTimeout(() => dot.classList.remove('tw'), 500); } }
+      document.getElementById('filmCap').textContent = `FRAME ${pad(m)} · ${pad(s)}`;
+      if (!changed) return;
+      lastMin = hhmm;
+      document.querySelectorAll('[data-date]').forEach((el) => { el.textContent = fmtDate.format(d); });
+      // A
+      [...hhmm].forEach((v, i) => { rollTr[i].style.transform = `translateY(${-v * 10}%)`; });
+      // B
+      [...hhmm].forEach((v, i) => setFlap(flaps[i], v));
+      // C: add a frame and advance the reel
+      const fr = document.createElement('div'); fr.className = 'frame'; fr.textContent = `${pad(h)}:${pad(m)}`;
+      reel.querySelectorAll('.frame').forEach((f) => f.classList.add('old'));
+      reel.appendChild(fr);
+      while (reel.children.length > 4) reel.removeChild(reel.firstChild);
+      const idx = reel.children.length - 1, fw = fr.offsetWidth + parseFloat(getComputedStyle(reel).gap);
+      reel.style.transition = 'none'; reel.style.transform = `translateX(${-(idx - 1) * fw}px)`; void reel.offsetWidth;
+      reel.style.transition = ''; reel.style.transform = `translateX(${-idx * fw}px)`;
+      // D
+      document.getElementById('lensTime').textContent = `${pad(h)}:${pad(m)}`;
+      // E: tint follows time of day
+      const tint = h < 6 || h >= 19 ? ['#5b4a6b', '#2c201b'] : h < 10 ? ['#f3d6a1', '#f4b79a'] : h < 15 ? ['#bfd5ef', '#f2b6c3'] : ['#f4b79a', '#e46f6f'];
+      const pol = document.getElementById('pol'); pol.style.setProperty('--p1', tint[0]); pol.style.setProperty('--p2', tint[1]);
+      document.getElementById('polPh').textContent = `${pad(h)}:${pad(m)}`;
+      document.getElementById('polCap').textContent = fmtDate.format(d);
+      if (!reduce) { restart(pol, 'drop'); restart(pol, 'dev'); }
+      // F
+      const mins = h * 60 + m, rise = 5 * 60 + 30, set = 17 * 60 + 30;
+      const day = mins >= rise && mins <= set, f = day ? (mins - rise) / (set - rise) : 0;
+      const ang = Math.PI * (1 - f), sun = document.getElementById('sun');
+      sun.setAttribute('cx', 100 + Math.cos(ang) * 90); sun.setAttribute('cy', 95 - Math.sin(ang) * 90);
+      sun.setAttribute('fill', day ? (f < .12 || f > .88 ? '#ff8a5c' : '#ffb347') : '#e9e1f2');
+      if (!day) { sun.setAttribute('cx', 160); sun.setAttribute('cy', 22); }
+      const gh = document.getElementById('gh');
+      gh.style.background = !day ? 'linear-gradient(#3b3550, #6b5a74)' : f < .12 || f > .88 ? 'linear-gradient(#f7c59f, #f6efe8)' : 'linear-gradient(#d9e8f5, #f6efe8)';
+      gh.style.color = day ? '#3a2a22' : '#f6efe8';
+      document.getElementById('ghTime').textContent = `${pad(h)}:${pad(m)}`;
+      const gStart = [rise, set - 60], until = gStart.map((g) => g - mins).filter((x) => x > 0);
+      const golden = (mins >= rise && mins < rise + 60) || (mins >= set - 60 && mins < set);
+      const msg = golden ? '✨ Sekarang golden hour! Cahaya terbaik untuk foto.' : until.length ? `Golden hour dalam ${Math.floor(Math.min(...until) / 60)} jam ${Math.min(...until) % 60} mnt` : `Golden hour berikutnya besok ±05.30`;
+      document.getElementById('ghMsg').textContent = msg + ' (perkiraan)';
+      // G
+      const h12 = h % 12 || 12, part = h < 11 ? 'pagi' : h < 15 ? 'siang' : h < 18 ? 'sore' : 'malam';
+      const sent = m === 0 ? ['pukul', ...words(h12).split(' '), 'tepat', part] : ['pukul', ...words(h12).split(' '), 'lewat', ...words(m).split(' '), part];
+      const numIdx = new Set(); let i = 1; words(h12).split(' ').forEach(() => numIdx.add(i++)); if (m) { i++; words(m).split(' ').forEach(() => numIdx.add(i++)); }
+      document.getElementById('kal').innerHTML = ['sekarang', ...sent].map((w, n) => `<span class="w on${numIdx.has(n - 1) ? ' num' : ''} pop" style="animation-delay:${n * 70}ms">${w}</span>`).join(' ');
+      // H
+      [...hhmm].forEach((v, k) => { [...bchars[k].children].forEach((dot, j) => dot.classList.toggle('on', FONT[v][j] === '1')); });
+    }
+    tick();
+    setInterval(tick, 1000);
+  </script>
+</body>
+</html>
