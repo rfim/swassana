@@ -900,3 +900,18 @@ a:active > .sa-ic::after, .sa-svc:active .sa-ic::after, .sa-ic.shine::after { ba
 @media (max-height: 600px) { .gpol { width: 120px; } .gpol-ph { font-size: 28px; } }
 @media (max-height: 820px) { .gate-inner { gap: 14px; padding-top: calc(14px + env(safe-area-inset-top)); padding-bottom: calc(18px + env(safe-area-inset-bottom)); } .gate .muted { display: none; } .gate form { gap: 10px; } }
 @media (max-height: 600px) { .gate-inner { gap: 10px; } .gate h1 { font-size: 20px; } .gate input, .gate .big-btn { min-height: 44px; } }
+
+/* Login clock modes: Kalimat <-> Polaroid every 5 minutes, crossfading in the same spot */
+.gate-clock { display: grid; place-items: center; }
+.gate-clock > * { grid-area: 1 / 1; transition: opacity .6s ease, transform .6s cubic-bezier(.2, .8, .2, 1); }
+.gate-clock[data-mode="kal"] .gpol, .gate-clock[data-mode="pol"] .gkal { opacity: 0; transform: scale(.94); pointer-events: none; }
+.gkal { width: 100%; text-align: left; align-self: center; }
+.gkal p { margin: 0; font: 650 clamp(28px, 8.4vw, 38px)/1.08 var(--sans); letter-spacing: -.035em; color: var(--text); }
+.gkal p span { display: inline-block; }
+.gkal p .num { color: var(--accent); }
+.gkal p.rise span { animation: kal-rise .6s cubic-bezier(.34, 1.56, .64, 1) both; }
+@keyframes kal-rise { from { opacity: 0; transform: translateY(10px); } }
+.gkal small { display: block; margin-top: 10px; color: var(--muted); font-size: 14px; letter-spacing: .02em; }
+@media (max-height: 700px) { .gkal p { font-size: clamp(22px, 7vw, 28px); } .gkal small { margin-top: 6px; font-size: 12.5px; } }
+@media (prefers-reduced-motion: reduce) { .gate-clock > *, .gkal p.rise span { transition: none; animation: none !important; } }
+.gkal p .num { font-family: var(--display); font-style: italic; font-weight: 500; font-size: 1.04em; letter-spacing: -.02em; color: var(--accent); }

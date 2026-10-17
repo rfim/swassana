@@ -29,6 +29,7 @@ function render() {
           <div class="gpol-ph" id="clk" role="timer"></div>
           <p class="gpol-cap" id="gateDate"></p>
         </div>
+        <div class="gkal" id="gkal" aria-hidden="true"><p id="gkalTxt"></p><small id="gkalDate"></small></div>
       </div>
       <div>
         <h1><span id="gateGreet">Selamat datang</span>,<br><em>senang melihatmu lagi</em></h1>
@@ -78,7 +79,10 @@ function render() {
   });
 }
 
-// Polaroid clock: every minute a fresh polaroid drops in and slowly "develops" the new time.
+// Login clock: alternates every 5 minutes between Kalimat (time in words) and Polaroid
+// (a fresh print drops in and develops). Tint follows the time of day.
+const SAT = ['', 'satu', 'dua', 'tiga', 'empat', 'lima', 'enam', 'tujuh', 'delapan', 'sembilan', 'sepuluh', 'sebelas'];
+const words = (n) => n < 12 ? SAT[n] : n < 20 ? `${n === 12 ? 'dua' : SAT[n - 10]} belas` : `${SAT[Math.floor(n / 10)]} puluh${n % 10 ? ' ' + SAT[n % 10] : ''}`;
 function startClock(gate) {
   const pol = gate.querySelector('#gpol'), ph = gate.querySelector('#clk'), dateEl = gate.querySelector('#gateDate'), greetEl = gate.querySelector('#gateGreet');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -98,8 +102,23 @@ function startClock(gate) {
       ph.setAttribute('aria-label', `Pukul ${pad(h)}.${pad(m)}`);
       dateEl.textContent = fmtDate.format(now);
       greetEl.textContent = h < 11 ? 'Selamat pagi' : h < 15 ? 'Selamat siang' : h < 18 ? 'Selamat sore' : 'Selamat malam';
-      if (last && !reduce) { restart('drop'); restart('dev'); }
-      else if (!reduce) restart('dev');
+      // Kalimat: the time in Indonesian words, numbers highlighted, words rise in one by one
+      const h12 = h % 12 || 12, part = h < 11 ? 'pagi' : h < 15 ? 'siang' : h < 18 ? 'sore' : 'malam';
+      const hw = words(h12).split(' '), mw = m ? words(m).split(' ') : [];
+      const seq = [['sekarang', 0], ['pukul', 0], ...hw.map((w) => [w, 1]), ...(m ? [['lewat', 0], ...mw.map((w) => [w, 1])] : [['tepat', 0]]), [part, 0]];
+      gate.querySelector('#gkalTxt').innerHTML = seq.map(([w, num], n) => `<span class="${num ? 'num' : ''}" style="animation-delay:${n * 70}ms">${w}</span>`).join(' ');
+      gate.querySelector('#gkalDate').textContent = dateEl.textContent;
+      // Alternate every 5 minutes: Kalimat first, then Polaroid
+      const mode = Math.floor((h * 60 + m) / 5) % 2 === 0 ? 'kal' : 'pol';
+      const box = gate.querySelector('.gate-clock');
+      const switched = box.dataset.mode !== mode;
+      box.dataset.mode = mode;
+      gate.querySelector('#gkal').setAttribute('aria-hidden', mode !== 'kal');
+      pol.setAttribute('aria-hidden', mode !== 'pol');
+      if (!reduce) {
+        if (mode === 'pol') { if (last) restart('drop'); restart('dev'); }
+        else { const t = gate.querySelector('#gkalTxt'); t.classList.remove('rise'); void t.offsetWidth; t.classList.add('rise'); }
+      }
       last = str;
     }
     setTimeout(tick, 1000 - now.getMilliseconds());
