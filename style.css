@@ -146,12 +146,12 @@ h1 em { font-style: italic; color: var(--accent); font-weight: 300; }
 @media (max-width: 860px) { .hero-art { aspect-ratio: 4 / 3; max-width: 520px; } }
 
 /* Marquee */
-.marquee { margin-top: clamp(56px, 8vw, 96px); border-block: 1px solid var(--line); overflow: hidden; padding: 18px 0; }
-.marquee-track { display: flex; gap: clamp(28px, 4vw, 48px); padding-right: clamp(28px, 4vw, 48px); width: max-content; animation: marquee 36s linear infinite; font-family: var(--display); font-size: clamp(22px, 3vw, 32px); font-style: italic; color: var(--accent); white-space: nowrap; }
+.marquee { margin-top: clamp(40px, 6vw, 72px); border-block: 1px solid var(--line); overflow: hidden; padding: 10px 0; }
+.marquee-track { display: flex; gap: 32px; padding-right: 32px; width: max-content; animation: marquee 40s linear infinite; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
 .marquee:hover .marquee-track { animation-play-state: paused; }
 @keyframes marquee { to { transform: translateX(-50%); } }
-.mq-item { display: inline-flex; align-items: center; gap: 12px; }
-.mq-ic { flex: none; width: 1.15em; height: 1.15em; color: var(--a400); overflow: visible; }
+.mq-item { display: inline-flex; align-items: center; gap: 8px; }
+.mq-ic { flex: none; width: 15px; height: 15px; color: var(--a400); overflow: visible; }
 /* Each icon gets its own little loop, staggered so they never move in sync */
 .mq-bob    { animation: mq-bob 2.4s ease-in-out infinite; }
 .mq-beat   { animation: mq-beat 1.6s ease-in-out infinite; transform-origin: 50% 60%; }
@@ -159,10 +159,10 @@ h1 em { font-style: italic; color: var(--accent); font-weight: 300; }
 .mq-toss   { animation: mq-toss 3.2s cubic-bezier(.3,.7,.3,1) infinite .6s; }
 .mq-swing  { animation: mq-swing 2.6s ease-in-out infinite .2s; transform-origin: 50% 5%; }
 .mq-shout  { animation: mq-shout 2s ease-in-out infinite .4s; transform-origin: 20% 50%; }
-@keyframes mq-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+@keyframes mq-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-2px); } }
 @keyframes mq-beat { 0%, 60%, 100% { transform: scale(1); } 15% { transform: scale(1.2); } 30% { transform: scale(.95); } 45% { transform: scale(1.1); } }
 @keyframes mq-wiggle { 0%, 70%, 100% { transform: rotate(0); } 76% { transform: rotate(-10deg); } 84% { transform: rotate(8deg); } 92% { transform: rotate(-4deg); } }
-@keyframes mq-toss { 0%, 55%, 100% { transform: translateY(0) rotate(0); } 70% { transform: translateY(-10px) rotate(-200deg); } 85% { transform: translateY(-2px) rotate(-360deg); } 90% { transform: translateY(0) rotate(-360deg); } }
+@keyframes mq-toss { 0%, 55%, 100% { transform: translateY(0) rotate(0); } 70% { transform: translateY(-5px) rotate(-200deg); } 85% { transform: translateY(-2px) rotate(-360deg); } 90% { transform: translateY(0) rotate(-360deg); } }
 @keyframes mq-swing { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(9deg); } 75% { transform: rotate(-9deg); } }
 @keyframes mq-shout { 0%, 50%, 100% { transform: scale(1) rotate(0); } 10% { transform: scale(1.15) rotate(-8deg); } 20% { transform: scale(1.05) rotate(4deg); } 30% { transform: scale(1.12) rotate(-6deg); } }
 @media (prefers-reduced-motion: reduce) { .marquee-track, .mq-ic { animation: none !important; } }
@@ -208,7 +208,7 @@ button.pill { border: 0; cursor: pointer; font-family: inherit; }
 /* Blog cards */
 .posts { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); }
 .post { display: flex; flex-direction: column; text-decoration: none; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; transition: transform .3s, border-color .3s; }
-.post:hover { transform: translateY(-4px); border-color: var(--accent); }
+.post:hover { transform: translateY(-2px); border-color: var(--accent); }
 .post .meta { font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); }
 .post h3 { font-size: 23px; line-height: 1.2; margin: 12px 0 10px; }
 .post p { margin: 0 0 18px; color: var(--muted); font-size: 15px; }
