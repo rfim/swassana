@@ -20,6 +20,10 @@ To publish, open Settings → Pages, choose "Deploy from a branch", then `main` 
 - `preview.html`: interactive iPhone and Android preview
 - `previews/`: static phone screenshots
 
+## Phone vs. computer
+
+`js/tabs.js` decides by device type: touch devices and the installed app get the app layout (bottom tab bar: Beranda, Lokasi, Main, Jurnal, Info; one tab visible at a time; back button switches tabs). Mouse devices always get the one-page website. Sections opt in with `data-tab="..."`.
+
 ## Editing
 
 - **Exact map pins:** in `index.html`, find `PLACES` and replace each name with `"lat,lng"`.

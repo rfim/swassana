@@ -271,3 +271,35 @@ button.pill { border: 0; cursor: pointer; font-family: inherit; }
 
 .credit { font-size: 12px; opacity: .8; }
 .credit a { text-decoration: underline; }
+
+/* ===== App mode (phones and installed app): bottom tab bar, one tab at a time ===== */
+.tabbar, .app-only { display: none; }
+.app-mode .app-only { display: inline-flex; }
+.app-mode body { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
+.app-mode .tabbar { display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 45; padding: 6px 6px calc(6px + env(safe-area-inset-bottom)); background: var(--surface); border-top: 1px solid var(--line); box-shadow: 0 -8px 24px -18px rgba(46,27,22,.4); }
+.tabbar a { flex: 1; min-height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: var(--muted); font-size: 11px; font-weight: 500; position: relative; -webkit-tap-highlight-color: transparent; }
+.tabbar a::before { content: ""; position: absolute; top: 4px; width: 56px; height: 30px; border-radius: 15px; background: var(--a100); transform: scaleX(.3); opacity: 0; transition: transform .3s cubic-bezier(.2,.7,.2,1), opacity .2s; }
+:root[data-theme="dark"] .tabbar a::before { background: #3a271e; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .tabbar a::before { background: #3a271e; } }
+.tabbar a svg { width: 22px; height: 22px; position: relative; margin-top: 4px; transition: transform .3s cubic-bezier(.2,.7,.2,1); }
+.tabbar a span { position: relative; }
+.tabbar a[aria-current="page"] { color: var(--accent); font-weight: 600; }
+.tabbar a[aria-current="page"]::before { transform: none; opacity: 1; }
+.tabbar a[aria-current="page"] svg { transform: scale(1.06); }
+.tabbar a:active svg { transform: scale(.88); }
+.app-mode [data-tab]:not(.tab-on) { display: none !important; }
+.app-mode .tab-anim { animation: tab-in .35s cubic-bezier(.2,.7,.2,1); }
+@keyframes tab-in { from { opacity: 0; transform: translateY(12px); } }
+.app-mode .tab-first.section, .app-mode .tab-first .section { padding-top: 28px; }
+.app-mode .tab-first.band { margin-top: 0; }
+.app-mode .tab-first.hero { padding-top: 32px; }
+.app-mode .bookbar, .app-mode .menu-btn, .app-mode .sheet { display: none !important; }
+.app-mode .footer { margin-top: 32px; padding-bottom: 0; }
+.app-mode .nav { position: sticky; }
+.app-mode .reveal { opacity: 1; transform: none; }
+.app-mode .hero-art { display: none; }
+.app-mode .hero { padding-bottom: 0; }
+.app-mode .section { padding-top: 40px; }
+.app-mode .marquee { margin-top: 28px; }
+.app-mode .lead { margin: 16px 0 22px; }
+.app-mode .band { margin-top: 0; padding-bottom: 40px; }

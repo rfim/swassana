@@ -1,4 +1,4 @@
-// Konten Brand: "Fokus!". Tap the shutter at the exact moment the product snaps into focus.
+// Konten Brand: "Fokus!". Tap the shutter when the autofocus box locks onto the product. No blur effects (they cause motion sickness).
 import { drawIcon, rand } from '../mini.js';
 
 const PRODUCTS = ['bag', 'lipstick', 'sunglasses', 'heel', 'coffee', 'medal', 'letter', 'camera'];
@@ -6,14 +6,13 @@ const SHOTS = 10;
 
 export default {
   key: 'brand', title: 'Fokus!', icon: 'bag', color: '#7d8f6c', unit: 'poin fokus',
-  how: 'Produknya buram lalu tajam, berulang-ulang. Ketuk layar tepat saat produk paling tajam. Sepuluh jepretan, makin lama makin cepat.',
+  how: 'Kotak fokus kamera membesar dan mengecil. Ketuk layar tepat saat kotak mengunci produk dan berubah hijau. Sepuluh jepretan, makin lama makin cepat.',
 
   setup() { this.next(0); this.shots = 0; this.flash = 0; this.sum = 0; },
   next(i) {
     this.prod = PRODUCTS[i % PRODUCTS.length];
     this.phase = rand(0, Math.PI * 2);
     this.speed = 1.1 + i * .16;
-    this.drift = { x: rand(-1, 1), y: rand(-1, 1) };
   },
   focus() { return Math.sin(this.phase); }, // 0 = sharp, ±1 = blurry
 
@@ -46,22 +45,21 @@ export default {
       g.beginPath(); g.moveTo(x, y + dy * L); g.lineTo(x, y); g.lineTo(x + dx * L, y); g.stroke();
     }
     if (!this.prod) { drawIcon(g, 'bag', cx, cy, size, '#4f5d43'); return; }
-    const f = Math.abs(this.focus()), t = this.phase;
-    const px = cx + Math.sin(t * .37) * this.drift.x * 20, py = cy + Math.cos(t * .29) * this.drift.y * 20;
-    // fake blur: stacked offset copies
-    const blur = f * 18;
-    if (blur > .5) for (let k = 0; k < 8; k++) {
-      const a = k / 8 * Math.PI * 2;
-      drawIcon(g, this.prod, px + Math.cos(a) * blur, py + Math.sin(a) * blur, size, '#4f5d43', 0, .12);
+    const f = Math.abs(this.focus());
+    drawIcon(g, this.prod, cx, cy, size, '#4f5d43');
+    // autofocus box: closes in on the product and turns green when sharp
+    const sharp = f < .07, box = size * (1.15 + f * .9), bx0 = cx - box / 2, by0 = cy - box / 2, c = box * .18;
+    g.strokeStyle = sharp ? '#3f9a4a' : '#c0392b'; g.lineWidth = sharp ? 4 : 3;
+    for (const [x, y, dx, dy] of [[bx0, by0, 1, 1], [bx0 + box, by0, -1, 1], [bx0, by0 + box, 1, -1], [bx0 + box, by0 + box, -1, -1]]) {
+      g.beginPath(); g.moveTo(x, y + dy * c); g.lineTo(x, y); g.lineTo(x + dx * c, y); g.stroke();
     }
-    drawIcon(g, this.prod, px, py, size, '#4f5d43', 0, 1 - f * .75);
     // focus ring indicator
     const bw = Math.min(w * .7, 320), bx = cx - bw / 2, by = h * .82;
     g.fillStyle = 'rgba(46,27,22,.12)'; g.fillRect(bx, by, bw, 8);
     g.fillStyle = '#7d8f6c'; g.fillRect(cx - bw * .04, by - 4, bw * .08, 16);
     g.fillStyle = '#2e1b16'; g.beginPath(); g.arc(cx + this.focus() * bw / 2, by + 4, 9, 0, 7); g.fill();
     g.fillStyle = 'rgba(46,27,22,.6)'; g.font = '13px "Instrument Sans", system-ui'; g.textAlign = 'center';
-    g.fillText('ketuk saat titik di tengah', cx, by + 36);
+    g.fillText('ketuk saat kotak hijau', cx, by + 36);
     if (this.flash > 0) { g.fillStyle = `rgba(255,255,255,${this.flash * .85})`; g.fillRect(0, 0, w, h); }
   },
 
