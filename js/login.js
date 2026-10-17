@@ -32,7 +32,8 @@ function render() {
         <div class="gkal" id="gkal" aria-hidden="true"><p id="gkalTxt"></p><small id="gkalDate"></small></div>
       </div>
       <div>
-        <h1><span id="gateGreet">Selamat datang</span>,<br><em>senang melihatmu lagi</em></h1>
+        <p class="hello-tag" id="helloTag" aria-hidden="true"></p>
+        <h1 class="hello" id="hello" aria-live="polite"><span class="h1l" id="gateGreet">Selamat datang</span><br><em class="h2l" id="helloSub">senang melihatmu lagi</em></h1>
         <p class="muted">Masuk untuk melanjutkan ke Swassana.</p>
       </div>
       <form id="gateForm" novalidate>
@@ -51,6 +52,7 @@ function render() {
     </div>`;
   document.body.appendChild(gate);
   startClock(gate);
+  startHello(gate);
   makeLogo(gate.querySelector('.logo'));
   const form = gate.querySelector('#gateForm'), err = gate.querySelector('#gateErr'), btn = gate.querySelector('#gateBtn');
   const pw = gate.querySelector('#gatePw');
@@ -84,7 +86,7 @@ function render() {
 const SAT = ['', 'satu', 'dua', 'tiga', 'empat', 'lima', 'enam', 'tujuh', 'delapan', 'sembilan', 'sepuluh', 'sebelas'];
 const words = (n) => n < 12 ? SAT[n] : n < 20 ? `${n === 12 ? 'dua' : SAT[n - 10]} belas` : `${SAT[Math.floor(n / 10)]} puluh${n % 10 ? ' ' + SAT[n % 10] : ''}`;
 function startClock(gate) {
-  const pol = gate.querySelector('#gpol'), ph = gate.querySelector('#clk'), dateEl = gate.querySelector('#gateDate'), greetEl = gate.querySelector('#gateGreet');
+  const pol = gate.querySelector('#gpol'), ph = gate.querySelector('#clk'), dateEl = gate.querySelector('#gateDate');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const fmtDate = new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'long' });
   const pad = (n) => String(n).padStart(2, '0');
@@ -101,7 +103,6 @@ function startClock(gate) {
       ph.textContent = str;
       ph.setAttribute('aria-label', `Pukul ${pad(h)}.${pad(m)}`);
       dateEl.textContent = fmtDate.format(now);
-      greetEl.textContent = h < 11 ? 'Selamat pagi' : h < 15 ? 'Selamat siang' : h < 18 ? 'Selamat sore' : 'Selamat malam';
       // Kalimat: the time in Indonesian words, numbers highlighted, words rise in one by one
       const h12 = h % 12 || 12, part = h < 11 ? 'pagi' : h < 15 ? 'siang' : h < 18 ? 'sore' : 'malam';
       const hw = words(h12).split(' '), mw = m ? words(m).split(' ') : [];
@@ -126,6 +127,60 @@ function startClock(gate) {
   tick();
   // a tap on the polaroid "shakes" it, like waving a fresh print
   pol.addEventListener('click', () => { if (!reduce) restart('shake'); try { navigator.vibrate && navigator.vibrate(10); } catch (e) {} });
+}
+
+// Greeting in six languages, rotating every 7 seconds and matching the time of day.
+// Every third turn shows a "kamus" word from one of those languages with its meaning in Indonesian.
+const HELLO = [
+  { tag: '🇮🇩 Indonesia', p: ['Selamat pagi', 'Selamat siang', 'Selamat sore', 'Selamat malam'], sub: 'senang melihatmu lagi' },
+  { tag: '🇳🇱 Nederlands', p: ['Goedemorgen', 'Goedemiddag', 'Goedemiddag', 'Goedenavond'], sub: 'fijn je weer te zien' },
+  { tag: '🇬🇧 English', p: ['Good morning', 'Good afternoon', 'Good afternoon', 'Good evening'], sub: 'good to see you again' },
+  { tag: '🇩🇪 Deutsch', p: ['Guten Morgen', 'Guten Tag', 'Guten Tag', 'Guten Abend'], sub: 'schön, dich wiederzusehen' },
+  { tag: '🇫🇷 Français', p: ['Bonjour', 'Bonjour', 'Bon après-midi', 'Bonsoir'], sub: 'ravi de te revoir' },
+  { tag: '🇸🇪 Svenska', p: ['God morgon', 'God dag', 'God eftermiddag', 'God kväll'], sub: 'kul att se dig igen' },
+];
+const KAMUS = [
+  ['🇸🇪 Svenska', 'fika', 'rehat ngopi dan ngobrol santai, biasanya dengan kue'],
+  ['🇸🇪 Svenska', 'lagom', 'tidak kurang, tidak lebih; pas'],
+  ['🇸🇪 Svenska', 'mångata', 'jalur cahaya bulan yang memantul di air'],
+  ['🇳🇱 Nederlands', 'gezellig', 'suasana hangat, nyaman, dan akrab'],
+  ['🇳🇱 Nederlands', 'uitwaaien', 'jalan di tengah angin untuk menjernihkan pikiran'],
+  ['🇳🇱 Nederlands', 'kiekje', 'foto jepretan santai yang spontan'],
+  ['🇩🇪 Deutsch', 'Gemütlichkeit', 'rasa nyaman, hangat, dan diterima'],
+  ['🇩🇪 Deutsch', 'Fernweh', 'rindu pada tempat yang belum pernah dikunjungi'],
+  ['🇩🇪 Deutsch', 'Augenblick', 'sekejap mata; momen singkat yang berharga'],
+  ['🇫🇷 Français', 'joie de vivre', 'kegembiraan menikmati hidup'],
+  ['🇫🇷 Français', 'flâneur', 'orang yang berjalan santai menikmati kota'],
+  ['🇫🇷 Français', 'dépaysement', 'rasa asing yang menyegarkan di tempat baru'],
+  ['🇬🇧 English', 'serendipity', 'menemukan hal baik secara kebetulan'],
+  ['🇬🇧 English', 'golden hour', 'cahaya hangat setelah matahari terbit dan sebelum terbenam'],
+  ['🇬🇧 English', 'wanderlust', 'keinginan kuat untuk menjelajah dunia'],
+];
+function startHello(gate) {
+  const tagEl = gate.querySelector('#helloTag'), h1 = gate.querySelector('#hello'), l1 = gate.querySelector('#gateGreet'), l2 = gate.querySelector('#helloSub');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let turn = 0, li = 0, lastWord = -1;
+  const period = () => { const h = new Date().getHours(); return h < 11 ? 0 : h < 15 ? 1 : h < 18 ? 2 : 3; };
+  const show = () => {
+    if (!gate.isConnected) return;
+    const dict = turn > 0 && turn % 3 === 2;
+    if (dict) {
+      let k; do { k = Math.floor(Math.random() * KAMUS.length); } while (k === lastWord && KAMUS.length > 1);
+      lastWord = k;
+      const [tag, word, mean] = KAMUS[k];
+      tagEl.textContent = `Kamus · ${tag}`; l1.textContent = word; l2.textContent = mean;
+      h1.lang = { '🇸🇪 Svenska': 'sv', '🇳🇱 Nederlands': 'nl', '🇩🇪 Deutsch': 'de', '🇫🇷 Français': 'fr', '🇬🇧 English': 'en' }[tag];
+    } else {
+      const g = HELLO[li % HELLO.length]; li++;
+      tagEl.textContent = g.tag; l1.textContent = g.p[period()] + ','; l2.textContent = g.sub;
+      h1.lang = ['id', 'nl', 'en', 'de', 'fr', 'sv'][(li - 1) % HELLO.length];
+    }
+    h1.classList.toggle('dict', dict);
+    if (!reduce) { [tagEl, h1].forEach((el) => { el.classList.remove('swap'); void el.offsetWidth; el.classList.add('swap'); }); }
+    turn++;
+  };
+  show();
+  setInterval(show, 7000);
 }
 
 export function logout() {
