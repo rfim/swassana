@@ -137,7 +137,7 @@ const HELLO = [
   { tag: 'Jawa', lang: 'jv', hi: 'Sugeng rawuh', sub: 'monggo pinarak' },
   { tag: 'Nederlands', lang: 'nl', hi: 'Hoi', sub: 'fijn je weer te zien' },
   { tag: 'Sunda', lang: 'su', hi: 'Wilujeng sumping', sub: 'kumaha damang?' },
-  { tag: 'English', lang: 'en', hi: 'Hello there', sub: 'good to see you again' },
+  { tag: 'British', lang: 'en', hi: 'Hello there', sub: 'lovely to see you again' },
   { tag: 'Bali', lang: 'ban', hi: 'Om Swastyastu', sub: 'rahajeng rauh' },
   { tag: 'Deutsch', lang: 'de', hi: 'Hallo', sub: 'schön, dich wiederzusehen' },
   { tag: 'Madura', lang: 'mad', hi: 'Salamet dhâteng', sub: 'ponapa kabhârrâ?' },
@@ -173,9 +173,9 @@ const KAMUS = [
   ['Français', 'fr', 'joie de vivre', 'kegembiraan menikmati hidup'],
   ['Français', 'fr', 'flâneur', 'orang yang berjalan santai menikmati kota'],
   ['Français', 'fr', 'dépaysement', 'rasa asing yang menyegarkan di tempat baru'],
-  ['English', 'en', 'serendipity', 'menemukan hal baik secara kebetulan'],
-  ['English', 'en', 'golden hour', 'cahaya hangat saat matahari terbit dan terbenam'],
-  ['English', 'en', 'wanderlust', 'keinginan kuat untuk menjelajah dunia'],
+  ['British', 'en', 'serendipity', 'menemukan hal baik secara kebetulan'],
+  ['British', 'en', 'golden hour', 'cahaya hangat saat matahari terbit dan terbenam'],
+  ['British', 'en', 'wanderlust', 'keinginan kuat untuk menjelajah dunia'],
   ['日本語 · Nihongo', 'ja', 'komorebi 木漏れ日', 'sinar matahari yang menembus dedaunan'],
   ['日本語 · Nihongo', 'ja', 'ichigo ichie 一期一会', 'tiap pertemuan hanya sekali; hargai momennya'],
   ['日本語 · Nihongo', 'ja', 'wabi-sabi 侘寂', 'indah dalam kesederhanaan dan ketidaksempurnaan'],
@@ -186,15 +186,17 @@ function startHello(gate) {
   let turn = 0, li = 0, lastWord = -1;
   const show = () => {
     if (!gate.isConnected) return;
-    const dict = turn > 0 && turn % 3 === 2;
+    const dict = turn === 0 || turn % 3 === 2;
     if (dict) {
-      let k; do { k = Math.floor(Math.random() * KAMUS.length); } while (k === lastWord && KAMUS.length > 1);
+      let k;
+      if (turn === 0) k = KAMUS.findIndex(([, , w]) => w === 'fika'); // fika always opens the rotation
+      else do { k = Math.floor(Math.random() * KAMUS.length); } while (k === lastWord && KAMUS.length > 1);
       lastWord = k;
       const [tag, lang, word, mean] = KAMUS[k];
-      tagEl.innerHTML = `${crest(lang)}Kamus · ${tag}`; l1.textContent = word; l2.textContent = mean; h1.lang = lang;
+      tagEl.innerHTML = `${crest(lang)}Kamus · ${tag}`; l1.textContent = word; l2.textContent = mean; h1.lang = lang === 'en' ? 'en-GB' : lang;
     } else {
       const g = HELLO[li % HELLO.length]; li++;
-      tagEl.innerHTML = `${crest(g.lang)}${g.tag}`; l1.textContent = g.hi + ','; l2.textContent = g.sub; h1.lang = g.lang;
+      tagEl.innerHTML = `${crest(g.lang)}${g.tag}`; l1.textContent = g.hi + ','; l2.textContent = g.sub; h1.lang = g.lang === 'en' ? 'en-GB' : g.lang;
     }
     h1.classList.toggle('dict', dict);
     if (!reduce) { [tagEl, h1].forEach((el) => { el.classList.remove('swap'); void el.offsetWidth; el.classList.add('swap'); }); }
