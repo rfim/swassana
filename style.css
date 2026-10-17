@@ -147,24 +147,24 @@ h1 em { font-style: italic; color: var(--accent); font-weight: 300; }
 
 /* Marquee */
 .marquee { margin-top: clamp(40px, 6vw, 72px); border-block: 1px solid var(--line); overflow: hidden; padding: 10px 0; }
-.marquee-track { display: flex; gap: 32px; padding-right: 32px; width: max-content; animation: marquee 40s linear infinite; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
-.marquee:hover .marquee-track, .marquee:focus-within .marquee-track { animation-play-state: paused; }
+.marquee-track { display: flex; gap: 32px; padding-right: 32px; width: max-content; animation: marquee 24s linear infinite; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+@media (hover: hover) { .marquee:hover .marquee-track { animation-play-state: paused; } }
 @keyframes marquee { to { transform: translateX(-50%); } }
 .mq-item { display: inline-flex; align-items: center; gap: 8px; color: inherit; text-decoration: none; padding: 4px 2px; transition: color .2s; }
 .mq-item:hover, .mq-item:focus-visible { color: var(--accent); }
 .mq-item:hover .mq-ic { animation-duration: .8s; }
-.mq-ic { flex: none; width: 15px; height: 15px; color: var(--a400); overflow: visible; }
+.mq-ic { flex: none; width: 18px; height: 18px; color: var(--a400); overflow: visible; }
 /* Each icon gets its own little loop, staggered so they never move in sync */
 .mq-bob    { animation: mq-bob 2.4s ease-in-out infinite; }
-.mq-beat   { animation: mq-beat 1.6s ease-in-out infinite; transform-origin: 50% 60%; }
+.mq-beat   { animation: mq-beat 1.4s ease-in-out infinite; transform-origin: 50% 60%; }
 .mq-wiggle { animation: mq-wiggle 2.8s ease-in-out infinite .3s; transform-origin: 50% 90%; }
 .mq-toss   { animation: mq-toss 3.2s cubic-bezier(.3,.7,.3,1) infinite .6s; }
 .mq-swing  { animation: mq-swing 2.6s ease-in-out infinite .2s; transform-origin: 50% 5%; }
 .mq-shout  { animation: mq-shout 2s ease-in-out infinite .4s; transform-origin: 20% 50%; }
-@keyframes mq-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-2px); } }
+@keyframes mq-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
 @keyframes mq-beat { 0%, 60%, 100% { transform: scale(1); } 15% { transform: scale(1.2); } 30% { transform: scale(.95); } 45% { transform: scale(1.1); } }
 @keyframes mq-wiggle { 0%, 70%, 100% { transform: rotate(0); } 76% { transform: rotate(-10deg); } 84% { transform: rotate(8deg); } 92% { transform: rotate(-4deg); } }
-@keyframes mq-toss { 0%, 55%, 100% { transform: translateY(0) rotate(0); } 70% { transform: translateY(-5px) rotate(-200deg); } 85% { transform: translateY(-2px) rotate(-360deg); } 90% { transform: translateY(0) rotate(-360deg); } }
+@keyframes mq-toss { 0%, 55%, 100% { transform: translateY(0) rotate(0); } 70% { transform: translateY(-10px) rotate(-200deg); } 85% { transform: translateY(-2px) rotate(-360deg); } 90% { transform: translateY(0) rotate(-360deg); } }
 @keyframes mq-swing { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(9deg); } 75% { transform: rotate(-9deg); } }
 @keyframes mq-shout { 0%, 50%, 100% { transform: scale(1) rotate(0); } 10% { transform: scale(1.15) rotate(-8deg); } 20% { transform: scale(1.05) rotate(4deg); } 30% { transform: scale(1.12) rotate(-6deg); } }
 @media (prefers-reduced-motion: reduce) { .marquee-track, .mq-ic { animation: none !important; } }
