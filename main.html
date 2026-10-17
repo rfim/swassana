@@ -72,6 +72,14 @@
     .gcard small { color: var(--muted); font-size: 13.5px; line-height: 1.4; display: block; margin-top: 2px; }
     .gcard .tag { display: inline-block; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-bottom: 2px; }
   </style>
+  <script>
+    // Phone/app layout starts behind the login screen (see js/login.js).
+    (function () {
+      var app = matchMedia('(display-mode: standalone), (hover: none) and (pointer: coarse)').matches, ok = false;
+      try { ok = localStorage.getItem('sw-auth') === 'b58f51929f7fe337cebc3a7fc162673d510b757fdfc439d7aed4947f7561fc90'; } catch (e) {}
+      if (app && !ok) document.documentElement.classList.add('locked');
+    })();
+  </script>
 </head>
 <body class="mini">
   <canvas id="game" aria-label="Area permainan"></canvas>
@@ -163,5 +171,6 @@
       run(game);
     }
   </script>
+  <script type="module" src="js/login.js"></script>
 </body>
 </html>

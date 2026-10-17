@@ -43,6 +43,14 @@
     .result-img { max-width: min(88vw, 380px); max-height: calc(100dvh - 260px); border-radius: 6px; box-shadow: 0 40px 80px -30px rgba(46, 27, 22, .7); }
     .hint { font-size: 12.5px; color: var(--muted); margin-top: 10px; min-height: 1.3em; }
   </style>
+  <script>
+    // Phone/app layout starts behind the login screen (see js/login.js).
+    (function () {
+      var app = matchMedia('(display-mode: standalone), (hover: none) and (pointer: coarse)').matches, ok = false;
+      try { ok = localStorage.getItem('sw-auth') === 'b58f51929f7fe337cebc3a7fc162673d510b757fdfc439d7aed4947f7561fc90'; } catch (e) {}
+      if (app && !ok) document.documentElement.classList.add('locked');
+    })();
+  </script>
 </head>
 <body class="game">
   <canvas class="fx" id="fx" aria-hidden="true"></canvas>
@@ -323,5 +331,6 @@
       try { await openCamera(); enterBooth(); } catch (e) { show('intro'); }
     });
   </script>
+  <script type="module" src="js/login.js"></script>
 </body>
 </html>
