@@ -279,7 +279,53 @@ function startHello(gate) {
     }, outMs);
   };
   show();
-  setInterval(show, 30000);
+  let timer = setInterval(show, 30000), busyUntil = 0;
+  // double tap (or double click) on the quote: next quote now, and the 30 s count starts again
+  const skip = () => {
+    if (Date.now() < busyUntil) return;
+    busyUntil = Date.now() + 900;
+    clearInterval(timer); show(); timer = setInterval(show, 30000);
+    try { navigator.vibrate && navigator.vibrate(8); } catch (e) {}
+  };
+  const quote = gate.querySelector('.gate-hello');
+  let lastTap = 0;
+  quote.addEventListener('pointerup', (e) => {
+    if (e.pointerType === 'mouse') return; // mouse uses dblclick
+    const t = Date.now();
+    if (t - lastTap < 320) { lastTap = 0; skip(); } else lastTap = t;
+  });
+  quote.addEventListener('dblclick', (e) => { e.preventDefault(); skip(); });
+  startIdleHint(gate, reduce);
+}
+
+// After every 5 minutes without a touch or key press, a cheeky hint points at the game banner for 3 seconds.
+const HINTS = [
+  'Lima menit bengong? Jempolmu kangen main. Coba game di atas ☝',
+  'Psst… kamera juga butuh pemanasan. Main dulu di atas ☝',
+  'Daripada nunggu, adu cepat sama pasanganmu di Love Sync ☝',
+  'Nggak ada yang lihat kok. Satu ronde aja ☝',
+  'Pose terbaik muncul setelah ketawa. Main dulu ☝',
+];
+function startIdleHint(gate, reduce) {
+  const IDLE = 5 * 60 * 1000, SHOW = 3000;
+  const mq = gate.querySelector('.gate-mq');
+  if (!mq) return;
+  const hint = document.createElement('div');
+  hint.className = 'gate-hint'; hint.setAttribute('role', 'status');
+  gate.appendChild(hint);
+  let t, h = 0, hideT;
+  const arm = () => { clearTimeout(t); t = setTimeout(fire, IDLE); };
+  const fire = () => {
+    if (!gate.isConnected) return;
+    hint.textContent = HINTS[h++ % HINTS.length];
+    hint.style.top = `${mq.getBoundingClientRect().bottom + 10}px`;
+    hint.classList.remove('on'); void hint.offsetWidth; hint.classList.add('on');
+    if (!reduce) { mq.classList.remove('nudge'); void mq.offsetWidth; mq.classList.add('nudge'); }
+    clearTimeout(hideT); hideT = setTimeout(() => hint.classList.remove('on'), SHOW);
+    arm(); // and again after the next 5 idle minutes
+  };
+  ['pointerdown', 'keydown', 'input'].forEach((ev) => gate.addEventListener(ev, () => { hint.classList.remove('on'); arm(); }, { passive: true }));
+  arm();
 }
 
 export function logout() {
