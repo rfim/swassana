@@ -25,8 +25,10 @@ function render() {
     <div class="gate-inner">
       <button class="logo" type="button" aria-label="Swassana"></button>
       <div class="gate-clock" aria-live="off">
-        <div class="clk" id="clk" role="timer"></div>
-        <p class="gate-date" id="gateDate"></p>
+        <div class="gpol" id="gpol">
+          <div class="gpol-ph" id="clk" role="timer"></div>
+          <p class="gpol-cap" id="gateDate"></p>
+        </div>
       </div>
       <div>
         <h1><span id="gateGreet">Selamat datang</span>,<br><em>senang melihatmu lagi</em></h1>
@@ -76,28 +78,35 @@ function render() {
   });
 }
 
-// Lock-screen style clock: each digit rolls to its new value; colon blinks softly.
+// Polaroid clock: every minute a fresh polaroid drops in and slowly "develops" the new time.
 function startClock(gate) {
-  const clk = gate.querySelector('#clk'), dateEl = gate.querySelector('#gateDate'), greetEl = gate.querySelector('#gateGreet');
-  const digit = () => `<span class="dg"><span class="dg-track">${[...Array(10).keys()].map((n) => `<b>${n}</b>`).join('')}</span></span>`;
-  clk.innerHTML = digit() + digit() + '<span class="colon">:</span>' + digit() + digit();
-  const tracks = [...clk.querySelectorAll('.dg-track')];
+  const pol = gate.querySelector('#gpol'), ph = gate.querySelector('#clk'), dateEl = gate.querySelector('#gateDate'), greetEl = gate.querySelector('#gateGreet');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const fmtDate = new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'long' });
+  const pad = (n) => String(n).padStart(2, '0');
+  const restart = (cls) => { pol.classList.remove(cls); void pol.offsetWidth; pol.classList.add(cls); };
   let last = '';
   const tick = () => {
     if (!gate.isConnected) return;
     const now = new Date(), h = now.getHours(), m = now.getMinutes();
-    const str = String(h).padStart(2, '0') + String(m).padStart(2, '0');
+    const str = pad(h) + ':' + pad(m);
     if (str !== last) {
-      [...str].forEach((d, i) => { tracks[i].style.transform = `translateY(${-d * 10}%)`; });
-      clk.setAttribute('aria-label', `Pukul ${str.slice(0, 2)}.${str.slice(2)}`);
+      // tint follows the time of day: dawn gold, day sky, late-afternoon peach, night dusk
+      const tint = h < 6 || h >= 19 ? ['#6b5a7e', '#3a2a3e'] : h < 10 ? ['#f3d6a1', '#f4b79a'] : h < 15 ? ['#bfd5ef', '#f2b6c3'] : ['#f4b79a', '#e46f6f'];
+      pol.style.setProperty('--p1', tint[0]); pol.style.setProperty('--p2', tint[1]);
+      ph.textContent = str;
+      ph.setAttribute('aria-label', `Pukul ${pad(h)}.${pad(m)}`);
       dateEl.textContent = fmtDate.format(now);
       greetEl.textContent = h < 11 ? 'Selamat pagi' : h < 15 ? 'Selamat siang' : h < 18 ? 'Selamat sore' : 'Selamat malam';
+      if (last && !reduce) { restart('drop'); restart('dev'); }
+      else if (!reduce) restart('dev');
       last = str;
     }
     setTimeout(tick, 1000 - now.getMilliseconds());
   };
   tick();
+  // a tap on the polaroid "shakes" it, like waving a fresh print
+  pol.addEventListener('click', () => { if (!reduce) restart('shake'); try { navigator.vibrate && navigator.vibrate(10); } catch (e) {} });
 }
 
 export function logout() {
