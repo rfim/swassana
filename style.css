@@ -1033,3 +1033,14 @@ html.intro-bye body > *:not(.intro) { animation: intro-bye .75s cubic-bezier(.7,
 .ps-out.ask svg { animation: out-nudge .9s ease-in-out infinite; }
 @keyframes out-nudge { 50% { transform: translateX(3px); } }
 @media (prefers-reduced-motion: reduce) { .ps-out.ask svg { animation: none; } }
+
+/* Kalimat seconds line: the seconds in words, one swap per second */
+.gkal .gkal-sec { position: relative; height: 1.3em; margin: 10px 0 0; perspective: 240px; overflow: hidden; font: italic 500 clamp(17px, 5vw, 21px)/1.3 var(--display); letter-spacing: -.01em; color: var(--muted); }
+.gkal-sec span { position: absolute; left: 0; top: 0; white-space: nowrap; }
+.gkal-sec .come { animation: sec-in .45s cubic-bezier(.2, .8, .2, 1) .12s both; }
+.gkal-sec .go { animation: sec-out .3s cubic-bezier(.6, 0, .8, .4) both; }
+@keyframes sec-in { from { transform: translateY(100%) rotateX(-70deg); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes sec-out { to { transform: translateY(-100%) rotateX(70deg); opacity: 0; } }
+@media (max-height: 700px) { .gkal .gkal-sec { margin-top: 6px; font-size: 16px; } }
+/* Polaroid seconds counter */
+.gpol-ph::before { content: attr(data-s); position: absolute; z-index: 1; right: 9px; bottom: 7px; font: 600 12px/1 var(--sans); letter-spacing: .04em; color: rgba(255, 255, 255, .78); font-variant-numeric: tabular-nums; }

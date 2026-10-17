@@ -31,7 +31,7 @@ function render() {
           <div class="gpol-ph" id="clk" role="timer"></div>
           <p class="gpol-cap" id="gateDate"></p>
         </div>
-        <div class="gkal" id="gkal" aria-hidden="true"><p id="gkalTxt"></p><small id="gkalDate"></small></div>
+        <div class="gkal" id="gkal" aria-hidden="true"><p id="gkalTxt"></p><p class="gkal-sec" id="gkalSec" aria-hidden="true"></p><small id="gkalDate"></small></div>
       </div>
       <div>
         <p class="hello-tag" id="helloTag" aria-hidden="true"></p>
@@ -123,6 +123,22 @@ function startClock(gate) {
         else { const t = gate.querySelector('#gkalTxt'); t.classList.remove('rise'); void t.offsetWidth; t.classList.add('rise'); }
       }
       last = str;
+    }
+    // seconds, every tick: in words under the Kalimat sentence (old word lifts out, new one rises in),
+    // and as a small counter on the Polaroid
+    const sec = now.getSeconds();
+    const sw = `${sec ? words(sec) : 'nol'} detik`;
+    ph.dataset.s = pad(sec);
+    const sBox = gate.querySelector('#gkalSec'), cur = sBox.lastElementChild;
+    if (!cur || cur.textContent !== sw) {
+      const el = document.createElement('span');
+      el.textContent = sw;
+      if (cur && !reduce) {
+        cur.className = 'go';
+        setTimeout(() => cur.remove(), 450);
+        el.className = 'come';
+      } else sBox.textContent = '';
+      sBox.appendChild(el);
     }
     setTimeout(tick, 1000 - now.getMilliseconds());
   };
