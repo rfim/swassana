@@ -542,3 +542,37 @@ button.ig-btn { font: inherit; color: inherit; cursor: pointer; text-align: left
   .gate form { gap: 8px; }
   .gate label { gap: 4px; }
 }
+
+/* ===== Glass icons on the home screen (layered light, no blur) ===== */
+.sa-ic { position: relative; overflow: hidden; isolation: isolate;
+  background:
+    linear-gradient(160deg, rgba(255, 255, 255, .26) 0%, rgba(255, 255, 255, .07) 40%, rgba(255, 255, 255, 0) 62%),
+    color-mix(in srgb, var(--c, #8a5a42) 46%, rgba(255, 240, 228, .05));
+  border: 1px solid rgba(255, 236, 220, .34);
+  box-shadow:
+    inset 0 1.5px 1px rgba(255, 255, 255, .55),
+    inset 0 -12px 20px -10px color-mix(in srgb, var(--c, #8a5a42) 85%, transparent),
+    inset 0 0 0 1px rgba(255, 255, 255, .05),
+    0 14px 26px -16px rgba(0, 0, 0, .95),
+    0 6px 24px -10px color-mix(in srgb, var(--c, #8a5a42) 70%, transparent);
+  transition: transform .25s cubic-bezier(.34, 1.56, .64, 1), box-shadow .25s; }
+/* glossy reflection across the top */
+.sa-ic::before { content: ""; position: absolute; left: 7%; right: 7%; top: 3%; height: 48%; z-index: 0; pointer-events: none;
+  border-radius: 45% 45% 50% 50% / 70% 70% 30% 30%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .42), rgba(255, 255, 255, .04)); transition: transform .35s ease; }
+/* soft rim light at the bottom + a light sweep on tap */
+.sa-ic::after { content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(60% 22% at 50% 96%, rgba(255, 238, 222, .45), transparent 70%),
+    linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, .5) 48%, transparent 64%) no-repeat;
+  background-size: 100% 100%, 260% 100%; background-position: 0 0, 160% 0; }
+.sa-ic svg { position: relative; z-index: 1; filter: drop-shadow(0 2px 2.5px rgba(40, 20, 12, .45)); }
+.sa-ic svg path { fill: url(#sa-glyph); }
+a:active > .sa-ic, .sa-svc:active .sa-ic { transform: scale(.9); }
+a:active > .sa-ic::before, .sa-svc:active .sa-ic::before { transform: translateY(8%); }
+a:active > .sa-ic::after, .sa-svc:active .sa-ic::after, .sa-ic.shine::after { background-position: 0 0, -60% 0; transition: background-position .6s ease; }
+@media (prefers-reduced-motion: reduce) { .sa-ic, .sa-ic::before, .sa-ic::after { transition: none !important; } }
+/* banner illustrations get the same glassy glyph */
+.app-mode .sa-banner svg path { fill: url(#sa-glyph); }
+.app-mode .sa-banner svg { filter: drop-shadow(0 6px 10px rgba(30, 12, 8, .45)); opacity: .95; }
+.app-mode .nav { background: #2a1912; }

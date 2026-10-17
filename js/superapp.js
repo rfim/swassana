@@ -56,6 +56,10 @@ if (root) {
   const hour = new Date().getHours();
   const greet = hour < 11 ? 'Selamat pagi' : hour < 15 ? 'Selamat siang' : hour < 18 ? 'Selamat sore' : 'Selamat malam';
 
+  // Shared gradient for the glass icon glyphs (bright top, softer cream bottom)
+  if (!document.getElementById('sa-glyph')) {
+    document.body.insertAdjacentHTML('beforeend', '<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="sa-glyph" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fffaf5"/><stop offset=".55" stop-color="#fbe9d8"/><stop offset="1" stop-color="#e9c8aa" stop-opacity=".9"/></linearGradient></defs></svg>');
+  }
   root.innerHTML = `
     <div class="sa-top">
       <div class="sa-row">
