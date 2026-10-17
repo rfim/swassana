@@ -132,48 +132,48 @@ function startClock(gate) {
 // Greeting in ten languages (incl. Javanese, Sundanese, Balinese, Madurese), rotating every 7 seconds; time-neutral words.
 // Every third turn shows a "kamus" word from one of those languages with its meaning in Indonesian.
 const HELLO = [
-  { tag: '🇮🇩 Indonesia', lang: 'id', hi: 'Halo', sub: 'senang melihatmu lagi' },
-  { tag: '🇮🇩 Jawa', lang: 'jv', hi: 'Sugeng rawuh', sub: 'monggo pinarak' },
-  { tag: '🇳🇱 Nederlands', lang: 'nl', hi: 'Hoi', sub: 'fijn je weer te zien' },
-  { tag: '🇮🇩 Sunda', lang: 'su', hi: 'Wilujeng sumping', sub: 'kumaha damang?' },
-  { tag: '🇬🇧 English', lang: 'en', hi: 'Hello there', sub: 'good to see you again' },
-  { tag: '🇮🇩 Bali', lang: 'ban', hi: 'Om Swastyastu', sub: 'rahajeng rauh' },
-  { tag: '🇩🇪 Deutsch', lang: 'de', hi: 'Hallo', sub: 'schön, dich wiederzusehen' },
-  { tag: '🇮🇩 Madura', lang: 'mad', hi: 'Salamet dhâteng', sub: 'ponapa kabhârrâ?' },
-  { tag: '🇫🇷 Français', lang: 'fr', hi: 'Salut', sub: 'ravi de te revoir' },
-  { tag: '🇸🇪 Svenska', lang: 'sv', hi: 'Hej', sub: 'kul att se dig igen' },
+  { tag: 'Indonesia', lang: 'id', hi: 'Halo', sub: 'senang melihatmu lagi' },
+  { tag: 'Jawa', lang: 'jv', hi: 'Sugeng rawuh', sub: 'monggo pinarak' },
+  { tag: 'Nederlands', lang: 'nl', hi: 'Hoi', sub: 'fijn je weer te zien' },
+  { tag: 'Sunda', lang: 'su', hi: 'Wilujeng sumping', sub: 'kumaha damang?' },
+  { tag: 'English', lang: 'en', hi: 'Hello there', sub: 'good to see you again' },
+  { tag: 'Bali', lang: 'ban', hi: 'Om Swastyastu', sub: 'rahajeng rauh' },
+  { tag: 'Deutsch', lang: 'de', hi: 'Hallo', sub: 'schön, dich wiederzusehen' },
+  { tag: 'Madura', lang: 'mad', hi: 'Salamet dhâteng', sub: 'ponapa kabhârrâ?' },
+  { tag: 'Français', lang: 'fr', hi: 'Salut', sub: 'ravi de te revoir' },
+  { tag: 'Svenska', lang: 'sv', hi: 'Hej', sub: 'kul att se dig igen' },
 ];
 const KAMUS = [
-  ['🇮🇩 Indonesia', 'id', 'gemas', 'perasaan ingin mencubit sesuatu yang terlalu lucu'],
-  ['🇮🇩 Indonesia', 'id', 'jayus', 'lelucon yang garing, tapi tetap bikin senyum'],
-  ['🇮🇩 Indonesia', 'id', 'senja', 'saat langit memerah ketika matahari terbenam'],
-  ['🇮🇩 Jawa', 'jv', 'guyub', 'rukun dan hangat dalam kebersamaan'],
-  ['🇮🇩 Jawa', 'jv', 'sumringah', 'wajah berseri karena bahagia'],
-  ['🇮🇩 Jawa', 'jv', 'tepa selira', 'tenggang rasa; ikut merasakan perasaan orang lain'],
-  ['🇮🇩 Sunda', 'su', 'someah', 'ramah dan menyenangkan kepada tamu'],
-  ['🇮🇩 Sunda', 'su', 'ngabuburit', 'mengisi waktu sambil menunggu berbuka puasa'],
-  ['🇮🇩 Sunda', 'su', 'silih asih', 'saling mengasihi satu sama lain'],
-  ['🇮🇩 Bali', 'ban', 'suksma', 'terima kasih'],
-  ['🇮🇩 Bali', 'ban', 'ngayah', 'bekerja tulus bersama tanpa pamrih'],
-  ['🇮🇩 Bali', 'ban', 'tri hita karana', 'harmoni dengan Tuhan, sesama, dan alam'],
-  ['🇮🇩 Madura', 'mad', 'toron', 'pulang ke kampung halaman'],
-  ['🇮🇩 Madura', 'mad', 'abhântal ombâ', 'berbantal ombak; jiwa pelaut yang tangguh'],
-  ['🇮🇩 Madura', 'mad', 'bhuppa’ bhâbhu’ ghuru rato', 'hormati ayah, ibu, guru, lalu pemimpin'],
-  ['🇸🇪 Svenska', 'sv', 'fika', 'rehat ngopi dan ngobrol santai, biasanya dengan kue'],
-  ['🇸🇪 Svenska', 'sv', 'lagom', 'tidak kurang, tidak lebih; pas'],
-  ['🇸🇪 Svenska', 'sv', 'mångata', 'jalur cahaya bulan yang memantul di air'],
-  ['🇳🇱 Nederlands', 'nl', 'gezellig', 'suasana hangat, nyaman, dan akrab'],
-  ['🇳🇱 Nederlands', 'nl', 'uitwaaien', 'jalan di tengah angin untuk menjernihkan pikiran'],
-  ['🇳🇱 Nederlands', 'nl', 'kiekje', 'foto jepretan santai yang spontan'],
-  ['🇩🇪 Deutsch', 'de', 'Gemütlichkeit', 'rasa nyaman, hangat, dan diterima'],
-  ['🇩🇪 Deutsch', 'de', 'Fernweh', 'rindu pada tempat yang belum pernah dikunjungi'],
-  ['🇩🇪 Deutsch', 'de', 'Augenblick', 'sekejap mata; momen singkat yang berharga'],
-  ['🇫🇷 Français', 'fr', 'joie de vivre', 'kegembiraan menikmati hidup'],
-  ['🇫🇷 Français', 'fr', 'flâneur', 'orang yang berjalan santai menikmati kota'],
-  ['🇫🇷 Français', 'fr', 'dépaysement', 'rasa asing yang menyegarkan di tempat baru'],
-  ['🇬🇧 English', 'en', 'serendipity', 'menemukan hal baik secara kebetulan'],
-  ['🇬🇧 English', 'en', 'golden hour', 'cahaya hangat setelah matahari terbit dan sebelum terbenam'],
-  ['🇬🇧 English', 'en', 'wanderlust', 'keinginan kuat untuk menjelajah dunia'],
+  ['Indonesia', 'id', 'gemas', 'perasaan ingin mencubit sesuatu yang terlalu lucu'],
+  ['Indonesia', 'id', 'jayus', 'lelucon yang garing, tapi tetap bikin senyum'],
+  ['Indonesia', 'id', 'senja', 'saat langit memerah ketika matahari terbenam'],
+  ['Jawa', 'jv', 'guyub', 'rukun dan hangat dalam kebersamaan'],
+  ['Jawa', 'jv', 'sumringah', 'wajah berseri karena bahagia'],
+  ['Jawa', 'jv', 'tepa selira', 'tenggang rasa; ikut merasakan perasaan orang lain'],
+  ['Sunda', 'su', 'someah', 'ramah dan menyenangkan kepada tamu'],
+  ['Sunda', 'su', 'ngabuburit', 'mengisi waktu sambil menunggu berbuka puasa'],
+  ['Sunda', 'su', 'silih asih', 'saling mengasihi satu sama lain'],
+  ['Bali', 'ban', 'suksma', 'terima kasih'],
+  ['Bali', 'ban', 'ngayah', 'bekerja tulus bersama tanpa pamrih'],
+  ['Bali', 'ban', 'tri hita karana', 'harmoni dengan Tuhan, sesama, dan alam'],
+  ['Madura', 'mad', 'toron', 'pulang ke kampung halaman'],
+  ['Madura', 'mad', 'abhântal ombâ', 'berbantal ombak; jiwa pelaut yang tangguh'],
+  ['Madura', 'mad', 'bhuppa’ bhâbhu’ ghuru rato', 'hormati ayah, ibu, guru, lalu pemimpin'],
+  ['Svenska', 'sv', 'fika', 'rehat ngopi dan ngobrol santai, biasanya dengan kue'],
+  ['Svenska', 'sv', 'lagom', 'tidak kurang, tidak lebih; pas'],
+  ['Svenska', 'sv', 'mångata', 'jalur cahaya bulan yang memantul di air'],
+  ['Nederlands', 'nl', 'gezellig', 'suasana hangat, nyaman, dan akrab'],
+  ['Nederlands', 'nl', 'uitwaaien', 'jalan di tengah angin untuk menjernihkan pikiran'],
+  ['Nederlands', 'nl', 'kiekje', 'foto jepretan santai yang spontan'],
+  ['Deutsch', 'de', 'Gemütlichkeit', 'rasa nyaman, hangat, dan diterima'],
+  ['Deutsch', 'de', 'Fernweh', 'rindu pada tempat yang belum pernah dikunjungi'],
+  ['Deutsch', 'de', 'Augenblick', 'sekejap mata; momen singkat yang berharga'],
+  ['Français', 'fr', 'joie de vivre', 'kegembiraan menikmati hidup'],
+  ['Français', 'fr', 'flâneur', 'orang yang berjalan santai menikmati kota'],
+  ['Français', 'fr', 'dépaysement', 'rasa asing yang menyegarkan di tempat baru'],
+  ['English', 'en', 'serendipity', 'menemukan hal baik secara kebetulan'],
+  ['English', 'en', 'golden hour', 'cahaya hangat setelah matahari terbit dan sebelum terbenam'],
+  ['English', 'en', 'wanderlust', 'keinginan kuat untuk menjelajah dunia'],
 ];
 function startHello(gate) {
   const tagEl = gate.querySelector('#helloTag'), h1 = gate.querySelector('#hello'), l1 = gate.querySelector('#gateGreet'), l2 = gate.querySelector('#helloSub');
@@ -186,10 +186,10 @@ function startHello(gate) {
       let k; do { k = Math.floor(Math.random() * KAMUS.length); } while (k === lastWord && KAMUS.length > 1);
       lastWord = k;
       const [tag, lang, word, mean] = KAMUS[k];
-      tagEl.textContent = `Kamus · ${tag}`; l1.textContent = word; l2.textContent = mean; h1.lang = lang;
+      tagEl.innerHTML = `<b class="lc">${lang.slice(0, 3).toUpperCase()}</b>Kamus · ${tag}`; l1.textContent = word; l2.textContent = mean; h1.lang = lang;
     } else {
       const g = HELLO[li % HELLO.length]; li++;
-      tagEl.textContent = g.tag; l1.textContent = g.hi + ','; l2.textContent = g.sub; h1.lang = g.lang;
+      tagEl.innerHTML = `<b class="lc">${g.lang.slice(0, 3).toUpperCase()}</b>${g.tag}`; l1.textContent = g.hi + ','; l2.textContent = g.sub; h1.lang = g.lang;
     }
     h1.classList.toggle('dict', dict);
     if (!reduce) { [tagEl, h1].forEach((el) => { el.classList.remove('swap'); void el.offsetWidth; el.classList.add('swap'); }); }
