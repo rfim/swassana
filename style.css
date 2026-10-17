@@ -1062,3 +1062,8 @@ html.intro-bye body > *:not(.intro) { animation: intro-bye .75s cubic-bezier(.7,
 @keyframes kal-leave { to { opacity: 0; transform: translateY(-.28em); letter-spacing: .02em; } }
 @keyframes kal-enter { 0% { opacity: 0; transform: translateY(.32em); letter-spacing: .06em; } 55% { opacity: 1; } 100% { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .gkal p span.leave, .gkal p span.enter { animation: none; } }
+
+/* No blue tap flash on Android: taps already have their own press animations.
+   Keyboard focus still shows a ring (:focus-visible). */
+html, * { -webkit-tap-highlight-color: transparent; }
+:focus:not(:focus-visible) { outline: none; }
