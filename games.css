@@ -24,3 +24,20 @@ body.game { overflow: hidden; overscroll-behavior: none; -webkit-tap-highlight-c
 .row-btns { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
 button.pill-outline { background: transparent; color: var(--text); }
 .app::before { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(ellipse 70% 42% at 50% 48%, color-mix(in srgb, var(--bg) 88%, transparent) 0%, color-mix(in srgb, var(--bg) 55%, transparent) 55%, transparent 80%); }
+
+/* PS5 rules on touch devices for the game pages: Swassana brown glass, cream focus ring, big cream primary button */
+@media (hover: none) and (pointer: coarse) {
+  :root:not(.x) {
+    --bg: #24150f; --surface: rgba(255, 236, 220, .08); --text: #f7ece2; --muted: rgba(247, 236, 226, .66);
+    --line: rgba(255, 226, 204, .16); --accent: #e9c19d; --on-accent: #24150f; --a100: rgba(233, 193, 157, .16);
+  }
+  html { background: #1f120d; }
+  body.game, body.mini { background: var(--glass-bg); color: var(--text); }
+  .glass, .panel, .gcard, .opt, .idea-card { background: rgba(255, 236, 220, .08); border-color: var(--line); }
+  .pill-solid, .panel .pill-solid, .big-btn.pill-solid { background: #fbeee2 !important; color: #24150f !important; }
+  :is(.pill, .opt, .gcard, .chip, .fchip, .seg button, .shutter, .icon-btn):is(:active, :focus-visible) { box-shadow: var(--ps-ring); outline: none; }
+  :is(.pill, .opt, .gcard):active { transform: scale(.96); }
+  .picker { background: var(--glass-bg); }
+  .picker h1 { font-weight: 300; }
+  .gcard { border-radius: 20px; }
+}

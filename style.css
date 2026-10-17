@@ -576,3 +576,122 @@ a:active > .sa-ic::after, .sa-svc:active .sa-ic::after, .sa-ic.shine::after { ba
 .app-mode .sa-banner svg path { fill: url(#sa-glyph); }
 .app-mode .sa-banner svg { filter: drop-shadow(0 6px 10px rgba(30, 12, 8, .45)); opacity: .95; }
 .app-mode .nav { background: #2a1912; }
+
+.app-back { display: none; }
+.app-mode .app-back { display: inline-grid; position: absolute; left: 16px; top: 50%; transform: translateY(-50%); text-decoration: none; transition: transform .2s; }
+.app-mode .app-back:active { transform: translateY(-50%) scale(.88); }
+/* Glass logo mark: caramel glass tile, glossy top, rim light, frosted "S" */
+.logo-mark { position: relative; overflow: hidden; isolation: isolate; width: 36px; height: 36px; color: transparent;
+  background:
+    linear-gradient(160deg, rgba(255, 255, 255, .34) 0%, rgba(255, 255, 255, .08) 42%, rgba(255, 255, 255, 0) 64%),
+    color-mix(in srgb, #c98a60 58%, rgba(255, 240, 228, .08));
+  border: 1px solid rgba(255, 236, 220, .45);
+  box-shadow: inset 0 1.5px 1px rgba(255, 255, 255, .65), inset 0 -10px 16px -8px rgba(150, 82, 44, .9),
+    0 10px 20px -10px rgba(0, 0, 0, .9), 0 4px 18px -6px rgba(201, 138, 96, .7); }
+.logo-mark::before { content: ""; position: absolute; left: 8%; right: 8%; top: 4%; height: 46%; z-index: 0; pointer-events: none;
+  border-radius: 50% 50% 45% 45% / 70% 70% 30% 30%; background: linear-gradient(180deg, rgba(255, 255, 255, .55), rgba(255, 255, 255, .05)); }
+.logo-mark::after { content: "S"; position: absolute; inset: 0; z-index: 1; display: grid; place-items: center; padding-bottom: 2px;
+  font: italic 500 22px/1 var(--display);
+  background: linear-gradient(180deg, #fffaf5 10%, #f6dcc4 60%, #e2b48e 100%); -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 1.5px 1.5px rgba(70, 35, 18, .55)); }
+.logo.pop .logo-mark::before { animation: gloss .8s ease; }
+@keyframes gloss { 0% { transform: translateY(0); } 40% { transform: translateY(14%); opacity: .6; } 100% { transform: none; } }
+
+/* ===================================================================
+   PS5 design rules (Swassana brown), whole app on touch devices
+   1. Focus = cream ring + soft glow + slight lift (on press / keyboard focus)
+   2. One big primary button (cream, dark text); secondary actions are round glass
+   3. Light, large titles over full-bleed art; small spaced eyebrow above
+   4. Rounded-square tiles and cards (radius 16-22), dark glass surfaces
+   5. Motion: 250-450ms ease-out, spring only for focus changes
+   =================================================================== */
+:root { --ps-ring: 0 0 0 2px #fbeee2, 0 0 0 5px rgba(251, 238, 226, .18), 0 0 26px 2px rgba(240, 201, 164, .35); --ps-ease: cubic-bezier(.2, .8, .2, 1); --ps-spring: cubic-bezier(.34, 1.56, .64, 1); }
+
+/* ---------- Home launcher ---------- */
+.app-mode .super { position: relative; min-height: calc(100dvh - 80px); padding: 0 0 20px; isolation: isolate; }
+.ps-art { position: absolute; left: 0; right: 0; top: -70px; height: 520px; z-index: -1; overflow: hidden; pointer-events: none;
+  -webkit-mask-image: linear-gradient(#000 45%, transparent 100%); mask-image: linear-gradient(#000 45%, transparent 100%); }
+.ps-bg { position: absolute; inset: 0; opacity: 0; transition: opacity .55s var(--ps-ease);
+  background: radial-gradient(80% 70% at 75% 30%, color-mix(in srgb, var(--c, #8a5a42) 70%, transparent), transparent 70%), linear-gradient(170deg, color-mix(in srgb, var(--c, #8a5a42) 45%, #1a0f0b), #1a0f0b 80%); }
+.ps-bg.show { opacity: 1; }
+.ps-bg img { width: 100%; height: 100%; object-fit: cover; opacity: .55; transform: scale(1.08); transition: transform 6s ease-out; }
+.ps-bg.show img { transform: scale(1); }
+.ps-bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(20, 11, 8, .55), rgba(20, 11, 8, .15) 35%, rgba(20, 11, 8, .7)); }
+.ps-glyph { position: absolute; right: -12%; top: 6%; width: 78%; aspect-ratio: 1; opacity: .16; transform: rotate(-8deg) scale(.96); transition: transform .9s var(--ps-ease); }
+.ps-bg.show .ps-glyph { transform: rotate(-8deg) scale(1); }
+.ps-glyph svg { width: 100%; height: 100%; color: #fbe9d8; }
+
+.ps-top { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px 6px; }
+.ps-cats { display: flex; gap: 22px; }
+.ps-cats button { border: 0; background: none; padding: 6px 0; font: 600 17px var(--sans); color: rgba(247, 236, 226, .5); cursor: pointer; position: relative; transition: color .25s; }
+.ps-cats button[aria-selected="true"] { color: var(--text); }
+.ps-cats button::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; border-radius: 2px; background: var(--text); transform: scaleX(0); transition: transform .35s var(--ps-spring); }
+.ps-cats button[aria-selected="true"]::after { transform: scaleX(1); }
+.ps-tools { display: flex; align-items: center; gap: 12px; }
+.ps-tool { width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--line); background: rgba(255, 236, 220, .08); color: var(--text); display: grid; place-items: center; cursor: pointer; padding: 0; transition: transform .2s var(--ps-spring); }
+.ps-tool svg { width: 18px; height: 18px; }
+.ps-tool:active { transform: scale(.88); }
+.ps-time { font: 500 16px var(--sans); letter-spacing: .02em; font-variant-numeric: tabular-nums; }
+.ps-search { padding: 4px 16px 6px; position: relative; }
+.ps-search .sa-results { top: calc(100% - 2px); }
+
+.ps-row { display: flex; justify-content: space-between; align-items: center; gap: 4px; padding: 14px 14px 10px; min-height: 92px; }
+.ps-row.swap .ps-tile { animation: tile-in .45s var(--ps-ease) both; }
+.ps-row.swap .ps-tile:nth-child(2) { animation-delay: .03s; } .ps-row.swap .ps-tile:nth-child(3) { animation-delay: .06s; } .ps-row.swap .ps-tile:nth-child(4) { animation-delay: .09s; }
+.ps-row.swap .ps-tile:nth-child(5) { animation-delay: .12s; } .ps-row.swap .ps-tile:nth-child(6) { animation-delay: .15s; } .ps-row.swap .ps-tile:nth-child(7) { animation-delay: .18s; }
+@keyframes tile-in { from { opacity: 0; transform: translateX(18px); } }
+.ps-tile { border: 0; background: none; padding: 0; cursor: pointer; flex: 0 1 auto; -webkit-tap-highlight-color: transparent; }
+.ps-tile .sa-ic { width: clamp(38px, 10.6vw, 46px); height: clamp(38px, 10.6vw, 46px); border-radius: 13px; transition: width .4s var(--ps-spring), height .4s var(--ps-spring), border-radius .4s, box-shadow .3s, transform .2s; }
+.ps-tile.on .sa-ic { width: clamp(56px, 16vw, 66px); height: clamp(56px, 16vw, 66px); border-radius: 18px; box-shadow: var(--ps-ring), inset 0 1.5px 1px rgba(255, 255, 255, .55), 0 14px 26px -12px rgba(0, 0, 0, .9); animation: ring-pulse 2.4s ease-in-out infinite; }
+@keyframes ring-pulse { 50% { box-shadow: 0 0 0 2px #fbeee2, 0 0 0 7px rgba(251, 238, 226, .1), 0 0 34px 4px rgba(240, 201, 164, .45), inset 0 1.5px 1px rgba(255, 255, 255, .55), 0 14px 26px -12px rgba(0, 0, 0, .9); } }
+.ps-tile:active .sa-ic { transform: scale(.92); }
+
+.ps-hero { padding: 26px 18px 6px; min-height: 270px; display: flex; flex-direction: column; justify-content: flex-end; touch-action: pan-y; }
+.ps-hero.swap > * { animation: hero-in .45s var(--ps-ease) both; }
+.ps-hero.swap > *:nth-child(2) { animation-delay: .04s; } .ps-hero.swap > *:nth-child(3) { animation-delay: .08s; } .ps-hero.swap > *:nth-child(4) { animation-delay: .12s; }
+@keyframes hero-in { from { opacity: 0; transform: translateX(16px); } }
+.ps-eyebrow { margin: 0; font: 600 12px var(--sans); letter-spacing: .18em; text-transform: uppercase; color: var(--accent); }
+.ps-title { margin: 8px 0 8px; font: 300 clamp(32px, 9.5vw, 42px)/1.05 var(--display); letter-spacing: -.02em; color: var(--text); }
+.ps-desc { margin: 0 0 20px; color: var(--muted); font-size: 15px; max-width: 34ch; }
+.ps-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.ps-btn { display: inline-flex; align-items: center; justify-content: center; min-height: 52px; min-width: 168px; padding: 0 28px; border-radius: 999px; background: #fbeee2; color: #24150f; font: 700 16px var(--sans); text-decoration: none;
+  box-shadow: 0 12px 26px -12px rgba(0, 0, 0, .8); transition: transform .2s var(--ps-spring), box-shadow .25s; }
+.ps-btn:active { transform: scale(.95); box-shadow: var(--ps-ring); }
+.ps-city { display: inline-flex; align-items: center; gap: 8px; min-height: 52px; padding: 0 18px; border-radius: 999px; border: 1px solid var(--line); background: rgba(255, 236, 220, .1); color: var(--text); font: 600 14px var(--sans); cursor: pointer; transition: transform .2s var(--ps-spring); }
+.ps-city svg { width: 16px; height: 16px; }
+.ps-city b { opacity: .7; }
+.ps-city:active { transform: scale(.94); box-shadow: var(--ps-ring); }
+
+.ps-h { margin: 28px 18px 12px; font: 600 15px var(--sans); letter-spacing: .02em; color: var(--text); }
+.ps-acts { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 16px; }
+.ps-card { display: flex; flex-direction: column; gap: 3px; text-decoration: none; color: var(--text); background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 8px 8px 12px; min-width: 0; transition: transform .25s var(--ps-spring), box-shadow .25s; }
+.ps-card-art { display: block; aspect-ratio: 16 / 10; border-radius: 12px; overflow: hidden; margin-bottom: 8px; background: linear-gradient(135deg, var(--a300), var(--a700)); }
+.ps-card-art img { width: 100%; height: 100%; object-fit: cover; }
+.ps-card-glyph { display: grid; place-items: center; width: 100%; height: 100%; background: radial-gradient(80% 90% at 70% 20%, color-mix(in srgb, var(--c) 75%, transparent), transparent 75%), linear-gradient(150deg, color-mix(in srgb, var(--c) 50%, #2a1810), #1d110c); }
+.ps-card-glyph svg { width: 42%; height: auto; aspect-ratio: 1; }
+.ps-card-glyph svg path { fill: url(#sa-glyph); }
+.ps-card b { font-weight: 600; font-size: 14px; line-height: 1.25; padding: 0 4px; overflow-wrap: anywhere; }
+.ps-card small { color: var(--muted); font-size: 12px; padding: 0 4px; }
+
+/* ---------- Whole app: PS5 focus ring + press on every interactive surface ---------- */
+.app-mode :is(.card, .map-card, .post, .steps li, .ig-btn, .idea-card, .member, .ps-card, .faq details, .sa-results a, .pill, .icon-btn, .chip):is(:active, :focus-visible) { box-shadow: var(--ps-ring); }
+.app-mode :is(.card, .map-card, .post, .ig-btn, .member, .ps-card, .pill, .chip):active { transform: scale(.97); }
+.app-mode :is(.card, .map-card, .post, .ig-btn, .member, .pill, .chip) { transition: transform .25s var(--ps-spring), box-shadow .25s, border-color .25s; }
+.app-mode :focus-visible { outline: none; box-shadow: var(--ps-ring); }
+.app-mode .section-head .eyebrow, .app-mode .page-hero .eyebrow, .app-mode .article .crumbs { letter-spacing: .18em; color: var(--accent); font-weight: 600; }
+.app-mode .section-head h2, .app-mode .page-hero h1, .app-mode .article h1 { font-weight: 300; letter-spacing: -.02em; }
+.app-mode .card, .app-mode .map-card, .app-mode .post, .app-mode .member, .app-mode .steps li { border-radius: 20px; }
+.app-mode .pill-solid { background: #fbeee2; color: #24150f; }
+.app-mode .tab-anim { animation: tab-in .4s var(--ps-ease); }
+@keyframes tab-in { from { opacity: 0; transform: translateX(16px); } }
+@media (prefers-reduced-motion: reduce) {
+  .ps-tile.on .sa-ic, .ps-row.swap .ps-tile, .ps-hero.swap > * { animation: none !important; }
+  .ps-bg, .ps-bg img, .ps-glyph { transition: none !important; }
+}
+.ps-city[hidden] { display: none; }
+.app-mode .nav-actions .pill { display: none; }
+@media (max-width: 360px) {
+  .ps-row { padding-inline: 10px; gap: 2px; }
+  .ps-tile .sa-ic { width: 34px; height: 34px; border-radius: 11px; }
+  .ps-tile.on .sa-ic { width: 50px; height: 50px; border-radius: 15px; }
+}

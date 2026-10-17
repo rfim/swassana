@@ -119,7 +119,23 @@ function apply() {
   const app = mq.matches;
   root.classList.toggle('app-mode', app);
   if (app) { const b = document.querySelector('.nav .brand'); if (b && !b.dataset.logo) { b.setAttribute('aria-label', 'Swassana, ke beranda'); makeLogo(b); } }
-  if (!onHome) { mark(page); return; }
+  if (!onHome) {
+    mark(page);
+    // Inner pages (team, blog) get a back button so the app never dead-ends
+    const inner = document.querySelector('.nav-inner');
+    if (app && inner && !document.getElementById('appBack')) {
+      const back = document.createElement('a');
+      back.id = 'appBack'; back.className = 'icon-btn app-back'; back.href = home.href;
+      back.setAttribute('aria-label', 'Kembali');
+      back.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>';
+      back.addEventListener('click', (e) => {
+        const fromSite = document.referrer && new URL(document.referrer).origin === location.origin;
+        if (fromSite && history.length > 1) { e.preventDefault(); history.back(); }
+      });
+      inner.prepend(back);
+    }
+    return;
+  }
   if (app) { const { k, target } = fromHash(); current = null; show(k, { push: false, target }); }
   else document.querySelectorAll('[data-tab]').forEach((el) => el.classList.remove('tab-on', 'tab-first', 'tab-anim'));
 }
