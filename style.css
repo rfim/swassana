@@ -937,3 +937,9 @@ a:active > .sa-ic::after, .sa-svc:active .sa-ic::after, .sa-ic.shine::after { ba
 .logo-mark, .app-mode .logo-mark, .gate .logo-mark { width: 44px; height: 44px; padding: 0; border: 0; background: url(icons/sbctv-128.png) center / cover no-repeat; box-shadow: 0 6px 16px -8px rgba(0, 0, 0, .45); color: transparent; font-size: 0; }
 .logo-mark::before, .logo-mark::after, .app-mode .logo-mark::after, .gate .logo-mark::after { display: none !important; content: none; }
 .gate .logo .logo-mark { width: 52px; height: 52px; }
+.gate h1.hello.dict .h1l { font-size: .82em; }
+.hello-tag { margin: 0 0 2px; line-height: 18px; }
+.hello-tag .lc { height: 18px; min-width: 28px; font-size: 10px; }
+.gate h1.hello { min-height: 2.12em; }
+@media (max-height: 920px) { .gate-inner { gap: 12px; } }
+@media (max-height: 600px) { .gate-inner { gap: 8px; } }

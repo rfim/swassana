@@ -129,7 +129,7 @@ function startClock(gate) {
   pol.addEventListener('click', () => { if (!reduce) restart('shake'); try { navigator.vibrate && navigator.vibrate(10); } catch (e) {} });
 }
 
-// Greeting in ten languages (incl. Javanese, Sundanese, Balinese, Madurese), rotating every 7 seconds; time-neutral words.
+// Greeting in eleven languages (incl. Javanese, Sundanese, Balinese, Madurese, Japanese), rotating every 7 seconds; time-neutral words.
 // Every third turn shows a "kamus" word from one of those languages with its meaning in Indonesian.
 const HELLO = [
   { tag: 'Indonesia', lang: 'id', hi: 'Halo', sub: 'senang melihatmu lagi' },
@@ -142,16 +142,17 @@ const HELLO = [
   { tag: 'Madura', lang: 'mad', hi: 'Salamet dhâteng', sub: 'ponapa kabhârrâ?' },
   { tag: 'Français', lang: 'fr', hi: 'Salut', sub: 'ravi de te revoir' },
   { tag: 'Svenska', lang: 'sv', hi: 'Hej', sub: 'kul att se dig igen' },
+  { tag: '日本語 · Nihongo', lang: 'ja', hi: 'ようこそ', sub: 'また会えてうれしいです' },
 ];
 const KAMUS = [
-  ['Indonesia', 'id', 'gemas', 'perasaan ingin mencubit sesuatu yang terlalu lucu'],
+  ['Indonesia', 'id', 'gemas', 'ingin mencubit sesuatu yang terlalu lucu'],
   ['Indonesia', 'id', 'jayus', 'lelucon yang garing, tapi tetap bikin senyum'],
   ['Indonesia', 'id', 'senja', 'saat langit memerah ketika matahari terbenam'],
   ['Jawa', 'jv', 'guyub', 'rukun dan hangat dalam kebersamaan'],
   ['Jawa', 'jv', 'sumringah', 'wajah berseri karena bahagia'],
-  ['Jawa', 'jv', 'tepa selira', 'tenggang rasa; ikut merasakan perasaan orang lain'],
+  ['Jawa', 'jv', 'tepa selira', 'tenggang rasa; ikut merasakan hati orang lain'],
   ['Sunda', 'su', 'someah', 'ramah dan menyenangkan kepada tamu'],
-  ['Sunda', 'su', 'ngabuburit', 'mengisi waktu sambil menunggu berbuka puasa'],
+  ['Sunda', 'su', 'ngabuburit', 'mengisi waktu menunggu berbuka puasa'],
   ['Sunda', 'su', 'silih asih', 'saling mengasihi satu sama lain'],
   ['Bali', 'ban', 'suksma', 'terima kasih'],
   ['Bali', 'ban', 'ngayah', 'bekerja tulus bersama tanpa pamrih'],
@@ -159,21 +160,24 @@ const KAMUS = [
   ['Madura', 'mad', 'toron', 'pulang ke kampung halaman'],
   ['Madura', 'mad', 'abhântal ombâ', 'berbantal ombak; jiwa pelaut yang tangguh'],
   ['Madura', 'mad', 'bhuppa’ bhâbhu’ ghuru rato', 'hormati ayah, ibu, guru, lalu pemimpin'],
-  ['Svenska', 'sv', 'fika', 'rehat ngopi dan ngobrol santai, biasanya dengan kue'],
+  ['Svenska', 'sv', 'fika', 'rehat ngopi santai, biasanya dengan kue'],
   ['Svenska', 'sv', 'lagom', 'tidak kurang, tidak lebih; pas'],
   ['Svenska', 'sv', 'mångata', 'jalur cahaya bulan yang memantul di air'],
   ['Nederlands', 'nl', 'gezellig', 'suasana hangat, nyaman, dan akrab'],
-  ['Nederlands', 'nl', 'uitwaaien', 'jalan di tengah angin untuk menjernihkan pikiran'],
+  ['Nederlands', 'nl', 'uitwaaien', 'berjalan diterpa angin untuk menjernihkan pikiran'],
   ['Nederlands', 'nl', 'kiekje', 'foto jepretan santai yang spontan'],
   ['Deutsch', 'de', 'Gemütlichkeit', 'rasa nyaman, hangat, dan diterima'],
-  ['Deutsch', 'de', 'Fernweh', 'rindu pada tempat yang belum pernah dikunjungi'],
+  ['Deutsch', 'de', 'Fernweh', 'rindu pada tempat yang belum pernah didatangi'],
   ['Deutsch', 'de', 'Augenblick', 'sekejap mata; momen singkat yang berharga'],
   ['Français', 'fr', 'joie de vivre', 'kegembiraan menikmati hidup'],
   ['Français', 'fr', 'flâneur', 'orang yang berjalan santai menikmati kota'],
   ['Français', 'fr', 'dépaysement', 'rasa asing yang menyegarkan di tempat baru'],
   ['English', 'en', 'serendipity', 'menemukan hal baik secara kebetulan'],
-  ['English', 'en', 'golden hour', 'cahaya hangat setelah matahari terbit dan sebelum terbenam'],
+  ['English', 'en', 'golden hour', 'cahaya hangat saat matahari terbit dan terbenam'],
   ['English', 'en', 'wanderlust', 'keinginan kuat untuk menjelajah dunia'],
+  ['日本語 · Nihongo', 'ja', 'komorebi 木漏れ日', 'sinar matahari yang menembus dedaunan'],
+  ['日本語 · Nihongo', 'ja', 'ichigo ichie 一期一会', 'tiap pertemuan hanya sekali; hargai momennya'],
+  ['日本語 · Nihongo', 'ja', 'wabi-sabi 侘寂', 'indah dalam kesederhanaan dan ketidaksempurnaan'],
 ];
 function startHello(gate) {
   const tagEl = gate.querySelector('#helloTag'), h1 = gate.querySelector('#hello'), l1 = gate.querySelector('#gateGreet'), l2 = gate.querySelector('#helloSub');
