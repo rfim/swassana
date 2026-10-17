@@ -493,3 +493,12 @@ button.ig-btn { font: inherit; color: inherit; cursor: pointer; text-align: left
 .tabbar a.tb-book-main::before { display: none; }
 .tabbar a.tb-book-main small { opacity: .62; }
 .tabbar a.tb-book-main b { color: #2a1810; }
+
+/* Bottom bar is now just the floating Booking button */
+.app-mode .tabbar.only-book { background: transparent; border: 0; box-shadow: none; pointer-events: none; justify-content: center; padding-bottom: calc(14px + env(safe-area-inset-bottom)); }
+.tabbar.only-book .tb-book { pointer-events: auto; flex: none; }
+.tabbar.only-book .tb-book-main { margin-top: 0; box-shadow: inset 0 1px 0 rgba(255, 250, 244, .7), inset 0 -6px 14px rgba(120, 66, 36, .25), 0 18px 36px -12px rgba(0, 0, 0, .8), 0 0 0 1px rgba(255, 238, 222, .25); }
+.tabbar.only-book .tb-roll { top: -10px; }
+.app-mode body { padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
+.app-info { display: none; text-decoration: none; }
+.app-mode .app-info { display: inline-grid; }

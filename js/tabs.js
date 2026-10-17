@@ -7,7 +7,7 @@ const ICON = {
   jurnal: '<path d="M2 5.5C4.5 4 8 4 12 6c4-2 7.5-2 10-.5V19c-2.5-1.5-6-1.5-10 .5-4-2-7.5-2-10-.5Z"/><path d="M12 6v13.5"/>',
   info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 7.5h.01"/>',
 };
-const TABS = [['beranda', 'Beranda'], ['info', 'Info']]; // Lokasi, Main and Jurnal stay reachable from the home tiles
+const TABS = []; // No tabs in the bar: tapping "Swassana" goes home, the ⓘ button opens Info, tiles open the rest
 // Which tab an in-page anchor lives in
 const ANCHOR_TAB = { top: 'beranda', lokasi: 'beranda', cara: 'info', arah: 'lokasi', main: 'main', ide: 'main', jurnal: 'jurnal', faq: 'info', ig: 'info' };
 
@@ -38,7 +38,8 @@ const bookHtml = `
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3l3 3-3 3"/><path d="M4 11V9a3 3 0 0 1 3-3h13"/><path d="M7 21l-3-3 3-3"/><path d="M20 13v2a3 3 0 0 1-3 3H4"/></svg>
     </button>
   </div>`;
-bar.innerHTML = tabHtml[0] + bookHtml + tabHtml.slice(1).join('');
+bar.innerHTML = bookHtml;
+bar.classList.add('only-book');
 document.body.appendChild(bar);
 
 {
@@ -137,6 +138,11 @@ if (onHome) {
     e.preventDefault();
     show(ANCHOR_TAB[id], { target: id });
   });
+  document.querySelector('.nav .brand')?.addEventListener('click', (e) => {
+    if (!root.classList.contains('app-mode')) return;
+    e.preventDefault(); e.stopPropagation();
+    if (current === 'beranda') scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }); else { show('beranda'); scrollTo(0, 0); }
+  }, true);
   addEventListener('popstate', () => { const { k, target } = fromHash(); show(k, { push: false, target }); });
 }
 

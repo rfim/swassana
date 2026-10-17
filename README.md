@@ -17,6 +17,7 @@ To publish, open Settings → Pages, choose "Deploy from a branch", then `main` 
 - `js/icons.js`: game-icons.net icons (CC BY 3.0) used by the marquee and the games
 - `js/fx.js`: shared three.js scene (floating polaroids) plus phone helpers (tilt, shake, vibration, share)
 - `team.html`: team page; edit the `TEAM` list at the bottom of the file
+- `showcase.html`: App Store-style page (facts strip, gradient panels with two-tone headlines, real screenshots from `showcase/`), with easter eggs
 - `preview.html`: interactive iPhone and Android preview
 - `previews/`: static phone screenshots
 

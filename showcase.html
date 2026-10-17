@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Aplikasi Swassana</title>
+  <meta name="description" content="Aplikasi Swassana: booking studio foto Surabaya & Malang, peta, mini game, kuis, dan photobooth. Gratis, tanpa unduh dari toko aplikasi.">
+  <meta property="og:title" content="Aplikasi Swassana">
+  <meta property="og:description" content="Booking studio, peta, mini game, kuis, dan photobooth dalam satu aplikasi.">
+  <meta property="og:image" content="https://rfim.github.io/swassana/showcase/home.jpg">
+  <link rel="canonical" href="https://rfim.github.io/swassana/showcase.html">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Instrument+Sans:wght@400..700&display=swap" rel="stylesheet">
+  <style>
+    /*
+      Showcase formula (combined from three App Store listings):
+      1. Facts strip: LABEL / big value / small caption, evenly spaced, one laurel badge.
+      2. Tall rounded marketing panels on rich gradients.
+      3. Two-tone headline per panel: line one bold cream, line two accent italic.
+      4. A real screenshot in a phone frame under each headline.
+      5. Horizontal scroll with arrows on desktop, swipe on touch, snap per panel.
+      6. Device row underneath.
+    */
+    :root {
+      --bg: #f6f1ea; --surface: #ffffff; --text: #2e1b16; --muted: rgba(46, 27, 22, .58); --line: rgba(90, 55, 40, .14);
+      --accent: #8a5a42; --cream: #fbf1e6; --caramel: #f0c9a4;
+      --display: "Fraunces", Georgia, serif; --sans: "Instrument Sans", system-ui, sans-serif;
+      --ease: cubic-bezier(.2, .7, .2, 1); --spring: cubic-bezier(.34, 1.56, .64, 1);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) { --bg: #1a110d; --surface: #241812; --text: #f6ebe1; --muted: rgba(246, 235, 225, .6); --line: rgba(255, 226, 204, .14); --accent: #e9c19d; }
+    }
+    :root[data-theme="dark"] { --bg: #1a110d; --surface: #241812; --text: #f6ebe1; --muted: rgba(246, 235, 225, .6); --line: rgba(255, 226, 204, .14); --accent: #e9c19d; }
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.55 var(--sans); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    a { color: inherit; }
+    .wrap { max-width: 1180px; margin: 0 auto; padding: 0 16px; }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 8px; }
+
+    /* ---------- header ---------- */
+    .head { display: grid; grid-template-columns: auto 1fr; gap: 20px; align-items: center; padding: clamp(28px, 6vw, 56px) 0 24px; }
+    .app-icon { width: clamp(84px, 14vw, 120px); aspect-ratio: 1; border-radius: 26%; border: 0; padding: 0; cursor: pointer; background: url(icons/icon-512.png) center / cover, #5a3728;
+      box-shadow: 0 18px 40px -18px rgba(46, 27, 22, .55), inset 0 1px 0 rgba(255, 255, 255, .3); transition: transform .5s var(--spring); }
+    .app-icon:hover { transform: rotate(-6deg) scale(1.05); }
+    .app-icon:active { transform: scale(.92); }
+    .app-icon.spin { animation: icon-spin .9s var(--spring); }
+    @keyframes icon-spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+    .head h1 { font-family: var(--display); font-weight: 400; font-size: clamp(34px, 6vw, 54px); line-height: 1; margin: 0; letter-spacing: -.02em; }
+    .head h1 span { display: inline-block; transition: transform .35s var(--spring), color .2s; }
+    .head h1:hover span { transform: translateY(calc(var(--i) * -1px - 2px)); color: var(--accent); }
+    .head h1 span:nth-child(n) { transition-delay: calc(var(--i) * 18ms); }
+    .sub { color: var(--muted); margin: 6px 0 14px; }
+    .actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn { display: inline-flex; align-items: center; gap: 8px; border: 0; border-radius: 999px; padding: 11px 20px; font: 600 15px var(--sans); cursor: pointer; text-decoration: none; transition: transform .2s var(--spring), box-shadow .2s, background .2s; min-height: 44px; }
+    .btn-main { background: var(--text); color: var(--bg); }
+    .btn-ghost { background: transparent; color: var(--text); box-shadow: inset 0 0 0 1px var(--line); }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 10px 22px -12px rgba(46, 27, 22, .5); }
+    .btn:active { transform: scale(.95); }
+    .btn .arr { transition: transform .25s var(--spring); }
+    .btn:hover .arr { transform: translateX(4px); }
+
+    /* ---------- facts strip ---------- */
+    .facts { display: flex; gap: 0; overflow-x: auto; scrollbar-width: none; border-block: 1px solid var(--line); padding: 14px 0; margin-bottom: 26px; }
+    .facts::-webkit-scrollbar { display: none; }
+    .fact { flex: 1 0 128px; text-align: center; padding: 4px 10px; position: relative; cursor: default; }
+    .fact + .fact::before { content: ""; position: absolute; left: 0; top: 18%; bottom: 18%; width: 1px; background: var(--line); }
+    .fact small { display: block; font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+    .fact b { display: flex; justify-content: center; align-items: center; gap: 4px; font-family: var(--sans); font-weight: 700; font-size: 22px; margin: 4px 0 1px; min-height: 32px; transition: transform .35s var(--spring); }
+    .fact span { font-size: 12.5px; color: var(--muted); }
+    .fact svg { width: 26px; height: 26px; }
+    .fact:hover b { transform: translateY(-3px) scale(1.06); }
+    .fact:hover svg { animation: wiggle .6s ease; }
+    @keyframes wiggle { 25% { transform: rotate(-12deg); } 60% { transform: rotate(9deg); } }
+    .laurel { width: 16px !important; height: 30px !important; color: var(--muted); }
+    .laurel.r { transform: scaleX(-1); }
+    .fact b em { font-style: normal; font-size: 13px; font-weight: 600; line-height: 1.1; }
+
+    /* ---------- carousel ---------- */
+    .stage { position: relative; }
+    .track { display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding: 0 16px; padding: 6px 16px 26px; scrollbar-width: none; cursor: grab; overscroll-behavior-x: contain; }
+    .track::-webkit-scrollbar { display: none; }
+    .track.dragging { cursor: grabbing; scroll-snap-type: none; }
+    .track.dragging .panel { pointer-events: none; }
+    .panel { flex: 0 0 auto; width: min(78vw, 300px); aspect-ratio: 300 / 600; scroll-snap-align: start; border-radius: 26px; position: relative; overflow: hidden; color: var(--cream);
+      background: radial-gradient(90% 60% at 20% 0%, rgba(255, 220, 190, .28), transparent 60%), linear-gradient(165deg, var(--from), var(--to));
+      box-shadow: 0 24px 50px -30px rgba(46, 27, 22, .7), inset 0 1px 0 rgba(255, 240, 228, .2);
+      transform-style: preserve-3d; transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) scale(var(--s, 1)); transition: transform .5s var(--ease), box-shadow .3s;
+      opacity: 0; translate: 40px 0; -webkit-user-select: none; user-select: none; }
+    .panel.in-view { opacity: 1; translate: 0 0; transition: transform .5s var(--ease), box-shadow .3s, opacity .7s var(--ease), translate .8s var(--ease); transition-delay: 0s, 0s, var(--d, 0s), var(--d, 0s); }
+    .panel.tilting { transition: transform .08s linear, box-shadow .3s; }
+    .panel:hover { box-shadow: 0 34px 60px -30px rgba(46, 27, 22, .85), inset 0 1px 0 rgba(255, 240, 228, .25); }
+    .sheen { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(240px 240px at var(--mx, 50%) var(--my, -40%), rgba(255, 245, 235, .22), transparent 70%); opacity: 0; transition: opacity .3s; z-index: 3; }
+    .panel:hover .sheen, .panel.pressed .sheen { opacity: 1; }
+    .panel h2 { margin: 0; padding: 26px 22px 0; font-family: var(--display); font-weight: 600; font-size: 27px; line-height: 1.08; letter-spacing: -.015em; transform: translateZ(30px); }
+    .panel h2 .l2 { display: block; font-weight: 300; font-style: italic; color: var(--caramel); }
+    .w { display: inline-block; opacity: 0; transform: translateY(14px) rotate(2deg); }
+    .in-view .w { opacity: 1; transform: none; transition: opacity .5s var(--ease), transform .6s var(--spring); transition-delay: calc(var(--d, 0s) + .15s + var(--wi) * 60ms); }
+    .num { position: absolute; top: 20px; right: 20px; font: 600 11px var(--sans); letter-spacing: .14em; opacity: .55; }
+
+    /* phone */
+    .phone { position: absolute; left: 50%; bottom: -2%; width: 74%; aspect-ratio: 393 / 700; translate: -50% 0; transform: translateZ(50px) translate(var(--px, 0), var(--py, 0)); transition: transform .5s var(--ease); perspective: 1200px; }
+    .in-view .phone { animation: rise .9s var(--spring) both; animation-delay: calc(var(--d, 0s) + .25s); }
+    @keyframes rise { from { opacity: 0; translate: -50% 40px; } to { opacity: 1; translate: -50% 0; } }
+    .flip { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform .8s var(--spring); }
+    .phone.flipped .flip { transform: rotateY(180deg); }
+    .face, .back { position: absolute; inset: 0; border-radius: 34px; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+    .face { background: #120a07; padding: 8px; box-shadow: 0 30px 50px -24px rgba(0, 0, 0, .75), inset 0 0 0 1.5px rgba(255, 255, 255, .14); }
+    .screen { width: 100%; height: 100%; border-radius: 27px; overflow: hidden; background: #24150f; position: relative; }
+    .screen img { width: 100%; display: block; }
+    .island { position: absolute; top: 14px; left: 50%; width: 30%; height: 18px; translate: -50% 0; border-radius: 12px; background: #000; z-index: 2; }
+    .back { transform: rotateY(180deg); background: linear-gradient(150deg, #6f4531, #2e1b16); display: grid; place-items: center; box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .14); }
+    .back span { font: italic 300 30px var(--display); color: var(--caramel); }
+    .back i { position: absolute; top: 18px; left: 18px; width: 54px; height: 54px; border-radius: 16px; background: rgba(0, 0, 0, .35); box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .1); }
+    .back i::after { content: ""; position: absolute; inset: 12px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #4a3a33, #0c0706); }
+
+    .arrow { position: absolute; top: 50%; translate: 0 -60%; width: 46px; height: 46px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface); color: var(--text); display: grid; place-items: center; cursor: pointer; z-index: 5;
+      box-shadow: 0 10px 24px -14px rgba(46, 27, 22, .6); transition: transform .25s var(--spring), opacity .25s; }
+    .arrow:hover { transform: scale(1.1); }
+    .arrow:active { transform: scale(.88); }
+    .arrow[disabled] { opacity: 0; pointer-events: none; }
+    .arrow.prev { left: 6px; } .arrow.next { right: 6px; }
+    .arrow svg { width: 20px; height: 20px; }
+    @media (hover: none) { .arrow { display: none; } }
+    .bar { height: 3px; border-radius: 3px; background: var(--line); margin: 0 16px; overflow: hidden; }
+    .bar i { display: block; height: 100%; width: 20%; border-radius: 3px; background: var(--accent); transform-origin: left; transition: width .2s; }
+
+    .devices { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding: 16px 0 6px; color: var(--muted); font-size: 14px; border-bottom: 1px solid var(--line); }
+    .devices svg { width: 18px; height: 18px; }
+    .devices span { display: inline-flex; align-items: center; gap: 6px; }
+
+    .about { display: grid; gap: 28px; grid-template-columns: 1.3fr 1fr; padding: 34px 0 70px; }
+    @media (max-width: 760px) { .about { grid-template-columns: 1fr; } }
+    .about h3 { font-family: var(--display); font-weight: 400; font-size: 24px; margin: 0 0 10px; }
+    .about p { color: var(--muted); margin: 0 0 10px; }
+    .about ul { margin: 0; padding: 0; list-style: none; }
+    .about li { padding: 10px 0; border-bottom: 1px solid var(--line); display: flex; gap: 10px; align-items: baseline; transition: transform .25s var(--spring); }
+    .about li:hover { transform: translateX(6px); }
+    .about li b { color: var(--accent); font-weight: 600; min-width: 22px; }
+    .hint { font-size: 12px; color: var(--muted); opacity: .7; margin-top: 18px; }
+
+    /* toast, confetti, film mode */
+    .toast { position: fixed; left: 50%; bottom: calc(22px + env(safe-area-inset-bottom)); translate: -50% 20px; z-index: 50; background: #2e1b16; color: #fbf1e6; padding: 12px 18px; border-radius: 16px; font-size: 14.5px; opacity: 0; pointer-events: none; transition: opacity .3s, translate .4s var(--spring); max-width: calc(100vw - 32px); box-shadow: 0 16px 40px -16px rgba(0, 0, 0, .6); }
+    .toast.show { opacity: 1; translate: -50% 0; pointer-events: auto; }
+    .toast a { color: var(--caramel); font-weight: 600; }
+    .pol { position: fixed; z-index: 40; width: 46px; height: 54px; background: #fbf7f2; border-radius: 3px; padding: 4px 4px 12px; box-shadow: 0 6px 14px -6px rgba(0, 0, 0, .5); pointer-events: none; }
+    .pol::before { content: ""; display: block; width: 100%; height: 100%; background: linear-gradient(135deg, var(--c1), var(--c2)); }
+    body.film { filter: sepia(.45) contrast(1.06) saturate(.9); }
+    body.film::after { content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 60; opacity: .14; mix-blend-mode: multiply;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+    .reveal { opacity: 0; transform: translateY(16px); transition: opacity .7s var(--ease), transform .8s var(--ease); transition-delay: var(--d, 0s); }
+    .reveal.on { opacity: 1; transform: none; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; transition-delay: 0s !important; }
+      .panel, .w, .reveal { opacity: 1 !important; translate: 0 0 !important; transform: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="head">
+      <button class="app-icon reveal" id="icon" type="button" aria-label="Ikon aplikasi Swassana"></button>
+      <div>
+        <h1 class="reveal" style="--d:.05s" id="title" aria-label="Swassana"></h1>
+        <p class="sub reveal" style="--d:.12s">Studio foto Surabaya &amp; Malang · booking, peta, mini game, dan photobooth.</p>
+        <div class="actions reveal" style="--d:.2s">
+          <a class="btn btn-main" href="./">Buka aplikasi <span class="arr" aria-hidden="true">→</span></a>
+          <button class="btn btn-ghost" id="install" type="button">Cara pasang</button>
+          <button class="btn btn-ghost" id="share" type="button">Bagikan</button>
+        </div>
+      </div>
+    </header>
+
+    <section class="facts reveal" style="--d:.25s" aria-label="Info aplikasi">
+      <div class="fact"><small>Kategori</small><b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3z"/><circle cx="12" cy="13" r="3.2"/></svg></b><span>Foto &amp; Video</span></div>
+      <div class="fact"><small>Rilis</small><b><svg class="laurel" viewBox="0 0 16 30" fill="currentColor" aria-hidden="true"><path d="M13 29C6 26 2 20 2 13S5 3 8 1c-1 3-3 6-3 12s3 12 8 16z"/><ellipse cx="4.5" cy="9" rx="1.6" ry="3" transform="rotate(-25 4.5 9)"/><ellipse cx="3.3" cy="15" rx="1.6" ry="3" transform="rotate(-10 3.3 15)"/><ellipse cx="4.6" cy="21" rx="1.6" ry="3" transform="rotate(15 4.6 21)"/></svg><em>Baru</em><svg class="laurel r" viewBox="0 0 16 30" fill="currentColor" aria-hidden="true"><path d="M13 29C6 26 2 20 2 13S5 3 8 1c-1 3-3 6-3 12s3 12 8 16z"/><ellipse cx="4.5" cy="9" rx="1.6" ry="3" transform="rotate(-25 4.5 9)"/><ellipse cx="3.3" cy="15" rx="1.6" ry="3" transform="rotate(-10 3.3 15)"/><ellipse cx="4.6" cy="21" rx="1.6" ry="3" transform="rotate(15 4.6 21)"/></svg></b><span>Okt 2026</span></div>
+      <div class="fact"><small>Studio</small><b data-count="2">2</b><span>Surabaya · Malang</span></div>
+      <div class="fact"><small>Game</small><b data-count="8">8</b><span>Mini game &amp; kuis</span></div>
+      <div class="fact"><small>Bahasa</small><b>ID</b><span>Indonesia</span></div>
+      <div class="fact"><small>Harga</small><b>Gratis</b><span>Tanpa toko aplikasi</span></div>
+      <div class="fact"><small>Ukuran</small><b>0,3</b><span>MB</span></div>
+    </section>
+
+    <section class="stage" aria-label="Tangkapan layar aplikasi">
+      <button class="arrow prev" id="prev" type="button" aria-label="Sebelumnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
+      <div class="track" id="track"></div>
+      <button class="arrow next" id="next" type="button" aria-label="Berikutnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
+      <div class="bar"><i id="barFill"></i></div>
+    </section>
+
+    <div class="devices reveal">
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg>iPhone</span>
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2.5"/><circle cx="12" cy="5" r=".8" fill="currentColor"/></svg>Android</span>
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg>Web</span>
+    </div>
+
+    <section class="about">
+      <div class="reveal">
+        <h3>Tentang aplikasi</h3>
+        <p>Satu aplikasi untuk dua studio Swassana. Pilih studio, putar tombol Booking, dan langsung ke jadwal. Sambil menunggu sesi, mainkan mini game, cari tipe sesimu, atau coba photobooth.</p>
+        <p>Berjalan di browser HP dan bisa dipasang ke layar utama seperti aplikasi biasa.</p>
+        <p class="hint">Psst… ada beberapa rahasia di halaman ini.</p>
+      </div>
+      <div class="reveal" style="--d:.1s">
+        <h3>Isinya</h3>
+        <ul>
+          <li><b>01</b>Booking Surabaya &amp; Malang dengan tombol putar</li>
+          <li><b>02</b>Peta dan petunjuk arah satu ketukan</li>
+          <li><b>03</b>Enam mini game, satu untuk tiap jenis sesi</li>
+          <li><b>04</b>Kuis "Kamu tipe sesi apa?" dan photobooth</li>
+          <li><b>05</b>Jurnal: tips persiapan, pose, dan outfit</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status"></div>
+
+  <script>
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const $ = (id) => document.getElementById(id);
+    const buzz = (p) => { try { navigator.vibrate && navigator.vibrate(p); } catch (e) {} };
+    let toastT;
+    const toast = (html, ms = 3200) => { const t = $('toast'); t.innerHTML = html; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), ms); };
+
+    // Title letters (hover wave)
+    $('title').innerHTML = [...'Swassana'].map((c, i) => `<span style="--i:${i}" aria-hidden="true">${c}</span>`).join('');
+
+    // Panels: two-tone headline + real screenshot
+    const PANELS = [
+      ['home', 'Dua studio.', 'Satu aplikasi.', '#6f4531', '#2e1b16'],
+      ['roll', 'Booking cepat.', 'Tinggal putar.', '#c98a60', '#5a3728'],
+      ['lokasi', 'Datang tanpa nyasar.', 'Satu ketukan.', '#6f8a5c', '#2a3524'],
+      ['games', 'Main dulu,', 'foto kemudian.', '#8a5a42', '#24150f'],
+      ['lovesync', 'Main berdua.', 'Makin sehati.', '#b5524a', '#4a1f1f'],
+      ['flatlay', 'Susun produk.', 'Siap posting.', '#a3745a', '#3b2419'],
+      ['kuis', 'Kamu tipe apa?', 'Temukan studiomu.', '#b08a4a', '#4a3218'],
+      ['photobooth', 'Bingkai khas.', 'Langsung ke Story.', '#5a3728', '#160c08'],
+    ];
+    const words = (s, start) => s.split(' ').map((w, i) => `<span class="w" style="--wi:${start + i}">${w}</span>`).join(' ');
+    $('track').innerHTML = PANELS.map(([img, a, b, from, to], i) => `
+      <article class="panel" style="--from:${from};--to:${to}" tabindex="0" aria-label="${a} ${b}">
+        <span class="num">${String(i + 1).padStart(2, '0')}</span>
+        <h2>${words(a, 0)}<span class="l2">${words(b, a.split(' ').length)}</span></h2>
+        <div class="phone">
+          <div class="flip">
+            <div class="face"><div class="screen"><span class="island"></span><img src="showcase/${img}.jpg" alt="Layar ${a} ${b}" loading="${i < 3 ? 'eager' : 'lazy'}" draggable="false"></div></div>
+            <div class="back"><i></i><span>Swassana</span></div>
+          </div>
+        </div>
+        <span class="sheen"></span>
+      </article>`).join('');
+
+    const track = $('track'), panels = [...track.children];
+
+    // Reveal on enter (page sections and panels)
+    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add(e.target.classList.contains('panel') ? 'in-view' : 'on'); io.unobserve(e.target); } }), { threshold: .2 });
+    document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+    panels.forEach((p, i) => { p.style.setProperty('--d', `${Math.min(i, 4) * 0.08}s`); io.observe(p); });
+
+    // Facts count-up
+    const cio = new IntersectionObserver((es) => es.forEach((e) => {
+      if (!e.isIntersecting || reduce) return; cio.unobserve(e.target);
+      const end = +e.target.dataset.count, t0 = performance.now();
+      const step = (t) => { const k = Math.min(1, (t - t0) / 900); e.target.textContent = Math.round(end * (1 - Math.pow(1 - k, 3))); if (k < 1) requestAnimationFrame(step); };
+      requestAnimationFrame(step);
+    }));
+    document.querySelectorAll('[data-count]').forEach((el) => cio.observe(el));
+
+    // Arrows + progress bar
+    const step = () => panels[0].offsetWidth + 16;
+    $('prev').addEventListener('click', () => track.scrollBy({ left: -step(), behavior: reduce ? 'auto' : 'smooth' }));
+    let endNudge = 0;
+    $('next').addEventListener('click', () => {
+      if (track.scrollLeft + track.clientWidth >= track.scrollWidth - 4) return;
+      track.scrollBy({ left: step(), behavior: reduce ? 'auto' : 'smooth' });
+    });
+    const update = () => {
+      const max = track.scrollWidth - track.clientWidth;
+      const r = max > 0 ? track.scrollLeft / max : 1;
+      $('barFill').style.width = `${Math.max(12, r * 100)}%`;
+      $('prev').disabled = track.scrollLeft < 4;
+      $('next').disabled = track.scrollLeft > max - 4;
+    };
+    track.addEventListener('scroll', update, { passive: true });
+    addEventListener('resize', update); update();
+    addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') $('next').click(); if (e.key === 'ArrowLeft') $('prev').click(); });
+
+    // Mouse drag-to-scroll with momentum (touch uses native swipe)
+    let drag = null;
+    track.addEventListener('pointerdown', (e) => {
+      if (e.pointerType !== 'mouse' || e.button !== 0) return;
+      drag = { x: e.clientX, left: track.scrollLeft, v: 0, lx: e.clientX, lt: performance.now(), moved: false };
+    });
+    addEventListener('pointermove', (e) => {
+      if (!drag) return;
+      const dx = e.clientX - drag.x;
+      if (!drag.moved && Math.abs(dx) > 5) { drag.moved = true; track.classList.add('dragging'); }
+      if (!drag.moved) return;
+      track.scrollLeft = drag.left - dx;
+      const now = performance.now(); drag.v = (e.clientX - drag.lx) / Math.max(1, now - drag.lt); drag.lx = e.clientX; drag.lt = now;
+    });
+    addEventListener('pointerup', () => {
+      if (!drag) return;
+      const d = drag; drag = null;
+      if (!d.moved) return;
+      let v = -d.v * 16;
+      const glide = () => { if (Math.abs(v) < .5) { track.classList.remove('dragging'); const i = Math.round(track.scrollLeft / step()); track.scrollTo({ left: i * step(), behavior: 'smooth' }); return; } track.scrollLeft += v; v *= .92; requestAnimationFrame(glide); };
+      reduce ? track.classList.remove('dragging') : glide();
+    });
+
+    // Panel tilt + sheen + phone parallax (mouse hover and touch press)
+    panels.forEach((p) => {
+      const phone = p.querySelector('.phone');
+      const set = (e) => {
+        const r = p.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+        p.style.setProperty('--mx', `${x * 100}%`); p.style.setProperty('--my', `${y * 100}%`);
+        if (reduce) return;
+        p.style.setProperty('--ry', `${(x - .5) * 12}deg`); p.style.setProperty('--rx', `${(.5 - y) * 10}deg`);
+        phone.style.setProperty('--px', `${(x - .5) * 10}px`); phone.style.setProperty('--py', `${(y - .5) * 8}px`);
+      };
+      const reset = () => { p.classList.remove('tilting', 'pressed'); ['--rx', '--ry', '--s'].forEach((v) => p.style.removeProperty(v)); phone.style.removeProperty('--px'); phone.style.removeProperty('--py'); };
+      p.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') p.classList.add('tilting'); });
+      p.addEventListener('pointermove', (e) => { if (e.pointerType === 'mouse' && !drag?.moved) set(e); });
+      p.addEventListener('pointerleave', reset);
+      // Easter egg: long-press a phone to flip it over
+      let hold;
+      p.addEventListener('pointerdown', (e) => {
+        p.classList.add('pressed'); set(e); if (!reduce) p.style.setProperty('--s', '.98');
+        hold = setTimeout(() => { phone.classList.toggle('flipped'); buzz([10, 30, 10]); if (phone.classList.contains('flipped')) toast('🔄 Sisi belakang! Tahan lagi untuk membalik.'); }, 650);
+      });
+      ['pointerup', 'pointercancel'].forEach((ev) => p.addEventListener(ev, () => { clearTimeout(hold); p.classList.remove('pressed'); p.style.removeProperty('--s'); }));
+      p.addEventListener('contextmenu', (e) => e.preventDefault());
+    });
+
+    // Easter egg: tap the app icon 5 times -> polaroid confetti
+    let taps = 0, tapT;
+    function confetti(n = 26, fromX = innerWidth / 2, fromY = innerHeight * .3) {
+      if (reduce) return;
+      const tones = [['#c29a82', '#5a3728'], ['#f0c9a4', '#a3745a'], ['#9caf88', '#4f5d43'], ['#e8957f', '#7a2f2a']];
+      for (let i = 0; i < n; i++) {
+        const el = document.createElement('div'); el.className = 'pol';
+        const [c1, c2] = tones[i % tones.length]; el.style.setProperty('--c1', c1); el.style.setProperty('--c2', c2);
+        document.body.appendChild(el);
+        const a = Math.random() * Math.PI * 2, v = 6 + Math.random() * 9;
+        let x = fromX, y = fromY, vx = Math.cos(a) * v, vy = Math.sin(a) * v - 8, rot = Math.random() * 60 - 30, vr = Math.random() * 14 - 7, life = 0;
+        const fly = () => { life++; vy += .45; vx *= .985; x += vx; y += vy; rot += vr; el.style.transform = `translate(${x - 23}px, ${y - 27}px) rotate(${rot}deg)`; el.style.opacity = Math.max(0, 1 - life / 140);
+          if (y < innerHeight + 80 && life < 160) requestAnimationFrame(fly); else el.remove(); };
+        requestAnimationFrame(fly);
+      }
+    }
+    $('icon').addEventListener('click', (e) => {
+      taps++; clearTimeout(tapT); tapT = setTimeout(() => { taps = 0; }, 1200);
+      buzz(6);
+      if (taps >= 5) {
+        taps = 0; const r = e.currentTarget.getBoundingClientRect();
+        e.currentTarget.classList.remove('spin'); void e.currentTarget.offsetWidth; e.currentTarget.classList.add('spin');
+        confetti(30, r.left + r.width / 2, r.top + r.height / 2); buzz([20, 40, 20, 40, 60]);
+        toast('📸 Kamu menemukan kamera rahasia! <a href="./">Booking sesimu →</a>', 4500);
+      }
+    });
+
+    // Easter egg: Konami code (or type "film") -> film mode
+    const KONAMI = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+    let keys = [];
+    addEventListener('keydown', (e) => {
+      keys = [...keys, e.key].slice(-10);
+      const typed = keys.slice(-4).join('').toLowerCase();
+      if (keys.join() === KONAMI.join() || typed === 'film') {
+        keys = []; document.body.classList.toggle('film');
+        toast(document.body.classList.contains('film') ? '🎞️ Mode film aktif. Ulangi untuk mematikan.' : 'Mode film dimatikan.');
+      }
+    });
+
+    // Easter egg: shake the phone -> polaroid rain (Android; iOS needs motion permission)
+    let lastShake = 0;
+    addEventListener('devicemotion', (e) => {
+      const a = e.accelerationIncludingGravity; if (!a || a.x == null) return;
+      if (Math.abs(a.x) + Math.abs(a.y) + Math.abs(a.z) > 40 && Date.now() - lastShake > 2000) { lastShake = Date.now(); confetti(20, innerWidth / 2, -40); toast('🌧️ Hujan polaroid!'); }
+    });
+
+    // Easter egg: try to scroll past the last screen
+    track.addEventListener('wheel', (e) => {
+      const atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 4;
+      if (atEnd && (e.deltaX > 20 || e.deltaY > 20) && Date.now() - endNudge > 3000) {
+        endNudge = Date.now(); const last = panels[panels.length - 1];
+        if (!reduce) last.animate([{ translate: '0 0' }, { translate: '-14px 0' }, { translate: '8px 0' }, { translate: '0 0' }], { duration: 500, easing: 'ease-out' });
+        toast('Sudah habis! Saatnya <a href="./">booking 😉</a>');
+      }
+    }, { passive: true });
+
+    // Header buttons
+    $('install').addEventListener('click', () => toast('iPhone: Safari → <b>Bagikan</b> → <b>Tambah ke Layar Utama</b>.<br>Android: Chrome → <b>⋮</b> → <b>Instal aplikasi</b>.', 6000));
+    $('share').addEventListener('click', async () => {
+      const data = { title: 'Aplikasi Swassana', text: 'Booking studio foto, mini game, dan photobooth Swassana.', url: location.href };
+      try { if (navigator.share) await navigator.share(data); else { await navigator.clipboard.writeText(location.href); toast('🔗 Tautan disalin.'); } } catch (e) {}
+    });
+  </script>
+</body>
+</html>
