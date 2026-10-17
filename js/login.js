@@ -33,7 +33,7 @@ function render() {
         </div>
         <div class="gkal" id="gkal" aria-hidden="true"><p id="gkalTxt"></p><small id="gkalDate"></small></div>
       </div>
-      <div>
+      <div class="gate-hello">
         <p class="hello-tag" id="helloTag" aria-hidden="true"></p>
         <h1 class="hello" id="hello" aria-live="polite"><span class="h1l" id="gateGreet">Selamat datang</span><br><em class="h2l" id="helloSub">senang melihatmu lagi</em></h1>
         <p class="muted">Masuk untuk melanjutkan ke Swassana.</p>
@@ -52,6 +52,9 @@ function render() {
         <button class="pill pill-solid big-btn" type="submit" id="gateBtn">Masuk</button>
       </form>
     </div>`;
+  // the website's moving game banner, under the logo: each item opens its mini game (no login needed)
+  const track = document.querySelector('.marquee .marquee-track');
+  if (track) gate.querySelector('.logo').insertAdjacentHTML('afterend', `<nav class="gate-mq" aria-label="Main tanpa masuk"><div class="marquee-track">${track.innerHTML}</div></nav>`);
   document.body.appendChild(gate);
   startClock(gate);
   startHello(gate);
