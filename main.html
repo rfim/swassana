@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <title>Mini Game | Swassana</title>
+  <meta name="description" content="Enam mini game Swassana untuk HP: Cari Cahaya, Love Sync, Semua Lihat Kamera, Lempar Toga, Fokus, dan Viral Hype. Main, lalu bagikan skormu ke Story.">
+  <link rel="canonical" href="https://rfim.github.io/swassana/main.html">
+  <meta name="theme-color" content="#1a110e">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Instrument+Sans:wght@400..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="games.css">
+  <script>try { const t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
+  <style>
+    :root { --game: #5a3728; }
+    body.mini { margin: 0; height: 100dvh; overflow: hidden; overscroll-behavior: none; background: #1a110e; -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
+    #game { position: fixed; inset: 0; width: 100%; height: 100%; touch-action: none; display: block; }
+    .layer { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 5; }
+    .layer[hidden] { display: none; }
+    .panel { width: min(100%, 420px); text-align: center; padding: 28px 22px 22px; border-radius: 28px; background: color-mix(in srgb, var(--surface) 90%, transparent); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--line); box-shadow: 0 30px 80px -30px rgba(0,0,0,.6); }
+    .gicon { width: 84px; height: 84px; margin: 0 auto 10px; color: var(--game); }
+    .gicon svg { width: 100%; height: 100%; }
+    .panel h1 { font-family: var(--display); font-weight: 400; font-size: 36px; line-height: 1.05; margin: 4px 0 10px; letter-spacing: -.02em; }
+    .panel p { color: var(--muted); margin: 0 0 18px; }
+    .panel .pill-solid { background: var(--game); }
+    .best { font-size: 13px; color: var(--muted); margin-top: 12px; min-height: 1em; }
+    .hud { position: fixed; top: 0; left: 0; right: 0; z-index: 4; display: flex; justify-content: space-between; align-items: center; padding: calc(10px + env(safe-area-inset-top)) 14px 10px; pointer-events: none; }
+    .hud[hidden] { display: none; }
+    .hud > * { pointer-events: auto; }
+    .hud .chip { background: rgba(26,17,14,.55); color: #fbf7f2; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); padding: 8px 14px; border-radius: 999px; font-weight: 600; font-size: 15px; min-width: 64px; text-align: center; }
+    .hud a.chip { text-decoration: none; min-width: 0; }
+    #endScore { font-family: var(--display); font-size: 64px; line-height: 1; color: var(--game); }
+    #endUnit { font-size: 13px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
+    #endTitle { font-family: var(--display); font-style: italic; font-weight: 300; font-size: 30px; margin: 14px 0 6px; }
+    .stack { display: grid; gap: 10px; }
+    .stack .row-btns > * { flex: 1; justify-content: center; }
+    .others { font-size: 13px; margin-top: 14px; }
+    .others a { color: var(--accent); }
+    /* picker */
+    .picker { position: fixed; inset: 0; overflow-y: auto; padding: calc(20px + env(safe-area-inset-top)) 16px 40px; background: var(--bg); }
+    .picker .wrap { max-width: 900px; padding: 0; }
+    .picker h1 { font-family: var(--display); font-weight: 400; font-size: clamp(36px, 8vw, 60px); margin: 18px 0 6px; letter-spacing: -.02em; }
+    .picker h1 em { color: var(--accent); font-weight: 300; }
+    .grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); margin-top: 22px; }
+    .gcard { display: flex; gap: 16px; align-items: center; padding: 18px; border-radius: 22px; background: var(--surface); border: 1px solid var(--line); text-decoration: none; transition: transform .25s, border-color .25s; }
+    .gcard:hover { transform: translateY(-3px); border-color: var(--accent); }
+    .gcard svg { flex: none; width: 54px; height: 54px; transition: transform .4s cubic-bezier(.2,.7,.2,1); }
+    .gcard:hover svg { transform: rotate(-10deg) scale(1.1); }
+    .gcard b { display: block; font-family: var(--display); font-weight: 400; font-size: 21px; }
+    .gcard small { color: var(--muted); font-size: 13.5px; line-height: 1.4; display: block; margin-top: 2px; }
+    .gcard .tag { display: inline-block; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-bottom: 2px; }
+  </style>
+</head>
+<body class="mini">
+  <canvas id="game" aria-label="Area permainan"></canvas>
+  <div class="toast" id="toast" role="status"></div>
+
+  <!-- Picker (no ?g=) -->
+  <div class="picker" id="picker" hidden>
+    <div class="wrap">
+      <a class="brand" href="./">Swassana</a>
+      <h1>Mini game <em>Swassana</em></h1>
+      <p class="muted">Satu game untuk setiap jenis sesi. Paling seru dimainkan di HP.</p>
+      <div class="grid" id="grid"></div>
+    </div>
+  </div>
+
+  <!-- HUD -->
+  <div class="hud" id="hud" hidden>
+    <a class="chip" href="main.html" aria-label="Kembali ke daftar game">✕</a>
+    <span class="chip" id="hudScore">0</span>
+    <span class="chip" id="hudTime"></span>
+  </div>
+
+  <!-- Intro -->
+  <div class="layer" id="intro" hidden>
+    <div class="panel">
+      <div class="gicon" id="introIcon"></div>
+      <p class="eyebrow" style="margin:0">Mini game</p>
+      <h1 id="introTitle"></h1>
+      <p id="introHow"></p>
+      <button class="pill pill-solid big-btn" id="startBtn" type="button">Mulai</button>
+      <div class="best" id="introBest"></div>
+      <div class="others"><a href="main.html">← Semua game</a></div>
+    </div>
+  </div>
+
+  <!-- End -->
+  <div class="layer" id="end" hidden style="perspective:1000px">
+    <div class="panel" id="endCard">
+      <div id="endScore">0</div>
+      <div id="endUnit"></div>
+      <div id="endTitle"></div>
+      <p id="endLine"></p>
+      <div class="stack">
+        <button class="pill pill-solid big-btn" id="shareBtn" type="button" style="justify-content:center">Bagikan skor ke Story</button>
+        <div class="row-btns">
+          <button class="pill pill-outline" id="againBtn" type="button">Main lagi</button>
+          <a class="pill pill-outline" href="./#lokasi">Booking sesi</a>
+        </div>
+      </div>
+      <div class="best" id="endBest"></div>
+      <div class="others"><a href="main.html">← Coba game lain</a></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script type="module">
+    import { run, iconSvg } from './js/mini.js';
+
+    const GAMES = {
+      personal: { tag: 'Personal', title: 'Cari Cahaya', icon: 'meeple', color: '#c06a45', sub: 'Miringkan HP, arahkan cahaya ke model.' },
+      couple:   { tag: 'Couple', title: 'Love Sync', icon: 'lovers', color: '#b5524a', sub: 'Berdua di satu HP, ketuk hati bersamaan.' },
+      keluarga: { tag: 'Keluarga', title: 'Semua Lihat Kamera!', icon: 'meepleGroup', color: '#a3745a', sub: 'Ketuk yang menoleh sebelum shutter.' },
+      wisuda:   { tag: 'Wisuda', title: 'Lempar Toga', icon: 'cap', color: '#5a3728', sub: 'Lempar setinggi mungkin, lalu tangkap.' },
+      brand:    { tag: 'Konten Brand', title: 'Fokus!', icon: 'bag', color: '#7d8f6c', sub: 'Jepret tepat saat produk tajam.' },
+      kol:      { tag: 'KOL', title: 'Viral Hype', icon: 'megaphone', color: '#c06a45', sub: 'Teriak ke mikrofon, jadi viral.' },
+    };
+    const key = new URLSearchParams(location.search).get('g');
+
+    if (!GAMES[key]) {
+      document.body.style.overflow = 'auto';
+      document.getElementById('picker').hidden = false;
+      document.getElementById('grid').innerHTML = Object.entries(GAMES).map(([k, m]) => `
+        <a class="gcard" href="main.html?g=${k}" style="color:inherit">
+          <span style="color:${m.color}">${iconSvg(m.icon)}</span>
+          <span><span class="tag">${m.tag}</span><b>${m.title}</b><small>${m.sub}</small></span>
+        </a>`).join('') + `
+        <a class="gcard" href="photobooth.html" style="color:inherit">
+          <span style="color:#5a3728">${iconSvg('camera')}</span>
+          <span><span class="tag">Bonus</span><b>Photobooth</b><small>Foto dengan bingkai dan filter Swassana.</small></span>
+        </a>
+        <a class="gcard" href="kuis.html" style="color:inherit">
+          <span style="color:#a3745a">${iconSvg('medal')}</span>
+          <span><span class="tag">Bonus</span><b>Kamu tipe sesi apa?</b><small>Kuis 30 detik, hasil siap untuk Story.</small></span>
+        </a>`;
+      if (window.gsap && !matchMedia('(prefers-reduced-motion: reduce)').matches) gsap.from('.gcard', { y: 30, opacity: 0, duration: .6, stagger: .06, ease: 'power3.out' });
+    } else {
+      const { default: game } = await import(`./js/games/${key}.js`);
+      document.getElementById('intro').hidden = false;
+      run(game);
+    }
+  </script>
+</body>
+</html>

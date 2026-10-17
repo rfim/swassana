@@ -130,6 +130,11 @@
       document.querySelectorAll('[data-frame]').forEach((x) => x.setAttribute('aria-pressed', x === b));
       frame = b.dataset.frame; buzz(10); tick(660);
     }));
+    const preset = new URLSearchParams(location.search).get('frame');
+    if (FRAMES[preset]) {
+      frame = preset;
+      document.querySelectorAll('[data-frame]').forEach((x) => x.setAttribute('aria-pressed', x.dataset.frame === preset));
+    }
 
     // Filters: CSS for live preview, pixel function for the saved photo (same look on every browser)
     const clamp = (v) => v < 0 ? 0 : v > 255 ? 255 : v;
