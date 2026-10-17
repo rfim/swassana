@@ -129,51 +129,67 @@ function startClock(gate) {
   pol.addEventListener('click', () => { if (!reduce) restart('shake'); try { navigator.vibrate && navigator.vibrate(10); } catch (e) {} });
 }
 
-// Greeting in six languages, rotating every 7 seconds and matching the time of day.
+// Greeting in ten languages (incl. Javanese, Sundanese, Balinese, Madurese), rotating every 7 seconds; time-neutral words.
 // Every third turn shows a "kamus" word from one of those languages with its meaning in Indonesian.
 const HELLO = [
-  { tag: '🇮🇩 Indonesia', p: ['Selamat pagi', 'Selamat siang', 'Selamat sore', 'Selamat malam'], sub: 'senang melihatmu lagi' },
-  { tag: '🇳🇱 Nederlands', p: ['Goedemorgen', 'Goedemiddag', 'Goedemiddag', 'Goedenavond'], sub: 'fijn je weer te zien' },
-  { tag: '🇬🇧 English', p: ['Good morning', 'Good afternoon', 'Good afternoon', 'Good evening'], sub: 'good to see you again' },
-  { tag: '🇩🇪 Deutsch', p: ['Guten Morgen', 'Guten Tag', 'Guten Tag', 'Guten Abend'], sub: 'schön, dich wiederzusehen' },
-  { tag: '🇫🇷 Français', p: ['Bonjour', 'Bonjour', 'Bon après-midi', 'Bonsoir'], sub: 'ravi de te revoir' },
-  { tag: '🇸🇪 Svenska', p: ['God morgon', 'God dag', 'God eftermiddag', 'God kväll'], sub: 'kul att se dig igen' },
+  { tag: '🇮🇩 Indonesia', lang: 'id', hi: 'Halo', sub: 'senang melihatmu lagi' },
+  { tag: '🇮🇩 Jawa', lang: 'jv', hi: 'Sugeng rawuh', sub: 'monggo pinarak' },
+  { tag: '🇳🇱 Nederlands', lang: 'nl', hi: 'Hoi', sub: 'fijn je weer te zien' },
+  { tag: '🇮🇩 Sunda', lang: 'su', hi: 'Wilujeng sumping', sub: 'kumaha damang?' },
+  { tag: '🇬🇧 English', lang: 'en', hi: 'Hello there', sub: 'good to see you again' },
+  { tag: '🇮🇩 Bali', lang: 'ban', hi: 'Om Swastyastu', sub: 'rahajeng rauh' },
+  { tag: '🇩🇪 Deutsch', lang: 'de', hi: 'Hallo', sub: 'schön, dich wiederzusehen' },
+  { tag: '🇮🇩 Madura', lang: 'mad', hi: 'Salamet dhâteng', sub: 'ponapa kabhârrâ?' },
+  { tag: '🇫🇷 Français', lang: 'fr', hi: 'Salut', sub: 'ravi de te revoir' },
+  { tag: '🇸🇪 Svenska', lang: 'sv', hi: 'Hej', sub: 'kul att se dig igen' },
 ];
 const KAMUS = [
-  ['🇸🇪 Svenska', 'fika', 'rehat ngopi dan ngobrol santai, biasanya dengan kue'],
-  ['🇸🇪 Svenska', 'lagom', 'tidak kurang, tidak lebih; pas'],
-  ['🇸🇪 Svenska', 'mångata', 'jalur cahaya bulan yang memantul di air'],
-  ['🇳🇱 Nederlands', 'gezellig', 'suasana hangat, nyaman, dan akrab'],
-  ['🇳🇱 Nederlands', 'uitwaaien', 'jalan di tengah angin untuk menjernihkan pikiran'],
-  ['🇳🇱 Nederlands', 'kiekje', 'foto jepretan santai yang spontan'],
-  ['🇩🇪 Deutsch', 'Gemütlichkeit', 'rasa nyaman, hangat, dan diterima'],
-  ['🇩🇪 Deutsch', 'Fernweh', 'rindu pada tempat yang belum pernah dikunjungi'],
-  ['🇩🇪 Deutsch', 'Augenblick', 'sekejap mata; momen singkat yang berharga'],
-  ['🇫🇷 Français', 'joie de vivre', 'kegembiraan menikmati hidup'],
-  ['🇫🇷 Français', 'flâneur', 'orang yang berjalan santai menikmati kota'],
-  ['🇫🇷 Français', 'dépaysement', 'rasa asing yang menyegarkan di tempat baru'],
-  ['🇬🇧 English', 'serendipity', 'menemukan hal baik secara kebetulan'],
-  ['🇬🇧 English', 'golden hour', 'cahaya hangat setelah matahari terbit dan sebelum terbenam'],
-  ['🇬🇧 English', 'wanderlust', 'keinginan kuat untuk menjelajah dunia'],
+  ['🇮🇩 Indonesia', 'id', 'gemas', 'perasaan ingin mencubit sesuatu yang terlalu lucu'],
+  ['🇮🇩 Indonesia', 'id', 'jayus', 'lelucon yang garing, tapi tetap bikin senyum'],
+  ['🇮🇩 Indonesia', 'id', 'senja', 'saat langit memerah ketika matahari terbenam'],
+  ['🇮🇩 Jawa', 'jv', 'guyub', 'rukun dan hangat dalam kebersamaan'],
+  ['🇮🇩 Jawa', 'jv', 'sumringah', 'wajah berseri karena bahagia'],
+  ['🇮🇩 Jawa', 'jv', 'tepa selira', 'tenggang rasa; ikut merasakan perasaan orang lain'],
+  ['🇮🇩 Sunda', 'su', 'someah', 'ramah dan menyenangkan kepada tamu'],
+  ['🇮🇩 Sunda', 'su', 'ngabuburit', 'mengisi waktu sambil menunggu berbuka puasa'],
+  ['🇮🇩 Sunda', 'su', 'silih asih', 'saling mengasihi satu sama lain'],
+  ['🇮🇩 Bali', 'ban', 'suksma', 'terima kasih'],
+  ['🇮🇩 Bali', 'ban', 'ngayah', 'bekerja tulus bersama tanpa pamrih'],
+  ['🇮🇩 Bali', 'ban', 'tri hita karana', 'harmoni dengan Tuhan, sesama, dan alam'],
+  ['🇮🇩 Madura', 'mad', 'toron', 'pulang ke kampung halaman'],
+  ['🇮🇩 Madura', 'mad', 'abhântal ombâ', 'berbantal ombak; jiwa pelaut yang tangguh'],
+  ['🇮🇩 Madura', 'mad', 'bhuppa’ bhâbhu’ ghuru rato', 'hormati ayah, ibu, guru, lalu pemimpin'],
+  ['🇸🇪 Svenska', 'sv', 'fika', 'rehat ngopi dan ngobrol santai, biasanya dengan kue'],
+  ['🇸🇪 Svenska', 'sv', 'lagom', 'tidak kurang, tidak lebih; pas'],
+  ['🇸🇪 Svenska', 'sv', 'mångata', 'jalur cahaya bulan yang memantul di air'],
+  ['🇳🇱 Nederlands', 'nl', 'gezellig', 'suasana hangat, nyaman, dan akrab'],
+  ['🇳🇱 Nederlands', 'nl', 'uitwaaien', 'jalan di tengah angin untuk menjernihkan pikiran'],
+  ['🇳🇱 Nederlands', 'nl', 'kiekje', 'foto jepretan santai yang spontan'],
+  ['🇩🇪 Deutsch', 'de', 'Gemütlichkeit', 'rasa nyaman, hangat, dan diterima'],
+  ['🇩🇪 Deutsch', 'de', 'Fernweh', 'rindu pada tempat yang belum pernah dikunjungi'],
+  ['🇩🇪 Deutsch', 'de', 'Augenblick', 'sekejap mata; momen singkat yang berharga'],
+  ['🇫🇷 Français', 'fr', 'joie de vivre', 'kegembiraan menikmati hidup'],
+  ['🇫🇷 Français', 'fr', 'flâneur', 'orang yang berjalan santai menikmati kota'],
+  ['🇫🇷 Français', 'fr', 'dépaysement', 'rasa asing yang menyegarkan di tempat baru'],
+  ['🇬🇧 English', 'en', 'serendipity', 'menemukan hal baik secara kebetulan'],
+  ['🇬🇧 English', 'en', 'golden hour', 'cahaya hangat setelah matahari terbit dan sebelum terbenam'],
+  ['🇬🇧 English', 'en', 'wanderlust', 'keinginan kuat untuk menjelajah dunia'],
 ];
 function startHello(gate) {
   const tagEl = gate.querySelector('#helloTag'), h1 = gate.querySelector('#hello'), l1 = gate.querySelector('#gateGreet'), l2 = gate.querySelector('#helloSub');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   let turn = 0, li = 0, lastWord = -1;
-  const period = () => { const h = new Date().getHours(); return h < 11 ? 0 : h < 15 ? 1 : h < 18 ? 2 : 3; };
   const show = () => {
     if (!gate.isConnected) return;
     const dict = turn > 0 && turn % 3 === 2;
     if (dict) {
       let k; do { k = Math.floor(Math.random() * KAMUS.length); } while (k === lastWord && KAMUS.length > 1);
       lastWord = k;
-      const [tag, word, mean] = KAMUS[k];
-      tagEl.textContent = `Kamus · ${tag}`; l1.textContent = word; l2.textContent = mean;
-      h1.lang = { '🇸🇪 Svenska': 'sv', '🇳🇱 Nederlands': 'nl', '🇩🇪 Deutsch': 'de', '🇫🇷 Français': 'fr', '🇬🇧 English': 'en' }[tag];
+      const [tag, lang, word, mean] = KAMUS[k];
+      tagEl.textContent = `Kamus · ${tag}`; l1.textContent = word; l2.textContent = mean; h1.lang = lang;
     } else {
       const g = HELLO[li % HELLO.length]; li++;
-      tagEl.textContent = g.tag; l1.textContent = g.p[period()] + ','; l2.textContent = g.sub;
-      h1.lang = ['id', 'nl', 'en', 'de', 'fr', 'sv'][(li - 1) % HELLO.length];
+      tagEl.textContent = g.tag; l1.textContent = g.hi + ','; l2.textContent = g.sub; h1.lang = g.lang;
     }
     h1.classList.toggle('dict', dict);
     if (!reduce) { [tagEl, h1].forEach((el) => { el.classList.remove('swap'); void el.offsetWidth; el.classList.add('swap'); }); }
