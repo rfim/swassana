@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Planner Sesi | Swassana</title>
+  <meta name="description" content="Rencanakan hari sesi fotomu di Swassana: checklist persiapan, jadwal, dan pengingat.">
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#24150f">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Instrument+Sans:wght@400..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script>try { const t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
+  <script>
+    // Phone/app layout starts behind the login screen (see js/login.js).
+    (function () {
+      var app = matchMedia('(display-mode: standalone), (hover: none) and (pointer: coarse)').matches, ok = false;
+      try { ok = localStorage.getItem('sw-auth') === 'b58f51929f7fe337cebc3a7fc162673d510b757fdfc439d7aed4947f7561fc90'; } catch (e) {}
+      if (app && !ok) document.documentElement.classList.add('locked');
+    })();
+  </script>
+  <style>
+    .pl { max-width: 560px; margin: 0 auto; padding: 0 0 120px; }
+    .pl-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; padding: 22px 18px 8px; }
+    .pl-month { border: 0; background: none; color: var(--text); padding: 0; cursor: pointer; text-align: left; font: 300 34px/1 var(--display); letter-spacing: -.02em; }
+    .pl-month em { font-style: italic; color: var(--accent); }
+    .pl-month b { font: 400 22px var(--sans); color: var(--accent); margin-left: 4px; display: inline-block; transition: transform .3s; }
+    .pl-month:active b { transform: translateX(4px); }
+    .pl-count { margin: 0; text-align: right; font-size: 12.5px; color: var(--muted); line-height: 1.3; }
+    .pl-count strong { display: block; font: 600 15px var(--sans); color: var(--accent); }
+
+    .pl-weekwrap { position: relative; padding: 8px 10px 4px; touch-action: pan-y; overflow: hidden; }
+    .pl-week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+    .pl-week.slide-l { animation: wk-l .35s cubic-bezier(.2, .8, .2, 1); }
+    .pl-week.slide-r { animation: wk-r .35s cubic-bezier(.2, .8, .2, 1); }
+    @keyframes wk-l { from { opacity: 0; transform: translateX(40px); } }
+    @keyframes wk-r { from { opacity: 0; transform: translateX(-40px); } }
+    .pl-d { border: 0; background: none; color: var(--text); padding: 6px 0 8px; border-radius: 16px; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; position: relative; -webkit-tap-highlight-color: transparent; }
+    .pl-d small { font-size: 11px; color: var(--muted); }
+    .pl-d span { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 50%; font: 600 16px var(--sans); transition: background .25s, color .25s, transform .3s cubic-bezier(.34, 1.56, .64, 1); }
+    .pl-d.today span { box-shadow: inset 0 0 0 1.5px var(--accent); }
+    .pl-d.sel span { background: var(--primary, var(--accent)); color: var(--on-primary, #24150f); transform: scale(1.08); }
+    .pl-d.sess::after { content: "★"; position: absolute; top: 0; right: 4px; font-size: 11px; color: var(--accent); }
+    .pl-d i { display: flex; gap: 2px; height: 5px; }
+    .pl-d i b { width: 5px; height: 5px; border-radius: 50%; background: var(--c); }
+    .pl-nav { position: absolute; top: 50%; width: 26px; height: 40px; border: 0; background: none; color: var(--muted); font-size: 20px; cursor: pointer; translate: 0 -50%; display: none; }
+    @media (hover: hover) { .pl-nav { display: block; } .pl-nav.prev { left: -2px; } .pl-nav.next { right: -2px; } }
+
+    .pl-dayhead { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 18px 18px 8px; }
+    .pl-dayhead h2 { margin: 0; font: 600 16px var(--sans); }
+    .pl-sess { border: 1px solid var(--line); background: var(--surface); color: var(--text); border-radius: 999px; padding: 8px 12px; font: 600 12.5px var(--sans); cursor: pointer; min-height: 36px; transition: transform .2s cubic-bezier(.34, 1.56, .64, 1); }
+    .pl-sess[aria-pressed="true"] { background: var(--primary, var(--accent)); color: var(--on-primary, #24150f); border-color: transparent; }
+    .pl-sess:active { transform: scale(.94); }
+
+    .pl-list { list-style: none; margin: 0; padding: 4px 14px 0; position: relative; }
+    .pl-item { position: relative; display: grid; grid-template-columns: 52px 1fr 40px; gap: 12px; align-items: center; padding: 8px 6px; touch-action: pan-y; transition: transform .3s cubic-bezier(.2, .8, .2, 1), opacity .3s; }
+    .pl-item.enter { animation: item-in .45s cubic-bezier(.2, .8, .2, 1) both; }
+    @keyframes item-in { from { opacity: 0; transform: translateY(12px); } }
+    .pl-item::before { content: ""; position: absolute; left: 31px; top: 54px; bottom: -10px; width: 3px; border-radius: 3px; background: color-mix(in srgb, var(--c) 40%, transparent); }
+    .pl-item:last-child::before { display: none; }
+    .pl-pill { width: 52px; height: 52px; border-radius: 26px; }
+    .pl-pill svg { width: 52%; height: 52%; }
+    .pl-txt { min-width: 0; }
+    .pl-txt small { display: block; font-size: 12.5px; color: var(--muted); }
+    .pl-txt b { display: block; font: 600 16px/1.3 var(--sans); overflow-wrap: anywhere; transition: color .3s; position: relative; width: fit-content; }
+    .pl-txt b::after { content: ""; position: absolute; left: 0; top: 55%; height: 1.5px; width: 100%; background: currentColor; transform: scaleX(0); transform-origin: left; transition: transform .35s cubic-bezier(.2, .8, .2, 1); }
+    .pl-item.done .pl-txt b { color: var(--muted); }
+    .pl-item.done .pl-txt b::after { transform: scaleX(1); }
+    .pl-check { width: 30px; height: 30px; border-radius: 50%; border: 2px solid color-mix(in srgb, var(--c) 80%, #fff 0%); background: transparent; display: grid; place-items: center; cursor: pointer; padding: 0; justify-self: center; transition: background .25s, transform .3s cubic-bezier(.34, 1.56, .64, 1); }
+    .pl-check svg { width: 16px; height: 16px; stroke: #fff; stroke-dasharray: 24; stroke-dashoffset: 24; transition: stroke-dashoffset .35s ease .05s; }
+    .pl-item.done .pl-check { background: var(--c); transform: scale(1.1); }
+    .pl-item.done .pl-check svg { stroke-dashoffset: 0; }
+    .pl-check:active { transform: scale(.85); }
+    .pl-del { position: absolute; right: 6px; top: 50%; translate: 0 -50%; font: 600 13px var(--sans); color: #ffb4a2; opacity: 0; pointer-events: none; }
+    .pl-item.swiping .pl-del { opacity: 1; }
+
+    .pl-empty { margin: 10px 16px 0; padding: 22px 18px; border-radius: 22px; background: var(--surface); border: 1px solid var(--line); text-align: center; }
+    .pl-empty p { color: var(--muted); margin: 0 0 14px; }
+    .pl-empty .row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .pl-btn { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 20px; border-radius: 999px; border: 0; font: 700 15px var(--sans); cursor: pointer; text-decoration: none; transition: transform .2s cubic-bezier(.34, 1.56, .64, 1); }
+    .pl-btn.main { background: var(--primary, #fbeee2); color: var(--on-primary, #24150f); }
+    .pl-btn.alt { background: transparent; color: var(--text); box-shadow: inset 0 0 0 1px var(--line); }
+    .pl-btn:active { transform: scale(.95); box-shadow: var(--ps-ring); }
+    .pl-done { margin: 18px 16px 0; text-align: center; color: var(--accent); font: italic 400 18px var(--display); min-height: 1.4em; }
+
+    .pl-fab { position: fixed; right: 18px; bottom: calc(96px + env(safe-area-inset-bottom)); width: 58px; height: 58px; border-radius: 50%; border: 1px solid rgba(255, 236, 220, .45); cursor: pointer; z-index: 30;
+      background: var(--primary, #c98a60); color: var(--on-primary, #24150f); font: 300 32px/1 var(--sans); box-shadow: 0 14px 28px -14px rgba(0, 0, 0, .45); transition: transform .25s cubic-bezier(.34, 1.56, .64, 1); }
+    .pl-fab:active { transform: scale(.9) rotate(90deg); box-shadow: var(--ps-ring); }
+    :root:not(.app-mode) .pl-fab { bottom: 24px; }
+
+    .pl-sheet { position: fixed; inset: 0; z-index: 60; display: flex; align-items: flex-end; }
+    .pl-sheet[hidden] { display: none; }
+    .pl-sheet .bd { position: absolute; inset: 0; background: rgba(10, 5, 3, .55); animation: fade .25s ease; }
+    @keyframes fade { from { opacity: 0; } }
+    .pl-sheet form { position: relative; width: 100%; max-width: 560px; margin: 0 auto; background: var(--bg-2, #2a1912); color: var(--text, #f7ece2); border-radius: 26px 26px 0 0; padding: 10px 18px calc(22px + env(safe-area-inset-bottom)); display: grid; gap: 14px; border-top: 1px solid rgba(255, 226, 204, .18); animation: up .35s cubic-bezier(.2, .8, .2, 1); }
+    @keyframes up { from { transform: translateY(100%); } }
+    .pl-sheet .grip { width: 40px; height: 5px; border-radius: 3px; background: rgba(255, 226, 204, .25); justify-self: center; }
+    .pl-sheet h3 { margin: 0; font: 300 26px var(--display); }
+    .pl-sheet label { display: grid; gap: 6px; font-size: 12.5px; font-weight: 600; letter-spacing: .06em; color: var(--muted); }
+    .pl-sheet input, .pl-sheet select { font: inherit; font-size: 16px; font-weight: 500; letter-spacing: 0; color: var(--text); background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; min-height: 48px; width: 100%; }
+    .pl-sheet input:focus, .pl-sheet select:focus { outline: none; box-shadow: var(--ps-ring); }
+    .pl-sheet .two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .pl-icons { display: flex; gap: 8px; flex-wrap: wrap; }
+    .pl-icons button { border: 0; background: none; padding: 2px; cursor: pointer; border-radius: 16px; }
+    .pl-icons .sa-ic { width: 42px; height: 42px; border-radius: 14px; opacity: .55; transition: opacity .2s, transform .25s cubic-bezier(.34, 1.56, .64, 1); }
+    .pl-icons button[aria-pressed="true"] .sa-ic { opacity: 1; transform: scale(1.1); box-shadow: var(--ps-ring); }
+    .pl-sheet .row { display: flex; gap: 10px; }
+    .pl-sheet .row .pl-btn { flex: 1; }
+
+    .pl-toast { position: fixed; left: 50%; bottom: calc(170px + env(safe-area-inset-bottom)); translate: -50% 20px; z-index: 70; background: var(--primary, #fbeee2); color: var(--on-primary, #24150f); padding: 10px 10px 10px 16px; border-radius: 16px; font: 600 14px var(--sans); display: flex; gap: 10px; align-items: center; opacity: 0; pointer-events: none; transition: opacity .25s, translate .35s cubic-bezier(.34, 1.56, .64, 1); box-shadow: 0 16px 30px -14px rgba(0, 0, 0, .7); }
+    .pl-toast.show { opacity: 1; translate: -50% 0; pointer-events: auto; }
+    .pl-toast button { border: 0; background: var(--on-primary, #24150f); color: var(--primary, #fbeee2); border-radius: 10px; padding: 8px 12px; font: 600 13px var(--sans); cursor: pointer; }
+    @media (prefers-reduced-motion: reduce) { .pl *, .pl-sheet * { animation: none !important; transition: none !important; } }
+  </style>
+  <script>var p = 'latte'; try { p = localStorage.getItem('sw-pal') || p; } catch (e) {} document.documentElement.dataset.pal = p;</script>
+</head>
+<body data-page="planner">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="sa-glyph" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fffaf5"/><stop offset=".55" stop-color="#fbe9d8"/><stop offset="1" stop-color="#e9c8aa" stop-opacity=".9"/></linearGradient></defs></svg>
+  <header class="nav scrolled">
+    <div class="wrap nav-inner">
+      <a href="./" class="brand">Swassana</a>
+      <div class="nav-actions"><a href="./" class="pill pill-solid">Beranda</a></div>
+    </div>
+  </header>
+
+  <main class="pl">
+    <section class="pl-head">
+      <button class="pl-month" id="plMonth" type="button" aria-label="Kembali ke hari ini"></button>
+      <p class="pl-count" id="plCount"></p>
+    </section>
+
+    <div class="pl-weekwrap" id="plWeekWrap">
+      <button class="pl-nav prev" id="plPrev" type="button" aria-label="Minggu sebelumnya">‹</button>
+      <div class="pl-week" id="plWeek" role="listbox" aria-label="Pilih tanggal"></div>
+      <button class="pl-nav next" id="plNext" type="button" aria-label="Minggu berikutnya">›</button>
+    </div>
+
+    <div class="pl-dayhead">
+      <h2 id="plDayTitle"></h2>
+      <button class="pl-sess" id="plSess" type="button" aria-pressed="false">☆ Hari sesi</button>
+    </div>
+    <ol class="pl-list" id="plList"></ol>
+    <div class="pl-empty" id="plEmpty" hidden>
+      <p>Belum ada rencana di hari ini.</p>
+      <div class="row">
+        <button class="pl-btn main" id="plTemplate" type="button">Pakai template hari sesi</button>
+        <a class="pl-btn alt" id="plBook">Booking di studio</a>
+      </div>
+    </div>
+    <p class="pl-done" id="plDone" aria-live="polite"></p>
+  </main>
+
+  <button class="pl-fab" id="plAdd" type="button" aria-label="Tambah rencana">+</button>
+
+  <div class="pl-sheet" id="plSheet" hidden>
+    <div class="bd" data-close></div>
+    <form id="plForm" role="dialog" aria-modal="true" aria-labelledby="plSheetTitle">
+      <span class="grip" aria-hidden="true"></span>
+      <h3 id="plSheetTitle">Tambah rencana</h3>
+      <label>Kegiatan<input name="what" required maxlength="60" placeholder="mis. Setrika outfit"></label>
+      <div class="two">
+        <label>Mulai<input name="time" type="time" required value="09:00"></label>
+        <label>Durasi<select name="dur"><option value="15">15 mnt</option><option value="30" selected>30 mnt</option><option value="45">45 mnt</option><option value="60">1 jam</option><option value="90">1,5 jam</option><option value="120">2 jam</option></select></label>
+      </div>
+      <label>Ikon<div class="pl-icons" id="plIcons"></div></label>
+      <div class="row">
+        <button class="pl-btn alt" type="button" data-close>Batal</button>
+        <button class="pl-btn main" type="submit">Simpan</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="pl-toast" id="plToast" role="status"><span id="plToastMsg"></span><button type="button" id="plUndo">Urungkan</button></div>
+
+  <script type="module">
+    import { ICONS } from './js/icons.js';
+
+    const $ = (id) => document.getElementById(id);
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const buzz = (p) => { try { navigator.vibrate && navigator.vibrate(p); } catch (e) {} };
+    const icon = (k) => `<svg viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="${ICONS[k]}"/></svg>`;
+    const ICON_SET = [['sun', '#d0894f'], ['heel', '#b5524a'], ['lipstick', '#c06a45'], ['bag', '#6f8a5c'], ['pin', '#8a5a42'], ['camera', '#5a3728'], ['hearts', '#b5524a'], ['coffee', '#a3745a'], ['book', '#b08a4a']];
+    const COLOR = Object.fromEntries(ICON_SET);
+    const CITY = { surabaya: 'Swassana Studio', malang: 'Casa de Swassana' };
+
+    // Storage: { days: { 'YYYY-MM-DD': [items] }, session: 'YYYY-MM-DD' | null }
+    const load = () => { try { return JSON.parse(localStorage.getItem('sw-plan')) || { days: {}, session: null }; } catch (e) { return { days: {}, session: null }; } };
+    let data = load();
+    const save = () => { try { localStorage.setItem('sw-plan', JSON.stringify(data)); } catch (e) {} };
+    const city = () => { try { return localStorage.getItem('sw-city') === 'malang' ? 'malang' : 'surabaya'; } catch (e) { return 'surabaya'; } };
+
+    const pad = (n) => String(n).padStart(2, '0');
+    const key = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+    const fromKey = (k) => { const [y, m, d] = k.split('-').map(Number); return new Date(y, m - 1, d); };
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    let sel = new Date(today);
+    const monday = (d) => { const x = new Date(d); x.setDate(x.getDate() - ((x.getDay() + 6) % 7)); return x; };
+    let weekStart = monday(sel);
+    const DAYS = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
+    const fmtDay = new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'long' });
+    const fmtMonth = new Intl.DateTimeFormat('id-ID', { month: 'long' });
+    const addMin = (t, m) => { const [h, mm] = t.split(':').map(Number); const x = h * 60 + mm + m; return `${pad(Math.floor(x / 60) % 24)}:${pad(x % 60)}`; };
+    const items = () => (data.days[key(sel)] || []).slice().sort((a, b) => a.t.localeCompare(b.t));
+
+    function renderHead() {
+      $('plMonth').innerHTML = `${sel.getDate()}. ${fmtMonth.format(sel)} <em>${sel.getFullYear()}</em><b aria-hidden="true">›</b>`;
+      const c = $('plCount');
+      if (data.session) {
+        const diff = Math.round((fromKey(data.session) - today) / 864e5);
+        c.innerHTML = diff > 0 ? `<strong>${diff} hari lagi</strong>sesi di ${CITY[city()]}` : diff === 0 ? `<strong>Hari ini!</strong>sesi fotomu` : '';
+      } else c.innerHTML = '<strong>Planner sesi</strong>tandai hari sesimu ☆';
+    }
+    function renderWeek(dir = 0) {
+      const w = $('plWeek');
+      w.innerHTML = DAYS.map((name, i) => {
+        const d = new Date(weekStart); d.setDate(d.getDate() + i);
+        const k = key(d), list = data.days[k] || [];
+        const cls = ['pl-d', k === key(sel) && 'sel', k === key(today) && 'today', k === data.session && 'sess'].filter(Boolean).join(' ');
+        return `<button type="button" class="${cls}" data-k="${k}" role="option" aria-selected="${k === key(sel)}" aria-label="${fmtDay.format(d)}${list.length ? `, ${list.length} rencana` : ''}">
+          <small>${name}</small><span>${d.getDate()}</span><i>${list.slice(0, 3).map((x) => `<b style="--c:${COLOR[x.icon] || '#a3745a'}"></b>`).join('')}</i></button>`;
+      }).join('');
+      if (dir && !reduce) { w.classList.remove('slide-l', 'slide-r'); void w.offsetWidth; w.classList.add(dir > 0 ? 'slide-l' : 'slide-r'); }
+    }
+    function renderDay(enter = true) {
+      $('plDayTitle').textContent = fmtDay.format(sel);
+      const isSess = data.session === key(sel);
+      $('plSess').setAttribute('aria-pressed', isSess); $('plSess').textContent = isSess ? '★ Hari sesi' : '☆ Hari sesi';
+      const list = items();
+      $('plList').innerHTML = list.map((x, n) => `
+        <li class="pl-item${x.done ? ' done' : ''}${enter ? ' enter' : ''}" data-id="${x.id}" style="--c:${COLOR[x.icon] || '#a3745a'};animation-delay:${n * 50}ms">
+          <span class="sa-ic pl-pill" style="--c:${COLOR[x.icon] || '#a3745a'}">${icon(x.icon)}</span>
+          <span class="pl-txt"><small>${x.t}–${addMin(x.t, x.d)} (${x.d} mnt)</small><b>${x.title.replace(/[<>&]/g, '')}</b></span>
+          <button class="pl-check" type="button" aria-label="Tandai selesai: ${x.title.replace(/"/g, '')}" aria-pressed="${!!x.done}"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>
+          <span class="pl-del" aria-hidden="true">Hapus</span>
+        </li>`).join('');
+      $('plEmpty').hidden = list.length > 0;
+      $('plBook').href = `https://swassanastudio.com/booking/${city()}`;
+      const allDone = list.length && list.every((x) => x.done);
+      $('plDone').textContent = allDone ? 'Semua siap. Selamat bersesi! ✨' : '';
+    }
+    const renderAll = (dir = 0) => { renderHead(); renderWeek(dir); renderDay(); };
+
+    // Week: tap a day, swipe or arrows to change week, month title jumps to today
+    $('plWeek').addEventListener('click', (e) => {
+      const b = e.target.closest('[data-k]'); if (!b) return;
+      sel = fromKey(b.dataset.k); buzz(5); renderHead(); renderWeek(); renderDay();
+    });
+    const shiftWeek = (n) => { weekStart.setDate(weekStart.getDate() + 7 * n); sel = new Date(weekStart); if (n < 0) sel.setDate(sel.getDate()); renderAll(n); buzz(6); };
+    $('plPrev').addEventListener('click', () => shiftWeek(-1));
+    $('plNext').addEventListener('click', () => shiftWeek(1));
+    let wx = null;
+    $('plWeekWrap').addEventListener('pointerdown', (e) => { wx = e.clientX; });
+    $('plWeekWrap').addEventListener('pointerup', (e) => { if (wx === null) return; const dx = e.clientX - wx; wx = null; if (Math.abs(dx) > 50) shiftWeek(dx < 0 ? 1 : -1); });
+    $('plMonth').addEventListener('click', () => { sel = new Date(today); weekStart = monday(sel); renderAll(); });
+
+    // Session day toggle
+    $('plSess').addEventListener('click', () => {
+      data.session = data.session === key(sel) ? null : key(sel); save(); buzz([10, 30, 10]);
+      renderHead(); renderWeek(); renderDay(false);
+    });
+
+    // Template for a photo day (based on the Jurnal checklist)
+    $('plTemplate').addEventListener('click', () => {
+      const studio = CITY[city()];
+      const T = [['07:00', 30, 'Bangun & sarapan', 'sun'], ['08:00', 30, 'Siapkan outfit & properti', 'heel'], ['08:45', 45, 'Make-up & rapikan rambut', 'lipstick'],
+        ['09:30', 15, 'Berangkat ke studio', 'pin'], ['09:45', 15, 'Tiba lebih awal, ganti baju', 'bag'], ['10:00', 60, `Sesi foto di ${studio}`, 'camera'], ['11:00', 30, 'Pilih foto favorit & bagikan', 'hearts']];
+      data.days[key(sel)] = T.map(([t, d, title, ic], i) => ({ id: Date.now() + i, t, d, title, icon: ic, done: false }));
+      if (!data.session) data.session = key(sel);
+      save(); buzz(15); renderAll();
+    });
+
+    // Check / uncheck
+    $('plList').addEventListener('click', (e) => {
+      const b = e.target.closest('.pl-check'); if (!b) return;
+      const li = b.closest('.pl-item'), x = (data.days[key(sel)] || []).find((i) => String(i.id) === li.dataset.id);
+      x.done = !x.done; save();
+      li.classList.toggle('done', x.done); b.setAttribute('aria-pressed', x.done);
+      buzz(x.done ? [8, 30, 8] : 6);
+      const list = items(); $('plDone').textContent = list.every((i) => i.done) ? 'Semua siap. Selamat bersesi! ✨' : '';
+      renderWeek();
+    });
+
+    // Swipe left to delete, with undo
+    let sw = null, undo = null, toastT, undoReady = 0;
+    $('plList').addEventListener('pointerdown', (e) => { const li = e.target.closest('.pl-item'); if (!li || e.target.closest('.pl-check')) return; sw = { li, x: e.clientX, y: e.clientY, dx: 0 }; });
+    addEventListener('pointermove', (e) => {
+      if (!sw) return; sw.dx = Math.min(0, e.clientX - sw.x);
+      if (Math.abs(e.clientY - sw.y) > 30 && Math.abs(sw.dx) < 20) { sw.li.style.transform = ''; sw = null; return; }
+      sw.li.style.transition = 'none'; sw.li.style.transform = `translateX(${sw.dx}px)`; sw.li.classList.toggle('swiping', sw.dx < -40);
+    });
+    addEventListener('pointerup', () => {
+      if (!sw) return; const { li, dx } = sw; sw = null; li.style.transition = '';
+      if (dx < -110) {
+        li.style.transform = 'translateX(-110%)'; li.style.opacity = '0';
+        const k = key(sel), before = (data.days[k] || []).slice();
+        data.days[k] = before.filter((i) => String(i.id) !== li.dataset.id); save(); buzz(20);
+        undo = () => { data.days[k] = before; save(); renderAll(); };
+        $('plToastMsg').textContent = 'Rencana dihapus'; $('plToast').classList.add('show'); undoReady = Date.now() + 400;
+        clearTimeout(toastT); toastT = setTimeout(() => { $('plToast').classList.remove('show'); undo = null; }, 4000);
+        setTimeout(() => { renderWeek(); renderDay(false); }, 280);
+      } else { li.style.transform = ''; li.classList.remove('swiping'); }
+    });
+    // Ignore the click that ends the swipe itself, so a swipe never undoes its own delete
+    $('plUndo').addEventListener('click', () => { if (Date.now() < undoReady) return; if (undo) undo(); undo = null; $('plToast').classList.remove('show'); });
+
+    // Add sheet
+    let pick = 'camera';
+    $('plIcons').innerHTML = ICON_SET.map(([k, c]) => `<button type="button" data-icon="${k}" aria-pressed="${k === pick}" aria-label="${k}"><span class="sa-ic" style="--c:${c}">${icon(k)}</span></button>`).join('');
+    $('plIcons').addEventListener('click', (e) => { const b = e.target.closest('[data-icon]'); if (!b) return; pick = b.dataset.icon; $('plIcons').querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', x === b)); buzz(5); });
+    const sheet = $('plSheet');
+    const openSheet = () => { sheet.hidden = false; $('plForm').what.value = ''; setTimeout(() => $('plForm').what.focus(), 50); };
+    const closeSheet = () => { sheet.hidden = true; };
+    $('plAdd').addEventListener('click', () => { buzz(8); openSheet(); });
+    sheet.addEventListener('click', (e) => { if (e.target.closest('[data-close]')) closeSheet(); });
+    addEventListener('keydown', (e) => { if (e.key === 'Escape' && !sheet.hidden) closeSheet(); });
+    $('plForm').addEventListener('submit', (e) => {
+      e.preventDefault(); const f = e.target;
+      const title = f.what.value.trim(); if (!title) return;
+      const k = key(sel); (data.days[k] = data.days[k] || []).push({ id: Date.now(), t: f.time.value || '09:00', d: +f.dur.value, title, icon: pick, done: false });
+      save(); closeSheet(); buzz([10, 20, 10]); renderWeek(); renderDay();
+    });
+
+    renderAll();
+  </script>
+  <script type="module" src="js/tabs.js"></script>
+  <script type="module" src="js/login.js"></script>
+</body>
+</html>

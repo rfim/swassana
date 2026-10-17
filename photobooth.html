@@ -51,6 +51,7 @@
       if (app && !ok) document.documentElement.classList.add('locked');
     })();
   </script>
+  <script>var p = 'latte'; try { p = localStorage.getItem('sw-pal') || p; } catch (e) {} document.documentElement.dataset.pal = p;</script>
 </head>
 <body class="game">
   <canvas class="fx" id="fx" aria-hidden="true"></canvas>

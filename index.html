@@ -50,6 +50,7 @@
       if (app && !ok) document.documentElement.classList.add('locked');
     })();
   </script>
+  <script>var p = 'latte'; try { p = localStorage.getItem('sw-pal') || p; } catch (e) {} document.documentElement.dataset.pal = p;</script>
 </head>
 <body>
   <a class="skip" href="#lokasi">Lewati ke pilihan lokasi</a>
@@ -335,6 +336,17 @@
       </div>
     </section>
 
+    <!-- Palette picker (app only) -->
+    <section id="tampilan" class="wrap section app-only-block" data-tab="info">
+      <div class="section-head"><p class="eyebrow">Tampilan</p><h2>Pilih nuansa aplikasi</h2></div>
+      <div class="pal-picker" role="radiogroup" aria-label="Palet warna">
+        <button type="button" role="radio" data-pal="latte"><span class="sw" style="--a:#f6efe8;--b:#f4b79a;--c:#3a2a22"></span>Latte</button>
+        <button type="button" role="radio" data-pal="blush"><span class="sw" style="--a:#fbeee9;--b:#f7a8a0;--c:#e46f6f"></span>Blush Sand</button>
+        <button type="button" role="radio" data-pal="mist"><span class="sw" style="--a:#2a2320;--b:#c98f7a;--c:#f3e9e2"></span>Mocha Mist</button>
+        <button type="button" role="radio" data-pal="espresso"><span class="sw" style="--a:#0d0907;--b:#ff8a5c;--c:#fff6ef"></span>Espresso Glow</button>
+      </div>
+    </section>
+
     <!-- Instagram -->
     <section id="ig" class="wrap section" data-tab="info">
       <div class="section-head reveal">
@@ -465,5 +477,17 @@
   <script type="module" src="js/tabs.js"></script>
   <script type="module" src="js/login.js"></script>
   <script type="module" src="js/superapp.js"></script>
+  <script>
+    // Palette picker: switches live and is remembered on this device
+    (function () {
+      var root = document.documentElement, btns = document.querySelectorAll('.pal-picker [data-pal]');
+      var mark = function () { btns.forEach(function (b) { b.setAttribute('aria-checked', b.dataset.pal === root.dataset.pal); }); };
+      btns.forEach(function (b) { b.addEventListener('click', function () {
+        root.dataset.pal = b.dataset.pal; try { localStorage.setItem('sw-pal', b.dataset.pal); } catch (e) {}
+        mark(); try { navigator.vibrate && navigator.vibrate(8); } catch (e) {}
+      }); });
+      mark();
+    })();
+  </script>
 </body>
 </html>

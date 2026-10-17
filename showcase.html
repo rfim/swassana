@@ -43,13 +43,13 @@
 
     /* ---------- header ---------- */
     .head { display: grid; grid-template-columns: auto 1fr; gap: 20px; align-items: center; padding: clamp(28px, 6vw, 56px) 0 24px; }
-    .app-icon { width: clamp(84px, 14vw, 120px); aspect-ratio: 1; border-radius: 26%; border: 0; padding: 0; cursor: pointer; background: url(icons/icon-512.png) center / cover, #5a3728;
+    .app-icon { width: clamp(84px, 14vw, 120px); aspect-ratio: 1; border-radius: 26%; border: 0; padding: 0; cursor: pointer; background: radial-gradient(70% 70% at 30% 20%, #f9d9c7, transparent 70%), radial-gradient(60% 60% at 80% 90%, #f2b6c3, transparent 70%), #f6efe8; color: #3a2a22; font: 700 clamp(40px, 7vw, 56px)/1 var(--sans); letter-spacing: -.04em;
       box-shadow: 0 18px 40px -18px rgba(46, 27, 22, .55), inset 0 1px 0 rgba(255, 255, 255, .3); transition: transform .5s var(--spring); }
     .app-icon:hover { transform: rotate(-6deg) scale(1.05); }
     .app-icon:active { transform: scale(.92); }
     .app-icon.spin { animation: icon-spin .9s var(--spring); }
     @keyframes icon-spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
-    .head h1 { font-family: var(--display); font-weight: 400; font-size: clamp(34px, 6vw, 54px); line-height: 1; margin: 0; letter-spacing: -.02em; }
+    .head h1 { font-family: var(--sans); font-weight: 650; font-size: clamp(34px, 6vw, 54px); line-height: 1; margin: 0; letter-spacing: -.04em; }
     .head h1 span { display: inline-block; transition: transform .35s var(--spring), color .2s; }
     .head h1:hover span { transform: translateY(calc(var(--i) * -1px - 2px)); color: var(--accent); }
     .head h1 span:nth-child(n) { transition-delay: calc(var(--i) * 18ms); }
@@ -85,18 +85,18 @@
     .track::-webkit-scrollbar { display: none; }
     .track.dragging { cursor: grabbing; scroll-snap-type: none; }
     .track.dragging .panel { pointer-events: none; }
-    .panel { flex: 0 0 auto; width: min(78vw, 300px); aspect-ratio: 300 / 600; scroll-snap-align: start; border-radius: 26px; position: relative; overflow: hidden; color: var(--cream);
-      background: radial-gradient(90% 60% at 20% 0%, rgba(255, 220, 190, .28), transparent 60%), linear-gradient(165deg, var(--from), var(--to));
-      box-shadow: 0 24px 50px -30px rgba(46, 27, 22, .7), inset 0 1px 0 rgba(255, 240, 228, .2);
+    .panel { flex: 0 0 auto; width: min(78vw, 300px); aspect-ratio: 300 / 600; scroll-snap-align: start; border-radius: 26px; position: relative; overflow: hidden; color: #3a2a22;
+      background: radial-gradient(90% 60% at 20% 0%, rgba(255, 255, 255, .55), transparent 60%), linear-gradient(165deg, var(--from), var(--to));
+      box-shadow: 0 24px 50px -32px rgba(58, 42, 34, .45);
       transform-style: preserve-3d; transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) scale(var(--s, 1)); transition: transform .5s var(--ease), box-shadow .3s;
       opacity: 0; translate: 40px 0; -webkit-user-select: none; user-select: none; }
     .panel.in-view { opacity: 1; translate: 0 0; transition: transform .5s var(--ease), box-shadow .3s, opacity .7s var(--ease), translate .8s var(--ease); transition-delay: 0s, 0s, var(--d, 0s), var(--d, 0s); }
     .panel.tilting { transition: transform .08s linear, box-shadow .3s; }
     .panel:hover { box-shadow: 0 34px 60px -30px rgba(46, 27, 22, .85), inset 0 1px 0 rgba(255, 240, 228, .25); }
-    .sheen { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(240px 240px at var(--mx, 50%) var(--my, -40%), rgba(255, 245, 235, .22), transparent 70%); opacity: 0; transition: opacity .3s; z-index: 3; }
+    .sheen { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(240px 240px at var(--mx, 50%) var(--my, -40%), rgba(255, 255, 255, .45), transparent 70%); opacity: 0; transition: opacity .3s; z-index: 3; }
     .panel:hover .sheen, .panel.pressed .sheen { opacity: 1; }
-    .panel h2 { margin: 0; padding: 26px 22px 0; font-family: var(--display); font-weight: 600; font-size: 27px; line-height: 1.08; letter-spacing: -.015em; transform: translateZ(30px); }
-    .panel h2 .l2 { display: block; font-weight: 300; font-style: italic; color: var(--caramel); }
+    .panel h2 { margin: 0; padding: 26px 22px 0; font-family: var(--sans); font-weight: 650; font-size: 27px; line-height: 1.08; letter-spacing: -.035em; transform: translateZ(30px); }
+    .panel h2 .l2 { display: block; font-weight: 650; color: #b86b4b; }
     .w { display: inline-block; opacity: 0; transform: translateY(14px) rotate(2deg); }
     .in-view .w { opacity: 1; transform: none; transition: opacity .5s var(--ease), transform .6s var(--spring); transition-delay: calc(var(--d, 0s) + .15s + var(--wi) * 60ms); }
     .num { position: absolute; top: 20px; right: 20px; font: 600 11px var(--sans); letter-spacing: .14em; opacity: .55; }
@@ -109,7 +109,7 @@
     .phone.flipped .flip { transform: rotateY(180deg); }
     .face, .back { position: absolute; inset: 0; border-radius: 34px; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
     .face { background: #120a07; padding: 8px; box-shadow: 0 30px 50px -24px rgba(0, 0, 0, .75), inset 0 0 0 1.5px rgba(255, 255, 255, .14); }
-    .screen { width: 100%; height: 100%; border-radius: 27px; overflow: hidden; background: #24150f; position: relative; }
+    .screen { width: 100%; height: 100%; border-radius: 27px; overflow: hidden; background: #f6efe8; position: relative; padding-top: 34px; }
     .screen img { width: 100%; display: block; }
     .island { position: absolute; top: 14px; left: 50%; width: 30%; height: 18px; translate: -50% 0; border-radius: 12px; background: #000; z-index: 2; }
     .back { transform: rotateY(180deg); background: linear-gradient(150deg, #6f4531, #2e1b16); display: grid; place-items: center; box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .14); }
@@ -163,7 +163,7 @@
 <body>
   <main class="wrap">
     <header class="head">
-      <button class="app-icon reveal" id="icon" type="button" aria-label="Ikon aplikasi Swassana"></button>
+      <button class="app-icon reveal" id="icon" type="button" aria-label="Ikon aplikasi Swassana">S</button>
       <div>
         <h1 class="reveal" style="--d:.05s" id="title" aria-label="Swassana"></h1>
         <p class="sub reveal" style="--d:.12s">Studio foto Surabaya &amp; Malang · booking, peta, mini game, dan photobooth.</p>
@@ -182,7 +182,8 @@
       <div class="fact"><small>Game</small><b data-count="8">8</b><span>Mini game &amp; kuis</span></div>
       <div class="fact"><small>Bahasa</small><b>ID</b><span>Indonesia</span></div>
       <div class="fact"><small>Harga</small><b>Gratis</b><span>Tanpa toko aplikasi</span></div>
-      <div class="fact"><small>Ukuran</small><b>0,3</b><span>MB</span></div>
+      <div class="fact"><small>Tampilan</small><b data-count="4">4</b><span>Nuansa warna</span></div>
+      <div class="fact"><small>Ukuran</small><b>0,4</b><span>MB</span></div>
     </section>
 
     <section class="stage" aria-label="Tangkapan layar aplikasi">
@@ -201,7 +202,7 @@
     <section class="about">
       <div class="reveal">
         <h3>Tentang aplikasi</h3>
-        <p>Satu aplikasi untuk dua studio Swassana. Pilih studio, putar tombol Booking, dan langsung ke jadwal. Sambil menunggu sesi, mainkan mini game, cari tipe sesimu, atau coba photobooth.</p>
+        <p>Satu aplikasi untuk dua studio Swassana. Pilih studio, susun rencana hari sesimu, lalu booking dengan satu ketukan. Sambil menunggu sesi, mainkan mini game, cari tipe sesimu, atau coba photobooth.</p>
         <p>Berjalan di browser HP dan bisa dipasang ke layar utama seperti aplikasi biasa.</p>
         <p class="hint">Psst… ada beberapa rahasia di halaman ini.</p>
       </div>
@@ -209,10 +210,12 @@
         <h3>Isinya</h3>
         <ul>
           <li><b>01</b>Booking Surabaya &amp; Malang dengan tombol putar</li>
-          <li><b>02</b>Peta dan petunjuk arah satu ketukan</li>
-          <li><b>03</b>Enam mini game, satu untuk tiap jenis sesi</li>
-          <li><b>04</b>Kuis "Kamu tipe sesi apa?" dan photobooth</li>
-          <li><b>05</b>Jurnal: tips persiapan, pose, dan outfit</li>
+          <li><b>02</b>Planner hari sesi: checklist, jadwal, dan hitung mundur</li>
+          <li><b>03</b>Peta dan petunjuk arah satu ketukan</li>
+          <li><b>04</b>Enam mini game, satu untuk tiap jenis sesi</li>
+          <li><b>05</b>Kuis "Kamu tipe sesi apa?" dan photobooth</li>
+          <li><b>06</b>Empat nuansa warna, dari Latte sampai Espresso</li>
+          <li><b>07</b>Jurnal: tips persiapan, pose, dan outfit</li>
         </ul>
       </div>
     </section>
@@ -232,14 +235,16 @@
 
     // Panels: two-tone headline + real screenshot
     const PANELS = [
-      ['home', 'Dua studio.', 'Satu aplikasi.', '#6f4531', '#2e1b16'],
-      ['roll', 'Booking cepat.', 'Tinggal putar.', '#c98a60', '#5a3728'],
-      ['lokasi', 'Datang tanpa nyasar.', 'Satu ketukan.', '#6f8a5c', '#2a3524'],
-      ['games', 'Pilih, lalu main.', 'Seperti konsol.', '#8a5a42', '#24150f'],
-      ['lovesync', 'Main berdua.', 'Makin sehati.', '#b5524a', '#4a1f1f'],
-      ['flatlay', 'Susun produk.', 'Siap posting.', '#a3745a', '#3b2419'],
-      ['kuis', 'Kamu tipe apa?', 'Temukan studiomu.', '#b08a4a', '#4a3218'],
-      ['photobooth', 'Bingkai khas.', 'Langsung ke Story.', '#5a3728', '#160c08'],
+      ['home', 'Satu aplikasi.', 'Dua studio.', '#f9e1d2', '#f4b79a'],
+      ['planner', 'Hari sesi,', 'sudah terencana.', '#fbe6dc', '#f2b6c3'],
+      ['games', 'Main dulu,', 'foto kemudian.', '#f6ead0', '#f0d29a'],
+      ['lokasi', 'Datang tanpa nyasar.', 'Satu ketukan.', '#e5f0e3', '#b9dcc2'],
+      ['lovesync', 'Main berdua.', 'Makin sehati.', '#fde3e6', '#f5b5bf'],
+      ['flatlay', 'Susun produk.', 'Siap posting.', '#f4e6da', '#e8c2a6'],
+      ['kuis', 'Kamu tipe apa?', 'Temukan studiomu.', '#f1e6f6', '#d9c3ec'],
+      ['photobooth', 'Bingkai khas.', 'Langsung ke Story.', '#e5eef8', '#bfd5ef'],
+      ['tampilan', 'Empat nuansa.', 'Pilih milikmu.', '#f7ebe0', '#e6cdb4'],
+      ['login', 'Jam pun', 'ikut menyapa.', '#f9e6dc', '#f0c4ae'],
     ];
     const words = (s, start) => s.split(' ').map((w, i) => `<span class="w" style="--wi:${start + i}">${w}</span>`).join(' ');
     $('track').innerHTML = PANELS.map(([img, a, b, from, to], i) => `
