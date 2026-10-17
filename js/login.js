@@ -159,7 +159,7 @@ function startClock(gate) {
   });
 }
 
-// Greeting in eleven languages (incl. Javanese, Sundanese, Balinese, Madurese, Japanese), rotating every 7 seconds; time-neutral words.
+// Greeting in eleven languages (incl. Javanese, Sundanese, Balinese, Madurese, Japanese), rotating every 30 seconds; time-neutral words.
 // Every third turn (starting with the second) shows a "kamus" word from one of those languages with its meaning in Indonesian.
 const HELLO = [
   { tag: 'Indonesia', lang: 'id', hi: 'Halo', sub: 'senang melihatmu lagi' },
@@ -255,7 +255,7 @@ function startHello(gate) {
     }, outMs);
   };
   show();
-  setInterval(show, 7000);
+  setInterval(show, 30000);
 }
 
 export function logout() {
