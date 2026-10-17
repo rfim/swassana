@@ -303,3 +303,34 @@ button.pill { border: 0; cursor: pointer; font-family: inherit; }
 .app-mode .marquee { margin-top: 28px; }
 .app-mode .lead { margin: 16px 0 22px; }
 .app-mode .band { margin-top: 0; padding-bottom: 40px; }
+
+/* ===== Login gate (app layout only) ===== */
+.locked body > *:not(.gate) { display: none !important; }
+.locked body { padding-bottom: 0; }
+.gate { position: fixed; inset: 0; z-index: 100; background: var(--bg); overflow-y: auto; transition: opacity .35s, transform .35s; }
+.gate.gate-out { opacity: 0; transform: scale(1.03); }
+.gate-inner { min-height: 100%; max-width: 440px; margin: 0 auto; padding: calc(24px + env(safe-area-inset-top)) 24px calc(28px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 36px; }
+.gate .brand { font-size: 22px; }
+.gate h1 { font-size: clamp(40px, 12vw, 56px); line-height: 1.02; margin: 0 0 10px; }
+.gate h1 em { font-style: italic; font-weight: 300; color: var(--accent); }
+.gate .muted { margin: 0; }
+.gate form { display: flex; flex-direction: column; gap: 16px; margin-top: auto; }
+.gate label { display: flex; flex-direction: column; gap: 8px; font-size: 13px; font-weight: 600; letter-spacing: .04em; color: var(--muted); }
+.gate input { font: inherit; font-size: 18px; color: var(--text); background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 15px 16px; width: 100%; min-height: 54px; letter-spacing: .08em; }
+.gate input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent); }
+.gate .pw { position: relative; display: block; }
+.gate .pw input { padding-right: 116px; }
+.gate .pw button { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); border: 0; background: transparent; color: var(--accent); font: inherit; font-size: 14px; font-weight: 600; padding: 10px 12px; cursor: pointer; }
+.gate-err { min-height: 1.3em; margin: -4px 0 0; color: #c0392b; font-size: 14px; }
+.gate .big-btn { width: 100%; justify-content: center; min-height: 54px; border: 0; cursor: pointer; font-family: inherit; }
+.gate .big-btn:disabled { opacity: .6; }
+.shake { animation: shake .4s; }
+@keyframes shake { 20% { transform: translateX(-8px); } 40% { transform: translateX(7px); } 60% { transform: translateX(-5px); } 80% { transform: translateX(3px); } }
+@media (prefers-reduced-motion: reduce) { .shake { animation: none; } .gate { transition: none; } }
+button.ig-btn { font: inherit; color: inherit; cursor: pointer; text-align: left; }
+@media (max-height: 700px) {
+  .gate-inner { gap: 18px; padding-top: calc(16px + env(safe-area-inset-top)); }
+  .gate h1 { font-size: 34px; }
+  .gate form { gap: 10px; }
+  .gate input, .gate .big-btn { min-height: 48px; padding-top: 11px; padding-bottom: 11px; }
+}

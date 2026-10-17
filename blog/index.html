@@ -18,6 +18,14 @@
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Instrument+Sans:wght@400..700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../style.css">
   <script>try { const t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
+  <script>
+    // Phone/app layout starts behind the login screen (see js/login.js).
+    (function () {
+      var app = matchMedia('(display-mode: standalone), (hover: none) and (pointer: coarse)').matches, ok = false;
+      try { ok = localStorage.getItem('sw-auth') === 'b58f51929f7fe337cebc3a7fc162673d510b757fdfc439d7aed4947f7561fc90'; } catch (e) {}
+      if (app && !ok) document.documentElement.classList.add('locked');
+    })();
+  </script>
 </head>
 <body data-page="jurnal">
   <header class="nav scrolled">
@@ -71,5 +79,6 @@
     </div>
   </footer>
   <script type="module" src="../js/tabs.js"></script>
+  <script type="module" src="../js/login.js"></script>
 </body>
 </html>

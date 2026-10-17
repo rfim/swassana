@@ -42,6 +42,14 @@
     ]
   }
   </script>
+  <script>
+    // Phone/app layout starts behind the login screen (see js/login.js).
+    (function () {
+      var app = matchMedia('(display-mode: standalone), (hover: none) and (pointer: coarse)').matches, ok = false;
+      try { ok = localStorage.getItem('sw-auth') === 'b58f51929f7fe337cebc3a7fc162673d510b757fdfc439d7aed4947f7561fc90'; } catch (e) {}
+      if (app && !ok) document.documentElement.classList.add('locked');
+    })();
+  </script>
 </head>
 <body>
   <a class="skip" href="#lokasi">Lewati ke pilihan lokasi</a>
@@ -330,6 +338,10 @@
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7"/><path d="M18 14.5a6.5 6.5 0 0 1 3.5 5.5"/></svg>
           <span><strong>Tim Kami</strong><small>Kenali orang di balik Swassana</small></span>
         </a>
+        <button class="ig-btn app-only" id="logoutBtn" type="button">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>
+          <span><strong>Keluar</strong><small>Kunci aplikasi lagi</small></span>
+        </button>
         <a class="ig-btn reveal" href="https://instagram.com/swassanastudio" target="_blank" rel="noopener">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>
           <span><strong>@swassanastudio</strong><small>Swassana Studio Surabaya</small></span>
@@ -444,5 +456,6 @@
     });
   </script>
   <script type="module" src="js/tabs.js"></script>
+  <script type="module" src="js/login.js"></script>
 </body>
 </html>
