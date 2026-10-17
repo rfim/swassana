@@ -1067,3 +1067,5 @@ html.intro-bye body > *:not(.intro) { animation: intro-bye .75s cubic-bezier(.7,
 .gate h1.hello:lang(ja) .h2l { font-size: .78em; }
 .gate h1.hello.dict:lang(ja) .h1l { font-size: 1.1em; }
 .gate h1.hello.dict:lang(ja) .h2l { font-family: var(--sans); font-size: .5em; }
+/* the whole quote in one face: the meaning under a dictionary word too */
+.gate h1.hello.dict .h2l, .gate h1.hello.dict:lang(ja) .h2l { font-family: "Instrument Serif", var(--display); font-style: italic; font-size: .66em; line-height: 1.25; letter-spacing: 0; color: var(--muted); }
