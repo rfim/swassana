@@ -5,3 +5,17 @@ Static landing page for Swassana Studio (Surabaya) and Casa de Swassana (Malang)
 Booking links go to the live booking flow at `swassanastudio.com/booking/<city>`.
 
 To publish, open Settings → Pages, choose "Deploy from a branch", then `main` and `/ (root)`.
+
+## Pages
+
+- `index.html`: home with booking, maps, booking steps, the Ide Pose generator, Jurnal, FAQ and Instagram links
+- `blog/`: Jurnal articles (SEO), with `sitemap.xml` and `robots.txt`
+- `team.html`: team page; edit the `TEAM` list at the bottom of the file
+- `preview.html`: interactive iPhone and Android preview
+- `previews/`: static phone screenshots
+
+## Editing
+
+- **Exact map pins:** in `index.html`, find `PLACES` and replace each name with `"lat,lng"`.
+- **Team photos:** put them in `img/team/` and set `photo: 'img/team/name.jpg'`.
+- **Installable app:** `manifest.webmanifest` and `icons/` make it installable on iOS and Android.

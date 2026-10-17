@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Tim Kami — Swassana Studio</title>
+  <meta name="description" content="Kenali tim di balik Swassana Studio Surabaya dan Casa de Swassana Malang.">
+  <meta property="og:title" content="Tim Kami — Swassana Studio">
+  <meta property="og:description" content="Kenali tim di balik Swassana Studio Surabaya dan Casa de Swassana Malang.">
+  <meta property="og:type" content="article">
+  <link rel="canonical" href="https://rfim.github.io/swassana/team.html">
+  <meta name="theme-color" content="#fbf7f2">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Instrument+Sans:wght@400..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script>try { const t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
+</head>
+<body>
+  <header class="nav scrolled">
+    <div class="wrap nav-inner">
+      <a href="" class="brand">Swassana</a>
+      <nav class="nav-links" aria-label="Navigasi utama">
+        <a href="#lokasi">Booking</a>
+        <a href="#arah">Lokasi</a>
+        <a href="blog/">Jurnal</a>
+        <a href="team.html">Tim</a>
+      </nav>
+      <div class="nav-actions"><a href="#lokasi" class="pill pill-solid">Booking</a></div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="page-hero">
+      <p class="eyebrow">Tim Kami</p>
+      <h1>Orang-orang di balik<br><em style="color:var(--accent);font-weight:300">setiap cerita</em></h1>
+      <p class="lead">Tim kecil yang memastikan setiap sesi terasa hangat, rapi, dan menyenangkan.</p>
+    </section>
+    <section class="section" style="padding-top:24px">
+      <div class="team" id="team"></div>
+    </section>
+  </main>
+  <script>
+    // Edit this list: name, role, short bio, optional photo path (e.g. "img/team/nama.jpg") and Instagram handle.
+    const TEAM = [
+      { name: 'Nama Founder', role: 'Founder & Creative Director', bio: 'Menggagas konsep visual kedua studio Swassana.', photo: '', ig: '' },
+      { name: 'Nama Fotografer', role: 'Lead Photographer', bio: 'Mengarahkan pose dan cahaya di setiap sesi.', photo: '', ig: '' },
+      { name: 'Nama Studio Manager', role: 'Studio Manager · Surabaya', bio: 'Menjaga jadwal dan kenyamanan tamu di Surabaya.', photo: '', ig: '' },
+      { name: 'Nama Studio Manager', role: 'Studio Manager · Malang', bio: 'Menyambut tamu dan brand di Casa de Swassana.', photo: '', ig: '' },
+      { name: 'Nama Admin', role: 'Admin & Customer Care', bio: 'Membantu booking dan menjawab pertanyaanmu.', photo: '', ig: '' },
+      { name: 'Nama Editor', role: 'Photo Editor', bio: 'Menyempurnakan warna dan detail setiap foto.', photo: '', ig: '' }
+    ];
+    const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    document.getElementById('team').innerHTML = TEAM.map((m) => `
+      <article class="member">
+        <div class="avatar">${m.photo ? `<img src="${esc(m.photo)}" alt="${esc(m.name)}" loading="lazy">` : esc(m.name.replace(/^Nama /, '').charAt(0))}</div>
+        <div class="member-body">
+          <h3>${esc(m.name)}</h3>
+          <p class="role">${esc(m.role)}</p>
+          <p>${esc(m.bio)}</p>
+          ${m.ig ? `<a class="ig-link" href="https://instagram.com/${esc(m.ig)}" target="_blank" rel="noopener">@${esc(m.ig)}</a>` : ''}
+        </div>
+      </article>`).join('');
+  </script>
+
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <span class="brand">Swassana</span>
+      <span>Subcreative by Swassana 2026</span>
+      <nav class="footer-links" aria-label="Footer"><a href="">Beranda</a><a href="blog/">Jurnal</a><a href="team.html">Tim</a><a href="#arah">Lokasi</a></nav>
+    </div>
+  </footer>
+</body>
+</html>
