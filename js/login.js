@@ -184,23 +184,46 @@ function startHello(gate) {
   const tagEl = gate.querySelector('#helloTag'), h1 = gate.querySelector('#hello'), l1 = gate.querySelector('#gateGreet'), l2 = gate.querySelector('#helloSub');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   let turn = 0, li = 0, lastWord = -1;
-  const show = () => {
-    if (!gate.isConnected) return;
+  // Title split into words (never broken) made of letters, so letters can animate one by one
+  const letters = (text) => text.split(' ').map((w, wi, arr) => {
+    const chars = Array.from(w).map((ch) => `<span class="ch">${ch}</span>`).join('');
+    return `<span class="wd">${chars}</span>${wi < arr.length - 1 ? ' ' : ''}`;
+  }).join('');
+  const index = (el) => el.querySelectorAll('.ch').forEach((c, i) => c.style.setProperty('--i', i));
+  const next = () => {
     const dict = turn === 0 || turn % 3 === 2;
+    let tag, word, sub, lang;
     if (dict) {
       let k;
       if (turn === 0) k = KAMUS.findIndex(([, , w]) => w === 'fika'); // fika always opens the rotation
       else do { k = Math.floor(Math.random() * KAMUS.length); } while (k === lastWord && KAMUS.length > 1);
       lastWord = k;
-      const [tag, lang, word, mean] = KAMUS[k];
-      tagEl.innerHTML = `${crest(lang)}Kamus · ${tag}`; l1.textContent = word; l2.textContent = mean; h1.lang = lang === 'en' ? 'en-GB' : lang;
+      [tag, lang, word, sub] = KAMUS[k]; tag = `Kamus · ${tag}`;
     } else {
       const g = HELLO[li % HELLO.length]; li++;
-      tagEl.innerHTML = `${crest(g.lang)}${g.tag}`; l1.textContent = g.hi + ','; l2.textContent = g.sub; h1.lang = g.lang === 'en' ? 'en-GB' : g.lang;
+      tag = g.tag; lang = g.lang; word = g.hi + ','; sub = g.sub;
     }
-    h1.classList.toggle('dict', dict);
-    if (!reduce) { [tagEl, h1].forEach((el) => { el.classList.remove('swap'); void el.offsetWidth; el.classList.add('swap'); }); }
     turn++;
+    return { dict, tag, word, sub, lang };
+  };
+  const paint = ({ dict, tag, word, sub, lang }) => {
+    tagEl.innerHTML = `${crest(lang)}<span class="tg">${tag}</span>`;
+    l1.innerHTML = letters(word); index(l1);
+    l2.textContent = sub;
+    h1.lang = lang === 'en' ? 'en-GB' : lang;
+    h1.classList.toggle('dict', dict);
+  };
+  const show = () => {
+    if (!gate.isConnected) return;
+    const n = next();
+    if (reduce || turn === 1) { paint(n); [h1, tagEl].forEach((el) => { el.classList.remove('out'); el.classList.add('in'); }); return; }
+    // out: letters lift away one by one, crest turns edge-on; then the new text comes in
+    [h1, tagEl].forEach((el) => { el.classList.remove('in'); el.classList.add('out'); });
+    const outMs = 260 + Math.min(l1.querySelectorAll('.ch').length, 20) * 12;
+    setTimeout(() => {
+      paint(n);
+      [h1, tagEl].forEach((el) => { el.classList.remove('out'); void el.offsetWidth; el.classList.add('in'); });
+    }, outMs);
   };
   show();
   setInterval(show, 7000);

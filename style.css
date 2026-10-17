@@ -947,3 +947,26 @@ a:active > .sa-ic::after, .sa-svc:active .sa-ic::after, .sa-ic.shine::after { ba
 .hello-tag .crest { flex: none; width: 20px; height: 22px; filter: drop-shadow(0 2px 3px rgba(58, 42, 34, .25)); }
 .hello-tag { gap: 9px; }
 .hello-tag .crest { filter: drop-shadow(0 3px 5px rgba(0, 0, 0, .28)); }
+
+/* ===== Greeting transition: letters out -> crest coin-flip -> letters in, second line ink-wipe (no blur) ===== */
+.gate h1.hello .wd { display: inline-block; white-space: nowrap; }
+.gate h1.hello .ch { display: inline-block; will-change: transform, opacity; }
+.gate h1.hello.in .ch { animation: ch-in .75s cubic-bezier(.2, .9, .25, 1) both; animation-delay: calc(var(--i) * 26ms); }
+@keyframes ch-in { 0% { opacity: 0; transform: translateY(.5em) rotate(6deg); } 55% { opacity: 1; } 100% { opacity: 1; transform: none; } }
+.gate h1.hello.out .ch { animation: ch-out .3s cubic-bezier(.5, 0, .75, 0) both; animation-delay: calc(var(--i) * 12ms); }
+@keyframes ch-out { to { opacity: 0; transform: translateY(-.35em) rotate(-3deg); } }
+.gate h1.hello.in .h2l { animation: ink-wipe 1s cubic-bezier(.65, 0, .25, 1) .22s both; }
+@keyframes ink-wipe { from { clip-path: inset(0 100% 0 0); opacity: .2; } to { clip-path: inset(0 0 0 0); opacity: 1; } }
+.gate h1.hello.out .h2l { animation: line-out .28s ease-in both; }
+@keyframes line-out { to { opacity: 0; transform: translateY(-4px); } }
+.hello-tag { perspective: 300px; }
+.hello-tag.in .crest { animation: coin-in .7s cubic-bezier(.34, 1.56, .64, 1) both; }
+@keyframes coin-in { from { transform: rotateY(-90deg) scale(.9); } to { transform: none; } }
+.hello-tag.out .crest { animation: coin-out .26s ease-in both; }
+@keyframes coin-out { to { transform: rotateY(90deg) scale(.9); } }
+.hello-tag.in .tg { animation: tag-in .6s cubic-bezier(.2, .8, .2, 1) .08s both; display: inline-block; }
+@keyframes tag-in { from { opacity: 0; transform: translateX(-10px); letter-spacing: .3em; } }
+.hello-tag.out .tg { animation: line-out .24s ease-in both; display: inline-block; }
+.gate h1.hello.swap, .hello-tag.swap { animation: none; }
+@media (prefers-reduced-motion: reduce) { .gate h1.hello .ch, .gate h1.hello .h2l, .hello-tag .crest, .hello-tag .tg { animation: none !important; } }
+.hello-tag .crest { filter: drop-shadow(0 3px 6px rgba(58, 42, 34, .14)); }
