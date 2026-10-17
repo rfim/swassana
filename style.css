@@ -956,7 +956,7 @@ a:active > .sa-ic::after, .sa-svc:active .sa-ic::after, .sa-ic.shine::after { ba
 .gate h1.hello.out .ch { animation: ch-out .3s cubic-bezier(.5, 0, .75, 0) both; animation-delay: calc(var(--i) * 12ms); }
 @keyframes ch-out { to { opacity: 0; transform: translateY(-.35em) rotate(-3deg); } }
 .gate h1.hello.in .h2l { animation: ink-wipe 1s cubic-bezier(.65, 0, .25, 1) .22s both; }
-@keyframes ink-wipe { from { clip-path: inset(0 100% 0 0); opacity: .2; } to { clip-path: inset(0 0 0 0); opacity: 1; } }
+@keyframes ink-wipe { from { clip-path: inset(-.4em 100% -.4em -.2em); opacity: .2; } to { clip-path: inset(-.4em -.4em -.4em -.2em); opacity: 1; } }
 .gate h1.hello.out .h2l { animation: line-out .28s ease-in both; }
 @keyframes line-out { to { opacity: 0; transform: translateY(-4px); } }
 .hello-tag { perspective: 300px; }
