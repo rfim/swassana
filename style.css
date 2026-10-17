@@ -970,3 +970,4 @@ a:active > .sa-ic::after, .sa-svc:active .sa-ic::after, .sa-ic.shine::after { ba
 .gate h1.hello.swap, .hello-tag.swap { animation: none; }
 @media (prefers-reduced-motion: reduce) { .gate h1.hello .ch, .gate h1.hello .h2l, .hello-tag .crest, .hello-tag .tg { animation: none !important; } }
 .hello-tag .crest { filter: drop-shadow(0 3px 6px rgba(58, 42, 34, .14)); }
+.hello-tag .crest { width: 20px; height: 20px; color: var(--text); opacity: .72; filter: none; }
