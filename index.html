@@ -48,6 +48,9 @@
       var app = matchMedia('(display-mode: standalone), (hover: none) and (pointer: coarse)').matches, ok = false;
       try { ok = localStorage.getItem('sw-auth') === 'b58f51929f7fe337cebc3a7fc162673d510b757fdfc439d7aed4947f7561fc90'; } catch (e) {}
       if (app && !ok) document.documentElement.classList.add('locked');
+      // opening splash once per session (js/intro.js); hide the page until it is up
+      var seen = false; try { seen = sessionStorage.getItem('sw-intro'); } catch (e) {}
+      if (app && !seen && !matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('intro-pending');
     })();
   </script>
   <script>var p = 'latte'; try { p = localStorage.getItem('sw-pal') || p; } catch (e) {} document.documentElement.dataset.pal = p;</script>
@@ -475,6 +478,7 @@
     });
   </script>
   <script type="module" src="js/tabs.js"></script>
+  <script type="module" src="js/intro.js"></script>
   <script type="module" src="js/login.js"></script>
   <script type="module" src="js/superapp.js"></script>
   <script>

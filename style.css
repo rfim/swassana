@@ -305,7 +305,7 @@ button.pill { border: 0; cursor: pointer; font-family: inherit; }
 .app-mode .band { margin-top: 0; padding-bottom: 40px; }
 
 /* ===== Login gate (app layout only) ===== */
-.locked body > *:not(.gate) { display: none !important; }
+.locked body > *:not(.gate):not(.intro) { display: none !important; }
 .locked body { padding-bottom: 0; }
 .gate { position: fixed; inset: 0; z-index: 100; background: var(--bg); overflow-y: auto; transition: opacity .35s, transform .35s; }
 .gate.gate-out { opacity: 0; transform: scale(1.03); }
@@ -971,3 +971,65 @@ a:active > .sa-ic::after, .sa-svc:active .sa-ic::after, .sa-ic.shine::after { ba
 @media (prefers-reduced-motion: reduce) { .gate h1.hello .ch, .gate h1.hello .h2l, .hello-tag .crest, .hello-tag .tg { animation: none !important; } }
 .hello-tag .crest { filter: drop-shadow(0 3px 6px rgba(58, 42, 34, .14)); }
 .hello-tag .crest { width: 20px; height: 20px; color: var(--text); opacity: .72; filter: none; }
+
+/* ---------- Opening splash and logout outro (js/intro.js) ---------- */
+@property --iris { syntax: '<length>'; inherits: false; initial-value: 0px; }
+html.intro-pending { background: #f6efe8; }
+html.intro-pending[data-pal="espresso"], html.intro-pending[data-pal="mist"] { background: #1a120e; }
+html.intro-pending body { visibility: hidden; animation: intro-failsafe 0s 3s forwards; }
+@keyframes intro-failsafe { to { visibility: visible; } }
+.intro { position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; overflow: hidden;
+  background: var(--bg); color: var(--text); --iris: 0px;
+  -webkit-mask: radial-gradient(circle at 50% 46%, transparent var(--iris), #000 calc(var(--iris) + 1px));
+          mask: radial-gradient(circle at 50% 46%, transparent var(--iris), #000 calc(var(--iris) + 1px)); }
+.intro-glow { position: absolute; inset: -20%; opacity: .55;
+  background: radial-gradient(40% 30% at 30% 30%, var(--mesh-1, #f4b79a), transparent 70%),
+              radial-gradient(40% 30% at 72% 62%, var(--mesh-2, #f2b6c3), transparent 70%),
+              radial-gradient(35% 25% at 40% 80%, var(--mesh-3, #f3d6a1), transparent 70%);
+  animation: intro-drift 2.4s ease-out both; }
+@keyframes intro-drift { from { transform: rotate(-8deg) scale(1.15); opacity: 0; } to { transform: none; opacity: .55; } }
+.intro-mid { position: relative; display: grid; justify-items: center; gap: 14px; margin-top: -8vh; }
+.intro-badge { width: 92px; height: 92px; border-radius: 50%; background: url(icons/sbctv.png) center / cover no-repeat;
+  box-shadow: 0 18px 40px -16px rgba(58, 42, 34, .55), inset 0 1px 0 rgba(255, 255, 255, .5);
+  animation: intro-pop .9s cubic-bezier(.34, 1.56, .64, 1) .1s both; }
+@keyframes intro-pop { 0% { transform: scale(.3) rotate(-120deg); opacity: 0; } 60% { opacity: 1; } 100% { transform: none; opacity: 1; } }
+.intro-ring { position: absolute; top: 46px; left: 50%; width: 92px; height: 92px; margin: -46px 0 0 -46px; border-radius: 50%;
+  border: 1.5px solid var(--accent); opacity: 0; animation: intro-ring 1.3s cubic-bezier(.2, .7, .2, 1) .45s both; }
+.intro-ring.r2 { animation-delay: .7s; }
+@keyframes intro-ring { 0% { transform: scale(.9); opacity: .7; } 100% { transform: scale(2.6); opacity: 0; } }
+.intro-word { display: flex; gap: .42em; font: 600 15px/1 var(--body, 'Instrument Sans', sans-serif); letter-spacing: 0; margin-top: 6px; }
+.intro-word i { font-style: normal; display: inline-block; animation: intro-rise .7s cubic-bezier(.2, .8, .2, 1) calc(.5s + var(--i) * 55ms) both; }
+@keyframes intro-rise { from { transform: translateY(14px) rotateX(70deg); opacity: 0; } to { transform: none; opacity: 1; } }
+.intro-tag { font: italic 400 15px/1.3 var(--display, Fraunces, serif); color: var(--muted); animation: intro-fade .8s ease 1.1s both; }
+@keyframes intro-fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.intro-flash { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; }
+/* open: shutter flash, then the lens iris opens from the badge */
+.intro.open { animation: intro-iris-open .85s cubic-bezier(.7, 0, .2, 1) forwards; }
+.intro.open .intro-flash { animation: intro-flash .45s ease-out; }
+.intro.open .intro-mid { animation: intro-away .6s cubic-bezier(.7, 0, .2, 1) forwards; }
+@keyframes intro-iris-open { from { --iris: 0px; } to { --iris: 150vmax; } }
+@keyframes intro-flash { 0% { opacity: 0; } 15% { opacity: .85; } 100% { opacity: 0; } }
+@keyframes intro-away { to { transform: scale(1.35); opacity: 0; } }
+html.intro-on body > *:not(.intro) { visibility: hidden; }
+html.intro-reveal body > *:not(.intro) { animation: intro-under .9s cubic-bezier(.2, .8, .2, 1) both; }
+@keyframes intro-under { from { transform: scale(1.06); opacity: .4; } to { transform: none; opacity: 1; } }
+/* logout: the iris closes onto the badge, "Sampai jumpa lagi" */
+.intro-out { --iris: 150vmax; }
+.intro-out.close { animation: intro-iris-close .75s cubic-bezier(.7, 0, .3, 1) forwards; }
+@keyframes intro-iris-close { from { --iris: 150vmax; } to { --iris: 0px; } }
+.intro-out .intro-badge { animation-delay: .45s; }
+.intro-out .intro-ring { animation-delay: .8s; } .intro-out .intro-ring.r2 { animation-delay: 1s; }
+.intro-out .intro-word i { animation-delay: calc(.6s + var(--i) * 40ms); }
+.intro-out .intro-tag { animation-delay: .85s; }
+html.intro-bye body > *:not(.intro) { animation: intro-bye .75s cubic-bezier(.7, 0, .3, 1) forwards; }
+@keyframes intro-bye { to { transform: scale(.94); opacity: .3; } }
+
+/* Logout on the home screen: first tap asks, second tap logs out */
+.ps-out { width: auto; min-width: 38px; padding: 0 10px; border-radius: 19px; gap: 6px; display: inline-flex; align-items: center; justify-content: center;
+  transition: transform .2s var(--ps-spring), background .25s, color .25s, padding .3s var(--ps-spring); }
+.ps-out span { max-width: 0; overflow: hidden; white-space: nowrap; font: 600 13px/1 var(--body, 'Instrument Sans', sans-serif); transition: max-width .35s var(--ps-spring); }
+.ps-out.ask { background: var(--accent); color: var(--on-accent, #fff); border-color: transparent; padding: 0 14px 0 12px; }
+.ps-out.ask span { max-width: 80px; }
+.ps-out.ask svg { animation: out-nudge .9s ease-in-out infinite; }
+@keyframes out-nudge { 50% { transform: translateX(3px); } }
+@media (prefers-reduced-motion: reduce) { .ps-out.ask svg { animation: none; } }

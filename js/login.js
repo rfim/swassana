@@ -3,6 +3,7 @@
 // Only a SHA-256 hash of "id:password" is stored here, never the plain credentials.
 import { makeLogo } from './logo.js';
 import { crest } from './crests.js';
+import { playOutro } from './intro.js';
 
 const HASH = 'b58f51929f7fe337cebc3a7fc162673d510b757fdfc439d7aed4947f7561fc90';
 const KEY = 'sw-auth';
@@ -231,7 +232,7 @@ function startHello(gate) {
 
 export function logout() {
   try { localStorage.removeItem(KEY); } catch (e) {}
-  location.reload();
+  playOutro(() => location.reload());
 }
 
 if (root.classList.contains('locked')) render();

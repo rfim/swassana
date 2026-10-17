@@ -3,6 +3,7 @@
 // a full-width hero whose art, title and button follow the focused tile, and activity cards below.
 import { ICONS } from './icons.js';
 import { lu } from './lucide.js';
+import { logout } from './login.js';
 
 const root = document.getElementById('home');
 if (root) {
@@ -85,6 +86,7 @@ if (root) {
       </div>
       <div class="ps-tools">
         <button type="button" class="ps-tool" id="psSearchBtn" aria-label="Cari" aria-expanded="false">${icon('search')}</button>
+        <button type="button" class="ps-tool ps-out" id="psOut" aria-label="Keluar">${icon('log-out')}<span>Keluar?</span></button>
         <span class="ps-time" id="psTime"></span>
       </div>
     </div>
@@ -106,6 +108,18 @@ if (root) {
     <div class="ps-acts" id="psActs"></div>`;
 
   const $ = (id) => root.querySelector('#' + id);
+
+  // Logout: the first tap asks ("Keluar?"), a second tap within 3 s locks the app again
+  let askT;
+  $('psOut').addEventListener('click', (e) => {
+    const b = e.currentTarget;
+    if (!b.classList.contains('ask')) {
+      b.classList.add('ask'); b.setAttribute('aria-label', 'Ketuk lagi untuk keluar');
+      clearTimeout(askT); askT = setTimeout(() => { b.classList.remove('ask'); b.setAttribute('aria-label', 'Keluar'); }, 3000);
+      return;
+    }
+    clearTimeout(askT); b.disabled = true; logout();
+  });
   let cat = 'studio', items = CATS.studio(), focus = 0, bgFlip = false;
 
   // ---------- tiles ----------
