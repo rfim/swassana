@@ -403,3 +403,93 @@ button.ig-btn { font: inherit; color: inherit; cursor: pointer; text-align: left
 .sa-carousel { margin: 18px 16px 0; padding: 0; scroll-padding: 0; }
 .sa-studio-img { position: relative; min-height: 140px; }
 .sa-studio-img img { position: absolute; inset: 0; }
+
+/* ===== Transparent brown "glass" theme for the app layout and the login (no blur anywhere) ===== */
+:root {
+  --glass-bg:
+    radial-gradient(60% 40% at 12% 6%, rgba(214, 150, 104, .42), transparent 70%),
+    radial-gradient(55% 35% at 92% 28%, rgba(168, 86, 58, .36), transparent 70%),
+    radial-gradient(70% 45% at 28% 88%, rgba(128, 82, 54, .42), transparent 70%),
+    linear-gradient(170deg, #3b2419 0%, #25160f 55%, #1a0f0b 100%);
+}
+:root.app-mode, .gate {
+  --bg: #24150f;
+  --surface: rgba(255, 236, 220, .075);
+  --text: #f7ece2;
+  --muted: rgba(247, 236, 226, .66);
+  --line: rgba(255, 226, 204, .16);
+  --accent: #e9c19d;
+  --on-accent: #2a1810;
+  --band: rgba(255, 236, 220, .035);
+  --a100: rgba(233, 193, 157, .16);
+  --a800: #f2d6bd;
+  color-scheme: dark;
+}
+:root.app-mode { background: #1f120d; }
+.app-mode body { background: transparent; color: var(--text); }
+.app-mode body::before { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none; background: var(--glass-bg); }
+.gate { background: var(--glass-bg); color: var(--text); }
+
+/* glass surfaces: translucent fill, hairline light border, soft top highlight */
+.app-mode .card, .app-mode .map-card, .app-mode .post, .app-mode .steps li, .app-mode .ig-btn, .app-mode .idea-card,
+.app-mode .member, .app-mode .sa-studio, .app-mode .sa-game, .app-mode .sa-search, .gate input {
+  background: var(--surface); border: 1px solid var(--line);
+  box-shadow: inset 0 1px 0 rgba(255, 240, 228, .08), 0 18px 40px -28px rgba(0, 0, 0, .7);
+}
+.app-mode .nav { background: linear-gradient(#2c1b13, rgba(44, 27, 19, .94)); border-bottom-color: var(--line); }
+.app-mode #theme { display: none; }
+.app-mode .tabbar { background: rgba(30, 18, 13, .96); border-top: 1px solid var(--line); box-shadow: 0 -12px 30px -18px rgba(0, 0, 0, .7); }
+.app-mode .tabbar a::before { background: rgba(233, 193, 157, .16); }
+.app-mode .tabbar a[aria-current="page"] { color: var(--accent); }
+
+/* super-app home */
+.app-mode .sa-top { background: transparent; padding-top: 10px; }
+.app-mode .sa-q { color: var(--text); }
+.app-mode .sa-city > button { background: rgba(255, 236, 220, .08); border-color: var(--line); }
+.app-mode .sa-search { color: var(--muted); }
+.app-mode .sa-search input::placeholder { color: var(--muted); }
+.app-mode .sa-city-menu, .app-mode .sa-results { background: #2e1c14; border-color: var(--line); }
+.sa-ic { background: color-mix(in srgb, var(--c, #8a5a42) 58%, rgba(255, 240, 228, .06)); border: 1px solid rgba(255, 228, 206, .2); box-shadow: inset 0 1px 0 rgba(255, 245, 235, .18), 0 10px 22px -14px rgba(0, 0, 0, .8); }
+.sa-ic svg { color: #fff6ee; }
+.app-mode .sa-svc { color: var(--text); }
+.app-mode .sa-banner { border: 1px solid rgba(255, 228, 206, .18); box-shadow: inset 0 1px 0 rgba(255, 245, 235, .14); opacity: .96; }
+.app-mode .sa-banner em { background: rgba(255, 240, 228, .16); border: 1px solid rgba(255, 228, 206, .2); }
+.app-mode .sa-dots i { background: rgba(255, 226, 204, .2); }
+.app-mode .sa-dots i.on { background: var(--accent); }
+.app-mode .sa-h, .app-mode h2, .app-mode h3 { color: var(--text); }
+.app-mode .pill-solid { background: var(--accent); color: var(--on-accent); }
+.app-mode .pill-outline { border-color: var(--line); color: var(--text); }
+.app-mode .pill-ghost { color: var(--accent); }
+.app-mode .band { background: var(--band); }
+.app-mode .card-link, .app-mode .num, .app-mode .faq summary::after { color: var(--accent); }
+.app-mode .map-frame iframe { filter: sepia(.35) saturate(.85) brightness(.92); }
+
+/* login in the same style */
+.gate .pill-solid { background: var(--accent); color: var(--on-accent); }
+.gate h1 em { color: var(--accent); }
+.gate input { color: var(--text); }
+.gate input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(233, 193, 157, .22); }
+.gate-err { color: #ffb4a2; }
+
+/* Center Booking button with a rolling studio name */
+.tb-book { flex: 1.25; display: flex; justify-content: center; align-items: center; position: relative; }
+.tb-book-main { margin-top: -26px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 132px; height: 62px; padding: 0 30px 0 22px; border-radius: 22px; text-decoration: none; color: #2a1810;
+  background: linear-gradient(150deg, #f3d3b4 0%, #e2b089 45%, #c98a60 100%);
+  border: 1px solid rgba(255, 238, 222, .55);
+  box-shadow: inset 0 1px 0 rgba(255, 250, 244, .7), inset 0 -6px 14px rgba(120, 66, 36, .25), 0 14px 30px -12px rgba(0, 0, 0, .75), 0 0 0 6px rgba(30, 18, 13, .96);
+  transition: transform .15s; -webkit-tap-highlight-color: transparent; user-select: none; }
+.tb-book-main:active { transform: scale(.96); }
+.tb-book-main small { font-size: 10.5px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; opacity: .7; }
+.tb-roll-win { display: block; height: 24px; overflow: hidden; }
+.tb-roll-track { display: flex; flex-direction: column; transition: transform .55s cubic-bezier(.34, 1.56, .64, 1); }
+.tb-roll-track b { height: 24px; line-height: 24px; font-family: var(--display); font-style: italic; font-weight: 500; font-size: 20px; text-align: center; }
+.tb-roll { position: absolute; left: 50%; margin-left: 46px; top: -34px; width: 30px; height: 30px; border-radius: 50%; border: 1px solid rgba(255, 238, 222, .6); background: #2a1810; color: #f3d3b4; display: grid; place-items: center; padding: 0; cursor: pointer; box-shadow: 0 6px 14px -6px rgba(0, 0, 0, .8); }
+.tb-roll svg { width: 15px; height: 15px; }
+.tb-roll.spin svg { animation: tb-spin .55s cubic-bezier(.34, 1.56, .64, 1); }
+@keyframes tb-spin { from { transform: rotate(0); } to { transform: rotate(180deg); } }
+@media (prefers-reduced-motion: reduce) { .tb-roll-track { transition: none; } .tb-roll.spin svg { animation: none; } }
+.app-mode body { padding-bottom: calc(92px + env(safe-area-inset-bottom)); }
+.tabbar a.tb-book-main { flex: none; min-height: 0; gap: 0; color: #2a1810; font-size: inherit; }
+.tabbar a.tb-book-main::before { display: none; }
+.tabbar a.tb-book-main small { opacity: .62; }
+.tabbar a.tb-book-main b { color: #2a1810; }

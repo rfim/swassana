@@ -21,12 +21,56 @@ const root = document.documentElement;
 const bar = document.createElement('nav');
 bar.className = 'tabbar';
 bar.setAttribute('aria-label', 'Navigasi aplikasi');
-bar.innerHTML = TABS.map(([k, label]) => `
+const tabHtml = TABS.map(([k, label]) => `
   <a href="${home.href}#t=${k}" data-t="${k}">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[k]}</svg>
     <span>${label}</span>
-  </a>`).join('');
+  </a>`);
+// One Booking button in the middle whose studio name "rolls" between Surabaya and Malang.
+const CITIES = [['surabaya', 'Surabaya'], ['malang', 'Malang']];
+const bookHtml = `
+  <div class="tb-book">
+    <a class="tb-book-main" id="tbBook" draggable="false">
+      <small>Booking</small>
+      <span class="tb-roll-win" aria-live="polite"><span class="tb-roll-track" id="tbTrack">${CITIES.map(([, n]) => `<b>${n}</b>`).join('')}</span></span>
+    </a>
+    <button class="tb-roll" id="tbRoll" type="button" aria-label="Ganti studio">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3l3 3-3 3"/><path d="M4 11V9a3 3 0 0 1 3-3h13"/><path d="M7 21l-3-3 3-3"/><path d="M20 13v2a3 3 0 0 1-3 3H4"/></svg>
+    </button>
+  </div>`;
+bar.innerHTML = tabHtml[0] + bookHtml + tabHtml.slice(1).join('');
 document.body.appendChild(bar);
+
+{
+  const read = () => { try { return localStorage.getItem('sw-city'); } catch (e) { return null; } };
+  let ci = Math.max(0, CITIES.findIndex(([k]) => k === read()));
+  const book = bar.querySelector('#tbBook'), track = bar.querySelector('#tbTrack'), rollBtn = bar.querySelector('#tbRoll');
+  const paint = () => {
+    track.style.transform = `translateY(${-ci * 100 / CITIES.length}%)`;
+    book.href = `https://swassanastudio.com/booking/${CITIES[ci][0]}`;
+    book.setAttribute('aria-label', `Booking studio ${CITIES[ci][1]}`);
+  };
+  const roll = (dir = 1) => {
+    ci = (ci + dir + CITIES.length) % CITIES.length;
+    try { localStorage.setItem('sw-city', CITIES[ci][0]); } catch (e) {}
+    paint();
+    rollBtn.classList.remove('spin'); void rollBtn.offsetWidth; rollBtn.classList.add('spin');
+    try { navigator.vibrate && navigator.vibrate(8); } catch (e) {}
+    dispatchEvent(new CustomEvent('sw-city', { detail: CITIES[ci][0] }));
+  };
+  rollBtn.addEventListener('click', () => roll(1));
+  // Swipe up/down on the button to roll; a tap still opens booking
+  let y0 = null, rolled = false;
+  book.addEventListener('pointerdown', (e) => { y0 = e.clientY; rolled = false; try { book.setPointerCapture(e.pointerId); } catch (er) {} });
+  book.addEventListener('pointercancel', () => { y0 = null; });
+  book.addEventListener('dragstart', (e) => e.preventDefault());
+  book.addEventListener('pointermove', (e) => { if (y0 !== null && !rolled && Math.abs(e.clientY - y0) > 18) { roll(e.clientY < y0 ? 1 : -1); rolled = true; } });
+  book.addEventListener('pointerup', () => { y0 = null; });
+  book.addEventListener('click', (e) => { if (rolled) { e.preventDefault(); rolled = false; } });
+  book.style.touchAction = 'none';
+  addEventListener('sw-city', (e) => { const i = CITIES.findIndex(([k]) => k === e.detail); if (i >= 0 && i !== ci) { ci = i; paint(); } });
+  paint();
+}
 
 const page = document.body.dataset.page; // set on sub pages: "jurnal" or "info"
 let current = null;

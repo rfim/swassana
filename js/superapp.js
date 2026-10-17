@@ -72,7 +72,7 @@ if (root) {
     </div>
 
     <div class="sa-grid">
-      ${SERVICES.map((s, i) => `<a class="sa-svc" data-svc="${i}" ${s.ext ? 'target="_blank" rel="noopener"' : ''}><span class="sa-ic" style="background:${s.color}">${icon(s.icon)}</span><span>${s.label}</span></a>`).join('')}
+      ${SERVICES.map((s, i) => `<a class="sa-svc" data-svc="${i}" ${s.ext ? 'target="_blank" rel="noopener"' : ''}><span class="sa-ic" style="--c:${s.color}">${icon(s.icon)}</span><span>${s.label}</span></a>`).join('')}
     </div>
 
     <div class="sa-carousel" id="saCar" aria-label="Sorotan">
@@ -88,7 +88,7 @@ if (root) {
 
     <div class="sa-h-row"><h2 class="sa-h">Artikel untukmu</h2><a href="#t=jurnal">Semua</a></div>
     <div class="sa-list">
-      ${ARTICLES.map(([h, t, m]) => `<a href="${h}"><span class="sa-ic sm" style="background:#a3745a">${icon('book')}</span><span><b>${t}</b><small>${m}</small></span></a>`).join('')}
+      ${ARTICLES.map(([h, t, m]) => `<a href="${h}"><span class="sa-ic sm" style="--c:#a3745a">${icon('book')}</span><span><b>${t}</b><small>${m}</small></span></a>`).join('')}
     </div>`;
 
   const $ = (id) => root.querySelector('#' + id);
@@ -111,6 +111,7 @@ if (root) {
   cityMenu.addEventListener('click', (e) => {
     const b = e.target.closest('[data-city]'); if (!b) return;
     city = b.dataset.city; store.set('sw-city', city); renderCity();
+    dispatchEvent(new CustomEvent('sw-city', { detail: city }));
     cityMenu.hidden = true; cityBtn.setAttribute('aria-expanded', 'false');
   });
   document.addEventListener('click', (e) => { if (!e.target.closest('.sa-city')) { cityMenu.hidden = true; cityBtn.setAttribute('aria-expanded', 'false'); } });
@@ -122,7 +123,7 @@ if (root) {
     if (!q) { results.hidden = true; return; }
     const hits = SEARCH.filter((s) => (s.label + ' ' + s.hint).toLowerCase().includes(q)).slice(0, 6);
     results.innerHTML = hits.length
-      ? hits.map((s) => `<a href="${s.href()}" ${s.ext ? 'target="_blank" rel="noopener"' : ''}><span class="sa-ic sm" style="background:#8a5a42">${icon(s.icon)}</span><span><b>${s.label}</b><small>${s.hint}</small></span></a>`).join('')
+      ? hits.map((s) => `<a href="${s.href()}" ${s.ext ? 'target="_blank" rel="noopener"' : ''}><span class="sa-ic sm" style="--c:#8a5a42">${icon(s.icon)}</span><span><b>${s.label}</b><small>${s.hint}</small></span></a>`).join('')
       : `<p class="sa-empty">Tidak ada hasil untuk “${input.value.replace(/[<>&"]/g, '')}”</p>`;
     results.hidden = false;
   });
@@ -148,7 +149,7 @@ if (root) {
       .sort((a, b) => (b.b > 0) - (a.b > 0));
     $('saGames').innerHTML = list.map((g) => `
       <a href="main.html?g=${g.k}" class="sa-game">
-        <span class="sa-ic sm" style="background:${g.b ? '#5a3728' : '#c29a82'}">${icon(g.i)}</span>
+        <span class="sa-ic sm" style="--c:${g.b ? '#5a3728' : '#c29a82'}">${icon(g.i)}</span>
         <b>${g.t}</b>
         <small>${g.b ? 'Terbaik: ' + Math.floor(g.b).toLocaleString('id-ID') : 'Belum dimainkan'}</small>
         <em>${g.b ? 'Main lagi' : 'Mainkan'}</em>
@@ -157,5 +158,6 @@ if (root) {
 
   renderCity();
   renderGames();
+  addEventListener('sw-city', (e) => { if (CITY[e.detail] && e.detail !== city) { city = e.detail; renderCity(); } });
   addEventListener('pageshow', renderGames); // refresh scores when returning from a game
 }
