@@ -39,8 +39,8 @@ function render() {
         <p class="muted">Masuk untuk melanjutkan ke Swassana.</p>
       </div>
       <form id="gateForm" novalidate>
-        <label>ID Pengguna
-          <input id="gateId" name="id" inputmode="numeric" autocomplete="username" required>
+        <label>Nomor HP
+          <input id="gateId" name="id" type="tel" inputmode="tel" autocomplete="tel" placeholder="08xx xxxx xxxx" required>
         </label>
         <label>Kata Sandi
           <span class="pw">
@@ -65,8 +65,8 @@ function render() {
   });
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const id = form.id.value.trim(), p = form.pw.value;
-    if (!id || !p) { err.textContent = 'Isi ID pengguna dan kata sandi.'; return; }
+    const id = form.id.value.replace(/[\s-]/g, ''), p = form.pw.value;
+    if (!id || !p) { err.textContent = 'Isi nomor HP dan kata sandi.'; return; }
     btn.disabled = true; btn.textContent = 'Memeriksa…';
     const ok = (await sha256(`${id}:${p}`)) === HASH;
     if (ok) {
@@ -74,7 +74,7 @@ function render() {
       gate.classList.add('gate-out');
       setTimeout(unlock, 350);
     } else {
-      err.textContent = 'ID pengguna atau kata sandi salah.';
+      err.textContent = 'Nomor HP atau kata sandi salah.';
       btn.disabled = false; btn.textContent = 'Masuk';
       form.classList.remove('shake'); void form.offsetWidth; form.classList.add('shake');
       try { navigator.vibrate && navigator.vibrate([30, 40, 30]); } catch (er) {}
