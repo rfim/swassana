@@ -1151,3 +1151,28 @@ a.brand:not([data-logo]):hover::before { transform: rotate(-12deg) scale(1.06); 
   .gate form input, .gate .big-btn { min-height: 44px; }
   .gate-play p { font-size: 12px; } .gate-play a { width: 34px; height: 34px; } .gate-play svg { width: 16px; height: 16px; }
 }
+
+/* Lensa colours: soft latte ceramic by default (cream barrel, taupe marks, peach glass);
+   the dark palettes get a muted mocha version. */
+.glens { --gl-body: #efe3d6; --gl-ring: #e4d3c3; --gl-tick: #8c7264; --gl-num: #8c7264; --gl-mark: #c98a6c;
+  --gl-g1: #fde9dc; --gl-g2: #efc2a6; --gl-g3: #d79c7e; --gl-shine: #fff; --gl-time: #fff; }
+:root[data-pal="blush"] .glens { --gl-body: #f6e4df; --gl-ring: #efd3cc; --gl-tick: #9a6f6a; --gl-num: #9a6f6a; --gl-mark: #e46f6f;
+  --gl-g1: #fde6e3; --gl-g2: #f4bdb6; --gl-g3: #df8f88; }
+:root[data-pal="espresso"] .glens, :root[data-pal="mist"] .glens { --gl-body: #4a3a33; --gl-ring: #574640; --gl-tick: #e9d8ca; --gl-num: #e9d8ca; --gl-mark: #e9c19d;
+  --gl-g1: #f1c9ae; --gl-g2: #c99278; --gl-g3: #8a6352; }
+.glens .gl-body { fill: var(--gl-body); }
+.glens .gl-ring { fill: var(--gl-ring); }
+.glens .gl-tick { stroke: var(--gl-tick); opacity: .45; }
+.glens .gl-tick.big { opacity: .85; }
+.glens .gl-num { fill: var(--gl-num); opacity: .8; }
+.glens .gl-mark { fill: var(--gl-mark); }
+.glens .gl-shine { fill: var(--gl-shine); opacity: .35; }
+.glens .gl-g1 { stop-color: var(--gl-g1); } .glens .gl-g2 { stop-color: var(--gl-g2); } .glens .gl-g3 { stop-color: var(--gl-g3); }
+.glens-dial { box-shadow: 0 16px 34px -20px rgba(58, 42, 34, .45), 0 0 0 1px rgba(58, 42, 34, .07), inset 0 1px 0 rgba(255, 255, 255, .6); }
+.glens-time { color: var(--gl-time); text-shadow: 0 1px 6px rgba(120, 70, 45, .35); }
+/* light lens: warm brown digits on the peach glass (white was too low-contrast) */
+.glens { --gl-time: #4a2e24; }
+:root[data-pal="espresso"] .glens, :root[data-pal="mist"] .glens { --gl-time: #fff; }
+.glens-time { text-shadow: 0 1px 0 rgba(255, 255, 255, .35); }
+:root[data-pal="espresso"] .glens-time, :root[data-pal="mist"] .glens-time { text-shadow: 0 1px 6px rgba(0, 0, 0, .35); }
+.glens-time i { opacity: .7; }

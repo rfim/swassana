@@ -99,18 +99,18 @@ function lensSvg() {
   const ticks = (r, n, len, w, every, lbl) => [...Array(n)].map((_, i) => {
     const a = i / n * Math.PI * 2, big = i % every === 0, l = big ? len : len / 2;
     const x1 = 100 + Math.sin(a) * r, y1 = 100 - Math.cos(a) * r, x2 = 100 + Math.sin(a) * (r - l), y2 = 100 - Math.cos(a) * (r - l);
-    const t = big && lbl ? `<text x="${(100 + Math.sin(a) * (r - len - 7)).toFixed(1)}" y="${(100 - Math.cos(a) * (r - len - 7) + 2.4).toFixed(1)}" font-size="6.5" text-anchor="middle" fill="#f6efe8" opacity=".85">${lbl(i)}</text>` : '';
-    return `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="#f6efe8" stroke-width="${big ? w * 1.6 : w}" opacity="${big ? .9 : .45}"/>${t}`;
+    const t = big && lbl ? `<text x="${(100 + Math.sin(a) * (r - len - 7)).toFixed(1)}" y="${(100 - Math.cos(a) * (r - len - 7) + 2.4).toFixed(1)}" font-size="6.5" text-anchor="middle" class="gl-num">${lbl(i)}</text>` : '';
+    return `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" class="gl-tick${big ? ' big' : ''}" stroke-width="${big ? w * 1.6 : w}"/>${t}`;
   }).join('');
   return `<svg viewBox="0 0 200 200" aria-hidden="true">
-    <defs><radialGradient id="glensGlass" cx="35%" cy="30%" r="80%"><stop offset="0" stop-color="#f4b79a"/><stop offset=".45" stop-color="#b86b4b"/><stop offset="1" stop-color="#2c201b"/></radialGradient></defs>
-    <circle cx="100" cy="100" r="98" fill="#2c201b"/>
+    <defs><radialGradient id="glensGlass" cx="35%" cy="30%" r="80%"><stop offset="0" class="gl-g1"/><stop offset=".5" class="gl-g2"/><stop offset="1" class="gl-g3"/></radialGradient></defs>
+    <circle cx="100" cy="100" r="98" class="gl-body"/>
     <g class="glens-rot" id="lensSec">${ticks(94, 60, 8, .8, 5, (i) => pad(i))}</g>
-    <circle cx="100" cy="100" r="66" fill="#3a2a22"/>
+    <circle cx="100" cy="100" r="66" class="gl-ring"/>
     <g class="glens-rot" id="lensMin">${ticks(64, 12, 6, 1.2, 1, (i) => ['1.4', '2', '2.8', '4', '5.6', '8', '11', '16', '22', '16', '8', '2'][i])}</g>
     <circle class="glens-glass" cx="100" cy="100" r="44" fill="url(#glensGlass)"/>
-    <ellipse cx="86" cy="80" rx="16" ry="9" fill="#fff" opacity=".18" transform="rotate(-30 86 80)"/>
-    <polygon points="100,4 96,12 104,12" fill="#f4b79a"/>
+    <ellipse cx="86" cy="80" rx="16" ry="9" class="gl-shine" transform="rotate(-30 86 80)"/>
+    <polygon points="100,4 96,12 104,12" class="gl-mark"/>
   </svg>`;
 }
 function startClock(gate) {
@@ -199,7 +199,7 @@ const HELLO = [
   { tag: 'Deutsch', lang: 'de', hi: 'Hallo', sub: 'schön, dich wiederzusehen' },
   { tag: 'Madura', lang: 'mad', hi: 'Salamet dhâteng', sub: 'ponapa kabhârrâ?' },
   { tag: 'Français', lang: 'fr', hi: 'Salut', sub: 'ravi de te revoir' },
-  { tag: 'Svenska', lang: 'sv', hi: 'Hej', sub: 'kul att se dig igen' },
+  { tag: 'Svenska', lang: 'sv', hi: 'Hej', sub: '' },
   { tag: '日本語 · Nihongo', lang: 'ja', hi: 'ようこそ', sub: 'また会えてうれしいです' },
 ];
 const KAMUS = [
@@ -258,7 +258,7 @@ function startHello(gate) {
       [tag, lang, word, sub] = KAMUS[k];
     } else {
       const g = HELLO[li % HELLO.length]; li++;
-      tag = g.tag; lang = g.lang; word = g.hi + ','; sub = g.sub;
+      tag = g.tag; lang = g.lang; word = g.sub ? g.hi + ',' : g.hi; sub = g.sub; // a greeting without a second line has no comma
     }
     turn++;
     return { dict, tag, word, sub, lang };
