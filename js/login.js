@@ -193,21 +193,23 @@ function startClock(gate) {
   });
 }
 
-// Greeting in eleven languages (incl. Javanese, Sundanese, Balinese, Madurese, Japanese), rotating every 30 seconds; time-neutral words.
+// Greeting in eleven languages (incl. Javanese, Sundanese, Balinese, Madurese, Japanese), rotating every 30 seconds.
 // Every third turn (starting with the second) shows a "kamus" word from one of those languages with its meaning in Indonesian.
+// Greetings follow the time of day: [pagi 04:30–11, siang 11–15, sore 15–18, malam 18–04:30]
 const HELLO = [
-  { tag: 'Indonesia', lang: 'id', hi: 'Halo', sub: 'senang melihatmu lagi' },
-  { tag: 'Jawa', lang: 'jv', hi: 'Sugeng rawuh', sub: 'monggo pinarak' },
-  { tag: 'Nederlands', lang: 'nl', hi: 'Hoi', sub: 'fijn je weer te zien' },
-  { tag: 'Sunda', lang: 'su', hi: 'Wilujeng sumping', sub: 'kumaha damang?' },
-  { tag: 'British', lang: 'en', hi: 'Hello there', sub: 'lovely to see you again' },
-  { tag: 'Bali', lang: 'ban', hi: 'Om Swastyastu', sub: 'rahajeng rauh' },
-  { tag: 'Deutsch', lang: 'de', hi: 'Hallo', sub: 'schön, dich wiederzusehen' },
-  { tag: 'Madura', lang: 'mad', hi: 'Salamet dhâteng', sub: 'ponapa kabhârrâ?' },
-  { tag: 'Français', lang: 'fr', hi: 'Salut', sub: 'ravi de te revoir' },
-  { tag: 'Svenska', lang: 'sv', hi: 'Hej', sub: '' },
-  { tag: '日本語 · Nihongo', lang: 'ja', hi: 'ようこそ', sub: 'また会えてうれしいです' },
+  { tag: 'Indonesia', lang: 'id', hi: ['Selamat pagi', 'Selamat siang', 'Selamat sore', 'Selamat malam'], sub: 'senang melihatmu lagi' },
+  { tag: 'Jawa', lang: 'jv', hi: ['Sugeng enjing', 'Sugeng siang', 'Sugeng sonten', 'Sugeng dalu'], sub: 'monggo pinarak' },
+  { tag: 'Nederlands', lang: 'nl', hi: ['Goedemorgen', 'Goedemiddag', 'Goedemiddag', 'Goedenavond'], sub: 'fijn je weer te zien' },
+  { tag: 'Sunda', lang: 'su', hi: ['Wilujeng énjing', 'Wilujeng siang', 'Wilujeng sonten', 'Wilujeng wengi'], sub: 'kumaha damang?' },
+  { tag: 'British', lang: 'en', hi: ['Good morning', 'Good afternoon', 'Good afternoon', 'Good evening'], sub: 'lovely to see you again' },
+  { tag: 'Bali', lang: 'ban', hi: ['Rahajeng semeng', 'Rahajeng tengai', 'Rahajeng sanja', 'Rahajeng wengi'], sub: 'Om Swastyastu' },
+  { tag: 'Deutsch', lang: 'de', hi: ['Guten Morgen', 'Guten Tag', 'Guten Tag', 'Guten Abend'], sub: 'schön, dich wiederzusehen' },
+  { tag: 'Madura', lang: 'mad', hi: ['Salamet laggu', 'Salamet are', 'Salamet sore', 'Salamet malem'], sub: 'ponapa kabhârrâ?' },
+  { tag: 'Français', lang: 'fr', hi: ['Bonjour', 'Bonjour', 'Bonjour', 'Bonsoir'], sub: 'ravi de te revoir' },
+  { tag: 'Svenska', lang: 'sv', hi: ['God morgon', 'God dag', 'God eftermiddag', 'God kväll'], sub: '' },
+  { tag: '日本語 · Nihongo', lang: 'ja', hi: ['おはようございます', 'こんにちは', 'こんにちは', 'こんばんは'], sub: 'また会えてうれしいです' },
 ];
+const daySlot = (d = new Date()) => { const t = d.getHours() * 60 + d.getMinutes(); return t >= 270 && t < 660 ? 0 : t >= 660 && t < 900 ? 1 : t >= 900 && t < 1080 ? 2 : 3; };
 const KAMUS = [
   ['Indonesia', 'id', 'gemas', 'ingin mencubit sesuatu yang terlalu lucu'],
   ['Indonesia', 'id', 'jayus', 'lelucon yang garing, tapi tetap bikin senyum'],
@@ -264,7 +266,7 @@ function startHello(gate) {
       [tag, lang, word, sub] = KAMUS[k];
     } else {
       const g = HELLO[li % HELLO.length]; li++;
-      tag = g.tag; lang = g.lang; word = g.sub ? g.hi + ',' : g.hi; sub = g.sub; // a greeting without a second line has no comma
+      tag = g.tag; lang = g.lang; const hi = g.hi[daySlot()]; word = g.sub ? hi + ',' : hi; sub = g.sub; // no second line, no comma
     }
     turn++;
     return { dict, tag, word, sub, lang };
