@@ -29,7 +29,7 @@ function render() {
       <div class="gate-clock" aria-live="off">
         <div class="glens" id="glens">
           <div class="glens-dial">${lensSvg()}<span class="glens-time"><b id="clk" role="timer"></b><i id="lensS"></i></span></div>
-          <p class="glens-cap" id="gateDate"></p>
+          <p class="glens-cap"><span id="gateDate"></span><span class="glens-phase" id="lensPhase"></span></p>
         </div>
         <div class="gkal" id="gkal" aria-hidden="true"><p id="gkalTxt"></p><small id="gkalDate"></small></div>
       </div>
@@ -109,6 +109,7 @@ function lensSvg() {
     <circle cx="100" cy="100" r="66" class="gl-ring"/>
     <g class="glens-rot" id="lensMin">${ticks(64, 12, 6, 1.2, 1, (i) => ['1.4', '2', '2.8', '4', '5.6', '8', '11', '16', '22', '16', '8', '2'][i])}</g>
     <circle class="glens-glass" cx="100" cy="100" r="44" fill="url(#glensGlass)"/>
+    <g class="gl-stars"><circle cx="84" cy="86" r="1.1" style="--d:0.00s"/><circle cx="112" cy="82" r="0.8" style="--d:0.45s"/><circle cx="96" cy="118" r="0.9" style="--d:0.90s"/><circle cx="120" cy="108" r="1.2" style="--d:1.35s"/><circle cx="78" cy="108" r="0.7" style="--d:1.80s"/><circle cx="104" cy="96" r="0.6" style="--d:2.25s"/><circle cx="90" cy="72" r="0.7" style="--d:2.70s"/><circle cx="118" cy="124" r="0.6" style="--d:3.15s"/></g>
     <ellipse cx="86" cy="80" rx="16" ry="9" class="gl-shine" transform="rotate(-30 86 80)"/>
     <polygon points="100,4 96,12 104,12" class="gl-mark"/>
   </svg>`;
@@ -151,6 +152,11 @@ function startClock(gate) {
       ph.textContent = str;
       ph.setAttribute('aria-label', `Pukul ${pad(h)}.${pad(m)}`);
       dateEl.textContent = fmtDate.format(now);
+      // the lens takes the light of the hour: dawn gold, latte day, golden hour, lavender dusk, starry night
+      const mins = h * 60 + m;
+      const [phase, phaseName] = mins >= 270 && mins < 480 ? ['dawn', 'Fajar'] : mins < 900 && mins >= 480 ? ['day', 'Siang']
+        : mins >= 900 && mins < 1080 ? ['golden', 'Golden hour'] : mins >= 1080 && mins < 1170 ? ['dusk', 'Senja'] : ['night', 'Malam'];
+      if (lens.dataset.phase !== phase) { lens.dataset.phase = phase; gate.querySelector('#lensPhase').textContent = ` · ${phaseName}`; }
       // Kalimat: the time in Indonesian words, numbers highlighted, words rise in one by one
       const h12 = h % 12 || 12, part = h < 11 ? 'pagi' : h < 15 ? 'siang' : h < 18 ? 'sore' : 'malam';
       const hw = words(h12).split(' '), mw = m ? words(m).split(' ') : [];

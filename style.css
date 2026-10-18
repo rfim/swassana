@@ -1176,3 +1176,31 @@ a.brand:not([data-logo]):hover::before { transform: rotate(-12deg) scale(1.06); 
 .glens-time { text-shadow: 0 1px 0 rgba(255, 255, 255, .35); }
 :root[data-pal="espresso"] .glens-time, :root[data-pal="mist"] .glens-time { text-shadow: 0 1px 6px rgba(0, 0, 0, .35); }
 .glens-time i { opacity: .7; }
+
+/* ===== Lensa by time of day: the glass takes the light of the hour =====
+   dawn: pale gold · day: latte peach · golden hour: amber rose · dusk: lavender · night: mocha barrel, indigo glass, stars */
+.gate .glens[data-phase="dawn"]   { --gl-body: #f3e8d8; --gl-ring: #eadbc5; --gl-tick: #937a5c; --gl-num: #937a5c; --gl-mark: #d9a35c;
+  --gl-g1: #fff3dc; --gl-g2: #f6d7a4; --gl-g3: #e2ad6e; --gl-time: #4d3420; }
+.gate .glens[data-phase="day"]    { --gl-body: #efe3d6; --gl-ring: #e4d3c3; --gl-tick: #8c7264; --gl-num: #8c7264; --gl-mark: #c98a6c;
+  --gl-g1: #fde9dc; --gl-g2: #efc2a6; --gl-g3: #d79c7e; --gl-time: #4a2e24; }
+.gate .glens[data-phase="golden"] { --gl-body: #f1e1d3; --gl-ring: #e9cfbd; --gl-tick: #93664f; --gl-num: #93664f; --gl-mark: #e07a4f;
+  --gl-g1: #ffe2c9; --gl-g2: #f4ad84; --gl-g3: #d9775d; --gl-time: #4a2418; }
+.gate .glens[data-phase="dusk"]   { --gl-body: #ebe3e6; --gl-ring: #ddd0d9; --gl-tick: #7d6a7d; --gl-num: #7d6a7d; --gl-mark: #b98bb0;
+  --gl-g1: #f5e3ee; --gl-g2: #cdb3d6; --gl-g3: #8f7bb0; --gl-time: #3b2c45; }
+.gate .glens[data-phase="night"]  { --gl-body: #4b3d38; --gl-ring: #594a45; --gl-tick: #eadfd4; --gl-num: #eadfd4; --gl-mark: #e9c19d;
+  --gl-g1: #a9a6d6; --gl-g2: #5f5a93; --gl-g3: #2c2a4a; --gl-time: #fbf6ee; }
+.gate .glens[data-phase="night"] .glens-time { text-shadow: 0 1px 8px rgba(20, 18, 50, .6); }
+.gate .glens[data-phase="night"] .gl-shine { opacity: .14; }
+.gate .glens[data-phase="night"] .glens-dial { box-shadow: 0 18px 36px -18px rgba(30, 22, 40, .55), 0 0 0 1px rgba(58, 42, 34, .15); }
+/* colours drift instead of jumping when the hour changes */
+.glens .gl-body, .glens .gl-ring, .glens .gl-mark { transition: fill 2s ease; }
+.glens .gl-tick { transition: stroke 2s ease, opacity 2s ease; }
+.glens .gl-num { transition: fill 2s ease; }
+.glens stop { transition: stop-color 2s ease; }
+.glens-time { transition: color 2s ease, text-shadow 2s ease; }
+/* night: tiny stars twinkle inside the glass */
+.glens .gl-stars circle { fill: #fff; opacity: 0; transition: opacity 2s ease; }
+.gate .glens[data-phase="night"] .gl-stars circle { opacity: .7; animation: gl-twinkle 3.6s ease-in-out var(--d) infinite; }
+@keyframes gl-twinkle { 0%, 100% { opacity: .75; } 50% { opacity: .2; } }
+.glens-phase { font-style: italic; opacity: .75; }
+@media (prefers-reduced-motion: reduce) { .gate .glens[data-phase="night"] .gl-stars circle { animation: none; } }
