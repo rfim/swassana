@@ -1204,3 +1204,32 @@ a.brand:not([data-logo]):hover::before { transform: rotate(-12deg) scale(1.06); 
 @keyframes gl-twinkle { 0%, 100% { opacity: .75; } 50% { opacity: .2; } }
 .glens-phase { font-style: italic; opacity: .75; }
 @media (prefers-reduced-motion: reduce) { .gate .glens[data-phase="night"] .gl-stars circle { animation: none; } }
+
+/* Indonesian translation under a foreign greeting: small, muted, fades with the greeting */
+.gate .hello-tr { margin: 6px 0 0; min-height: 1.3em; font: 500 12.5px/1.3 var(--sans); color: var(--muted); text-align: center; text-wrap: balance; transition: opacity .3s ease; }
+.gate .hello-tr.out { opacity: 0; }
+.gate .hello-tr.in { animation: tr-in .8s ease .5s both; }
+@keyframes tr-in { from { opacity: 0; transform: translateY(3px); } }
+@media (max-height: 600px) { .gate .hello-tr { margin-top: 3px; font-size: 11.5px; } }
+@media (prefers-reduced-motion: reduce) { .gate .hello-tr.in { animation: none; } }
+
+/* ===== Login proportions (art direction pass) =====
+   One type scale, ratio ~1.25: clock sentence 28 > greeting 20 > compliment 15.5 > translation 12.5.
+   The clock leads (largest), the greeting supports, the translation whispers. */
+.gate .gkal p { font-size: 28px; line-height: 1.12; }
+.gate h1.hello { font-size: 20px; line-height: 1.25; }
+.gate h1.hello .h2l { font-size: 15.5px; line-height: 1.35; margin-top: 2px; }
+.gate h1.hello.dict .h1l { font-size: 24px; }
+.gate h1.hello.dict .h2l { font-size: 13px; }
+.gate .hello-tr { font-size: 12.5px; margin-top: 6px; }
+.gate h1.hello:lang(ja) { line-height: 1.4; }
+.gate h1.hello:lang(ja) .h2l { font-size: 14px; line-height: 1.5; margin-top: 4px; }
+/* the lens grows with the screen so it stays the hero on tall phones */
+@media (min-height: 821px) { .glens-dial { width: min(46vw, 184px); } .glens-time b { font-size: 30px; } .gate .gkal p { font-size: 32px; } }
+@media (max-height: 700px) {
+  .gate .gkal p { font-size: 23px; }
+  .gate h1.hello { font-size: 18px; } .gate h1.hello .h2l { font-size: 14px; }
+  .gate h1.hello.dict .h1l { font-size: 21px; } .gate h1.hello.dict .h2l { font-size: 12px; }
+  .gate .hello-tr { font-size: 11.5px; margin-top: 4px; }
+}
+@media (max-height: 600px) { .gate .gkal p { font-size: 20px; } .gate h1.hello { font-size: 17px; } .gate h1.hello .h2l { font-size: 13px; } }

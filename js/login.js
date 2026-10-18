@@ -36,6 +36,7 @@ function render() {
       <div class="gate-hello">
         <p class="hello-tag" id="helloTag" aria-hidden="true"></p>
         <h1 class="hello" id="hello" aria-live="polite"><span class="h1l" id="gateGreet">Selamat datang</span><br><em class="h2l" id="helloSub">senang melihatmu lagi</em></h1>
+        <p class="hello-tr" id="helloTr"></p>
         <p class="muted">Masuk untuk melanjutkan ke Swassana.</p>
       </div>
       <form id="gateForm" novalidate>
@@ -195,20 +196,22 @@ function startClock(gate) {
 
 // Greeting in eleven languages (incl. Javanese, Sundanese, Balinese, Madurese, Japanese), rotating every 30 seconds.
 // Every third turn (starting with the second) shows a "kamus" word from one of those languages with its meaning in Indonesian.
-// Greetings follow the time of day: [pagi 04:30–11, siang 11–15, sore 15–18, malam 18–04:30]
+// Greetings follow the time of day: [pagi 04:30–11, siang 11–15, sore 15–18, malam 18–04:30].
+// The second line is a light compliment; `tr` is its Indonesian translation, shown small under foreign greetings.
 const HELLO = [
-  { tag: 'Indonesia', lang: 'id', hi: ['Selamat pagi', 'Selamat siang', 'Selamat sore', 'Selamat malam'], sub: 'senang melihatmu lagi' },
-  { tag: 'Jawa', lang: 'jv', hi: ['Sugeng enjing', 'Sugeng siang', 'Sugeng sonten', 'Sugeng dalu'], sub: 'monggo pinarak' },
-  { tag: 'Nederlands', lang: 'nl', hi: ['Goedemorgen', 'Goedemiddag', 'Goedemiddag', 'Goedenavond'], sub: 'fijn je weer te zien' },
-  { tag: 'Sunda', lang: 'su', hi: ['Wilujeng énjing', 'Wilujeng siang', 'Wilujeng sonten', 'Wilujeng wengi'], sub: 'kumaha damang?' },
-  { tag: 'British', lang: 'en', hi: ['Good morning', 'Good afternoon', 'Good afternoon', 'Good evening'], sub: 'lovely to see you again' },
-  { tag: 'Bali', lang: 'ban', hi: ['Rahajeng semeng', 'Rahajeng tengai', 'Rahajeng sanja', 'Rahajeng wengi'], sub: 'Om Swastyastu' },
-  { tag: 'Deutsch', lang: 'de', hi: ['Guten Morgen', 'Guten Tag', 'Guten Tag', 'Guten Abend'], sub: 'schön, dich wiederzusehen' },
-  { tag: 'Madura', lang: 'mad', hi: ['Salamet laggu', 'Salamet are', 'Salamet sore', 'Salamet malem'], sub: 'ponapa kabhârrâ?' },
-  { tag: 'Français', lang: 'fr', hi: ['Bonjour', 'Bonjour', 'Bonjour', 'Bonsoir'], sub: 'ravi de te revoir' },
-  { tag: 'Svenska', lang: 'sv', hi: ['God morgon', 'God dag', 'God eftermiddag', 'God kväll'], sub: '' },
-  { tag: '日本語 · Nihongo', lang: 'ja', hi: ['おはようございます', 'こんにちは', 'こんにちは', 'こんばんは'], sub: 'また会えてうれしいです' },
+  { tag: 'Indonesia', lang: 'id', hi: ['Selamat pagi', 'Selamat siang', 'Selamat sore', 'Selamat malam'], sub: 'senyummu bikin hari ini lebih terang' },
+  { tag: 'Jawa', lang: 'jv', hi: ['Sugeng enjing', 'Sugeng siang', 'Sugeng sonten', 'Sugeng dalu'], sub: 'esemmu gawe ati ayem', tr: 'senyummu bikin hati tenang' },
+  { tag: 'Nederlands', lang: 'nl', hi: ['Goedemorgen', 'Goedemiddag', 'Goedemiddag', 'Goedenavond'], sub: 'je maakt mijn dag mooier', tr: 'kamu bikin hariku lebih indah' },
+  { tag: 'Sunda', lang: 'su', hi: ['Wilujeng énjing', 'Wilujeng siang', 'Wilujeng sonten', 'Wilujeng wengi'], sub: 'imut anjeun matak resep', tr: 'senyummu bikin senang' },
+  { tag: 'British', lang: 'en', hi: ['Good morning', 'Good afternoon', 'Good afternoon', 'Good evening'], sub: 'you look lovely today', tr: 'kamu terlihat menawan hari ini' },
+  { tag: 'Bali', lang: 'ban', hi: ['Rahajeng semeng', 'Rahajeng tengai', 'Rahajeng sanja', 'Rahajeng wengi'], sub: 'kenyem ragane manis pisan', tr: 'senyummu manis sekali' },
+  { tag: 'Deutsch', lang: 'de', hi: ['Guten Morgen', 'Guten Tag', 'Guten Tag', 'Guten Abend'], sub: 'du siehst heute toll aus', tr: 'kamu kelihatan keren hari ini' },
+  { tag: 'Madura', lang: 'mad', hi: ['Salamet laggu', 'Salamet are', 'Salamet sore', 'Salamet malem'], sub: 'mèsemma bâ’na manès', tr: 'senyummu manis' },
+  { tag: 'Français', lang: 'fr', hi: ['Bonjour', 'Bonjour', 'Bonjour', 'Bonsoir'], sub: 'tu illumines ma journée', tr: 'kamu menerangi hariku' },
+  { tag: 'Svenska', lang: 'sv', hi: ['God morgon', 'God dag', 'God eftermiddag', 'God kväll'], sub: '', tr: '' },
+  { tag: '日本語 · Nihongo', lang: 'ja', hi: ['おはようございます', 'こんにちは', 'こんにちは', 'こんばんは'], sub: '笑顔がすてきですね', tr: 'senyummu indah, ya' },
 ];
+const ID_TIME = ['Selamat pagi', 'Selamat siang', 'Selamat sore', 'Selamat malam'];
 const daySlot = (d = new Date()) => { const t = d.getHours() * 60 + d.getMinutes(); return t >= 270 && t < 660 ? 0 : t >= 660 && t < 900 ? 1 : t >= 900 && t < 1080 ? 2 : 3; };
 const KAMUS = [
   ['Indonesia', 'id', 'gemas', 'ingin mencubit sesuatu yang terlalu lucu'],
@@ -247,6 +250,7 @@ const KAMUS = [
 ];
 function startHello(gate) {
   const tagEl = gate.querySelector('#helloTag'), h1 = gate.querySelector('#hello'), l1 = gate.querySelector('#gateGreet'), l2 = gate.querySelector('#helloSub');
+  const trEl = gate.querySelector('#helloTr');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   let turn = 0, li = Math.floor(Math.random() * HELLO.length), lastWord = -1;
   // Title split into words (never broken) made of letters, so letters can animate one by one
@@ -257,7 +261,7 @@ function startHello(gate) {
   const index = (el) => el.querySelectorAll('.ch').forEach((c, i) => c.style.setProperty('--i', i));
   const next = () => {
     const dict = turn % 3 === 1; // a random greeting first, then fika, then every third turn
-    let tag, word, sub, lang;
+    let tag, word, sub, lang, tr = '';
     if (dict) {
       let k;
       if (turn === 1) k = KAMUS.findIndex(([, , w]) => w === 'fika'); // fika always follows the first greeting
@@ -266,28 +270,31 @@ function startHello(gate) {
       [tag, lang, word, sub] = KAMUS[k];
     } else {
       const g = HELLO[li % HELLO.length]; li++;
-      tag = g.tag; lang = g.lang; const hi = g.hi[daySlot()]; word = g.sub ? hi + ',' : hi; sub = g.sub; // no second line, no comma
+      const slot = daySlot();
+      tag = g.tag; lang = g.lang; const hi = g.hi[slot]; word = g.sub ? hi + ',' : hi; sub = g.sub; // no second line, no comma
+      if (g.lang !== 'id') tr = g.tr ? `${ID_TIME[slot]}, ${g.tr}` : ID_TIME[slot];
     }
     turn++;
-    return { dict, tag, word, sub, lang };
+    return { dict, tag, word, sub, lang, tr };
   };
-  const paint = ({ dict, tag, word, sub, lang }) => {
+  const paint = ({ dict, tag, word, sub, lang, tr }) => {
     tagEl.innerHTML = `${crest(lang)}<span class="tg">${tag}</span>`;
     l1.innerHTML = letters(word); index(l1);
     l2.textContent = sub;
+    trEl.textContent = tr; trEl.lang = 'id';
     h1.lang = lang === 'en' ? 'en-GB' : lang;
     h1.classList.toggle('dict', dict);
   };
   const show = () => {
     if (!gate.isConnected) return;
     const n = next();
-    if (reduce || turn === 1) { paint(n); [h1, tagEl].forEach((el) => { el.classList.remove('out'); el.classList.add('in'); }); return; }
+    if (reduce || turn === 1) { paint(n); [h1, tagEl, trEl].forEach((el) => { el.classList.remove('out'); el.classList.add('in'); }); return; }
     // out: letters lift away one by one, crest turns edge-on; then the new text comes in
-    [h1, tagEl].forEach((el) => { el.classList.remove('in'); el.classList.add('out'); });
+    [h1, tagEl, trEl].forEach((el) => { el.classList.remove('in'); el.classList.add('out'); });
     const outMs = 260 + Math.min(l1.querySelectorAll('.ch').length, 20) * 12;
     setTimeout(() => {
       paint(n);
-      [h1, tagEl].forEach((el) => { el.classList.remove('out'); void el.offsetWidth; el.classList.add('in'); });
+      [h1, tagEl, trEl].forEach((el) => { el.classList.remove('out'); void el.offsetWidth; el.classList.add('in'); });
     }, outMs);
   };
   show();
