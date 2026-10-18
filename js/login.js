@@ -28,7 +28,7 @@ function render() {
       <button class="logo" type="button" aria-label="Swassana"></button>
       <div class="gate-clock" aria-live="off">
         <div class="glens" id="glens">
-          <div class="glens-dial">${lensSvg()}<span class="glens-time"><b id="clk" role="timer"></b><i id="lensS"></i></span></div>
+          <div class="glens-dial">${lensSvg()}<span class="glens-iris" aria-hidden="true"></span><span class="glens-time"><b id="clk" role="timer"></b><i id="lensS"></i></span></div>
           <p class="glens-cap"><span id="gateDate"></span><span class="glens-phase" id="lensPhase"></span></p>
         </div>
         <div class="gkal" id="gkal" aria-hidden="true"><p id="gkalTxt"></p><small id="gkalDate"></small></div>
@@ -115,13 +115,80 @@ function lensSvg() {
     <polygon points="100,4 96,12 104,12" class="gl-mark"/>
   </svg>`;
 }
+// The line under the clock: a poetic date that takes turns with a small fact of the day (about light, photos and smiles).
+const DAY_MOOD = ['Minggu yang pelan', 'Senin yang baru', 'Selasa yang tekun', 'Rabu di tengah pekan', 'Kamis yang hangat', 'Jumat yang ringan', 'Sabtu yang santai'];
+const FACTS = [
+  'Fotografi berarti melukis dengan cahaya',
+  'Golden hour: cahaya paling hangat dalam sehari',
+  'Blue hour datang tepat setelah matahari terbenam',
+  'Pantulan cahaya di mata disebut catchlight',
+  'Senyum tulus ikut menyipitkan mata',
+  'Bokeh dari bahasa Jepang: kabur yang indah',
+  'Polaroid pertama dijual tahun 1948',
+  'Aturan sepertiga membagi bingkai jadi sembilan',
+  'Lensa 50mm dijuluki si nifty fifty',
+  '“Cheese” dipakai agar bibir membentuk senyum',
+  'Selfie jadi Word of the Year Oxford 2013',
+  'Kamera obscura dikenal sejak ribuan tahun lalu',
+  'Langit senja jingga karena biru tersebar lebih dulu',
+  'Pelangi selalu muncul membelakangi matahari',
+  'Bulan hanya memantulkan cahaya matahari',
+  'Bunga matahari muda mengikuti arah matahari',
+  'Satu kedipan hanya sekitar sepertiga detik',
+  'Cahaya jendela adalah lampu studio tertua',
+  'Mata manusia bisa membedakan jutaan warna',
+  'Foto terbaik sering muncul di antara dua pose',
+  'Hitam putih membuat mata membaca cahaya',
+  'Shutter 1/1000 detik bisa membekukan tetes air',
+];
+const dayOfYear = (d) => Math.floor((d - new Date(d.getFullYear(), 0, 0)) / 864e5);
+
 function startClock(gate) {
   const lens = gate.querySelector('#glens'), ph = gate.querySelector('#clk'), dateEl = gate.querySelector('#gateDate');
   const secRing = gate.querySelector('#lensSec'), minRing = gate.querySelector('#lensMin'), lensS = gate.querySelector('#lensS');
   const box = gate.querySelector('.gate-clock');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const fmtDate = new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'long' });
-  let last = '', spin = 0, lastSec = -1, prev = [], swapT;
+    let last = '', spin = 0, lastSec = -1, prev = [], swapT;
+  const capLens = gate.querySelector('.glens-cap'), capKal = gate.querySelector('#gkalDate'), phaseEl = gate.querySelector('#lensPhase');
+  const fmtDay = new Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'long' });
+  let capKind = 'date', twin = '', capT;
+  const capText = (kind, now = new Date()) => kind === 'fact' ? `✦ ${FACTS[dayOfYear(now) % FACTS.length]}` : `${DAY_MOOD[now.getDay()]}, ${fmtDay.format(now).replace(' ', '\u00a0')}`; // breaks only after the comma
+  const setCap = (kind, fade = true) => {
+    capKind = kind;
+    const apply = () => {
+      const t = capText(kind);
+      dateEl.textContent = t; capKal.textContent = t;
+      phaseEl.hidden = kind !== 'date';
+      [capLens, capKal].forEach((el) => el.classList.remove('cap-fade'));
+    };
+    if (!fade || reduce) return apply();
+    [capLens, capKal].forEach((el) => el.classList.add('cap-fade'));
+    clearTimeout(capT); capT = setTimeout(apply, 280);
+  };
+  // poetic date and fact take turns every 8 seconds
+  setInterval(() => { if (gate.isConnected) setCap(capKind === 'date' ? 'fact' : 'date'); }, 8000);
+  // Twin time easter egg (01:01, 12:12, 23:23 …), 5 seconds, no words: the lens fires like a shutter
+  // (iris closes, soft flash, opens), the barrel turns a full circle, and bokeh lights drift up and fade.
+  // In Kalimat a shimmer runs through the number words. A triple tap on the clock plays it any time.
+  let eggT;
+  const egg = () => {
+    if (reduce || box.classList.contains('egg')) return;
+    const b = document.createElement('div'); b.className = 'egg-bokeh'; b.setAttribute('aria-hidden', 'true');
+    b.innerHTML = Array.from({ length: 18 }, () => {
+      const x = Math.random() * 100, size = 6 + Math.random() * 22, d = Math.random() * 1.6, dur = 2.6 + Math.random() * 1.6, drift = (Math.random() - .5) * 60;
+      return `<i style="left:${x}%;--sz:${size}px;--d:${(.7 + d).toFixed(2)}s;--t:${dur.toFixed(2)}s;--dx:${drift.toFixed(0)}px"></i>`;
+    }).join('');
+    box.appendChild(b);
+    box.classList.add('egg');
+    try { navigator.vibrate && navigator.vibrate([6, 420, 10]); } catch (e) {}
+    clearTimeout(eggT); eggT = setTimeout(() => { box.classList.remove('egg'); b.remove(); }, 5000);
+  };
+  // triple tap on the clock plays it any time
+  let taps = 0, tapT;
+  box.addEventListener('click', () => {
+    taps++; clearTimeout(tapT); tapT = setTimeout(() => { taps = 0; }, 550);
+    if (taps === 3) { taps = 0; egg(); }
+  });
   const kalTxt = gate.querySelector('#gkalTxt');
   const html = (seq, from = 0, to = -1, cls = '') => seq.map(([w, num], n) => {
     const c = [num ? 'num' : '', n >= from && n < to ? cls : ''].join(' ').trim();
@@ -152,17 +219,19 @@ function startClock(gate) {
     if (str !== last) {
       ph.textContent = str;
       ph.setAttribute('aria-label', `Pukul ${pad(h)}.${pad(m)}`);
-      dateEl.textContent = fmtDate.format(now);
+      // twin time (hh == mm): play the 5-second easter egg once as the minute starts
+      const isTwin = pad(h) === pad(m);
+      if (isTwin && twin !== str) { twin = str; setTimeout(egg, last ? 300 : 900); } else if (!isTwin) twin = '';
+      if (!last || capKind === 'date') setCap(capKind, false);
       // the lens takes the light of the hour: dawn gold, latte day, golden hour, lavender dusk, starry night
       const mins = h * 60 + m;
       const [phase, phaseName] = mins >= 270 && mins < 480 ? ['dawn', 'Fajar'] : mins < 900 && mins >= 480 ? ['day', 'Siang']
         : mins >= 900 && mins < 1080 ? ['golden', 'Golden hour'] : mins >= 1080 && mins < 1170 ? ['dusk', 'Senja'] : ['night', 'Malam'];
-      if (lens.dataset.phase !== phase) { lens.dataset.phase = phase; gate.querySelector('#lensPhase').textContent = ` · ${phaseName}`; }
+      if (lens.dataset.phase !== phase) { lens.dataset.phase = phase; gate.querySelector('#lensPhase').textContent = `\u00a0· ${phaseName}`; }
       // Kalimat: the time in Indonesian words, numbers highlighted, words rise in one by one
       const h12 = h % 12 || 12, part = h < 11 ? 'pagi' : h < 15 ? 'siang' : h < 18 ? 'sore' : 'malam';
       const hw = words(h12).split(' '), mw = m ? words(m).split(' ') : [];
       const seq = [['sekarang', 0], ['pukul', 0], ...hw.map((w) => [w, 1]), ...(m ? [['lewat', 0], ...mw.map((w) => [w, 1])] : [['tepat', 0]]), [part, 0]];
-      gate.querySelector('#gkalDate').textContent = dateEl.textContent;
       // Alternate every 5 minutes: Kalimat first, then Lensa
       const mode = Math.floor((h * 60 + m) / 5) % 2 === 0 ? 'kal' : 'lens';
       const switched = box.dataset.mode !== mode;
@@ -246,7 +315,7 @@ const KAMUS = [
   ['British', 'en', 'wanderlust', 'keinginan kuat untuk menjelajah dunia'],
   ['日本語 · Nihongo', 'ja', 'komorebi 木漏れ日', 'sinar matahari yang menembus dedaunan'],
   ['日本語 · Nihongo', 'ja', 'ichigo ichie 一期一会', 'tiap pertemuan hanya sekali; hargai momennya'],
-  ['日本語 · Nihongo', 'ja', 'wabi-sabi 侘寂', 'indah dalam kesederhanaan dan ketidaksempurnaan'],
+  ['日本語 · Nihongo', 'ja', 'wabi-sabi 侘寂', 'keindahan yang tak sempurna'],
 ];
 function startHello(gate) {
   const tagEl = gate.querySelector('#helloTag'), h1 = gate.querySelector('#hello'), l1 = gate.querySelector('#gateGreet'), l2 = gate.querySelector('#helloSub');
