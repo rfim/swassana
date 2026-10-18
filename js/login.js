@@ -39,12 +39,12 @@ function render() {
         <p class="muted">Masuk untuk melanjutkan ke Swassana.</p>
       </div>
       <form id="gateForm" novalidate>
-        <label>Nomor HP
+        <label><span class="vh">Nomor HP</span>
           <input id="gateId" name="id" type="tel" inputmode="tel" autocomplete="tel" placeholder="08xx xxxx xxxx" required>
         </label>
-        <label>Kata Sandi
+        <label><span class="vh">Kata sandi</span>
           <span class="pw">
-            <input id="gatePw" name="pw" type="password" inputmode="numeric" autocomplete="current-password" required>
+            <input id="gatePw" name="pw" type="password" inputmode="numeric" autocomplete="current-password" placeholder="Kata sandi" required>
             <button type="button" id="gateShow" aria-label="Tampilkan kata sandi">Lihat</button>
           </span>
         </label>
@@ -52,9 +52,13 @@ function render() {
         <button class="pill pill-solid big-btn" type="submit" id="gateBtn">Masuk</button>
       </form>
     </div>`;
-  // the website's moving game banner, under the logo: each item opens its mini game (no login needed)
-  const track = document.querySelector('.marquee .marquee-track');
-  if (track) gate.querySelector('.logo').insertAdjacentHTML('afterend', `<nav class="gate-mq" aria-label="Main tanpa masuk"><div class="marquee-track">${track.innerHTML}</div></nav>`);
+  // under the form: the six mini games as small icon buttons (playable without logging in);
+  // icons and links come from the website's game banner
+  const games = [...document.querySelectorAll('.marquee .mq-item:not([aria-hidden])')];
+  if (games.length) gate.querySelector('#gateForm').insertAdjacentHTML('afterend', `<nav class="gate-play" aria-label="Main tanpa masuk">
+      <p>Belum mau masuk? <span>Main dulu</span></p>
+      <div>${games.map((a) => `<a href="${a.getAttribute('href')}" aria-label="${a.textContent.trim()}: ${(a.title || '').replace('Main: ', '')}" title="${a.textContent.trim()}">${a.querySelector('svg').outerHTML}</a>`).join('')}</div>
+    </nav>`);
   document.body.appendChild(gate);
   startClock(gate);
   startHello(gate);
@@ -298,33 +302,38 @@ function startHello(gate) {
   startIdleHint(gate, reduce);
 }
 
-// After every 10 minutes without a touch or key press, a cheeky hint points at the game banner for 3 seconds.
+// After every 10 minutes without a touch or key press, the line above the game buttons turns into a cheeky
+// hint for 3 seconds (crossfade in place, nothing covers the form) and the buttons give a little hop.
 const HINTS = [
-  'Sepuluh menit bengong? Jempolmu kangen main. Coba game di atas ☝',
-  'Psst… kamera juga butuh pemanasan. Main dulu di atas ☝',
-  'Daripada nunggu, adu cepat sama pasanganmu di Love Sync ☝',
-  'Nggak ada yang lihat kok. Satu ronde aja ☝',
-  'Pose terbaik muncul setelah ketawa. Main dulu ☝',
+  'Sepuluh menit bengong? Main dulu 👇',
+  'Kamera juga butuh pemanasan 👇',
+  'Adu cepat di Love Sync, yuk 👇',
+  'Nggak ada yang lihat. Satu ronde aja 👇',
+  'Pose terbaik muncul setelah ketawa 👇',
 ];
 function startIdleHint(gate, reduce) {
   const IDLE = 10 * 60 * 1000, SHOW = 3000;
-  const mq = gate.querySelector('.gate-mq');
-  if (!mq) return;
-  const hint = document.createElement('div');
-  hint.className = 'gate-hint'; hint.setAttribute('role', 'status');
-  gate.appendChild(hint);
-  let t, h = 0, hideT;
+  const line = gate.querySelector('.gate-play p'), row = gate.querySelector('.gate-play div');
+  if (!line || !row) return;
+  const normal = line.innerHTML;
+  line.setAttribute('aria-live', 'polite');
+  let t, h = 0, backT, swapT;
+  const swap = (html) => {
+    clearTimeout(swapT);
+    line.classList.add('fade');
+    swapT = setTimeout(() => { line.innerHTML = html; line.classList.remove('fade'); }, reduce ? 0 : 220);
+  };
+  const restore = () => { clearTimeout(backT); if (line.innerHTML !== normal || line.classList.contains('hint')) { line.classList.remove('hint'); swap(normal); } };
   const arm = () => { clearTimeout(t); t = setTimeout(fire, IDLE); };
   const fire = () => {
     if (!gate.isConnected) return;
-    hint.textContent = HINTS[h++ % HINTS.length];
-    hint.style.top = `${mq.getBoundingClientRect().bottom + 10}px`;
-    hint.classList.remove('on'); void hint.offsetWidth; hint.classList.add('on');
-    if (!reduce) { mq.classList.remove('nudge'); void mq.offsetWidth; mq.classList.add('nudge'); }
-    clearTimeout(hideT); hideT = setTimeout(() => hint.classList.remove('on'), SHOW);
+    line.classList.add('hint');
+    swap(HINTS[h++ % HINTS.length]);
+    if (!reduce) { row.classList.remove('nudge'); void row.offsetWidth; row.classList.add('nudge'); }
+    clearTimeout(backT); backT = setTimeout(restore, SHOW);
     arm(); // and again after the next 10 idle minutes
   };
-  ['pointerdown', 'keydown', 'input'].forEach((ev) => gate.addEventListener(ev, () => { hint.classList.remove('on'); arm(); }, { passive: true }));
+  ['pointerdown', 'keydown', 'input'].forEach((ev) => gate.addEventListener(ev, () => { restore(); arm(); }, { passive: true }));
   arm();
 }
 
