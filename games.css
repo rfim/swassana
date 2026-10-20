@@ -26,33 +26,30 @@ button.pill-outline { background: transparent; color: var(--text); }
 .app::before { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(ellipse 70% 42% at 50% 48%, color-mix(in srgb, var(--bg) 88%, transparent) 0%, color-mix(in srgb, var(--bg) 55%, transparent) 55%, transparent 80%); }
 
 /* PS5 rules on touch devices for the game pages: Swassana brown glass, cream focus ring, big cream primary button */
-@media (hover: none) and (pointer: coarse) {
-  :root:not(.x) {
-    --bg: #24150f; --surface: rgba(255, 236, 220, .08); --text: #f7ece2; --muted: rgba(247, 236, 226, .66);
-    --line: rgba(255, 226, 204, .16); --accent: #e9c19d; --on-accent: #24150f; --a100: rgba(233, 193, 157, .16);
-  }
-  html { background: #1f120d; }
-  body.game, body.mini { background: var(--glass-bg); color: var(--text); }
-  .glass, .panel, .gcard, .opt, .idea-card { background: rgba(255, 236, 220, .08); border-color: var(--line); }
-  .pill-solid, .panel .pill-solid, .big-btn.pill-solid { background: #fbeee2 !important; color: #24150f !important; }
-  :is(.pill, .opt, .gcard, .chip, .fchip, .seg button, .shutter, .icon-btn):is(:active, :focus-visible) { box-shadow: var(--ps-ring); outline: none; }
-  :is(.pill, .opt, .gcard):active { transform: scale(.96); }
-  .picker { background: var(--glass-bg); }
-  .picker h1 { font-weight: 300; }
-  .gcard { border-radius: 20px; }
+/* (applies when the page marks itself .touch: a phone or tablet, whatever the browser reports about its pointer) */
+:root.touch:not(.x) {
+  --bg: #24150f; --surface: rgba(255, 236, 220, .08); --text: #f7ece2; --muted: rgba(247, 236, 226, .66);
+  --line: rgba(255, 226, 204, .16); --accent: #e9c19d; --on-accent: #24150f; --a100: rgba(233, 193, 157, .16);
 }
+html.touch { background: #1f120d; }
+.touch body.game, .touch body.mini { background: var(--glass-bg); color: var(--text); }
+.touch .glass, .touch .panel, .touch .gcard, .touch .opt, .touch .idea-card { background: rgba(255, 236, 220, .08); border-color: var(--line); }
+.touch .pill-solid, .touch .panel .pill-solid, .touch .big-btn.pill-solid { background: #fbeee2 !important; color: #24150f !important; }
+.touch :is(.pill, .opt, .gcard, .chip, .fchip, .seg button, .shutter, .icon-btn):is(:active, :focus-visible) { box-shadow: var(--ps-ring); outline: none; }
+.touch :is(.pill, .opt, .gcard):active { transform: scale(.96); }
+.touch .picker { background: var(--glass-bg); }
+.touch .picker h1 { font-weight: 300; }
+.touch .gcard { border-radius: 20px; }
 
-@media (hover: none) and (pointer: coarse) {
-  :root[data-pal="latte"]:not(.x), :root[data-pal="blush"]:not(.x) {
-    --bg: #f6efe8; --surface: rgba(255, 255, 255, .72); --text: #3a2a22; --muted: rgba(58, 42, 34, .6); --line: rgba(58, 42, 34, .1); --accent: #b86b4b; --on-accent: #fff;
-  }
-  :root[data-pal="blush"]:not(.x) { --bg: #fbeee9; --text: #4a2c2a; --accent: #e46f6f; }
-  :root[data-pal="latte"] body.game, :root[data-pal="latte"] body.mini, :root[data-pal="latte"] .picker,
-  :root[data-pal="blush"] body.game, :root[data-pal="blush"] body.mini, :root[data-pal="blush"] .picker {
-    background: radial-gradient(70% 45% at 10% 0%, rgba(244, 183, 154, .35), transparent 70%), radial-gradient(60% 40% at 100% 40%, rgba(242, 182, 195, .3), transparent 70%), var(--bg); }
-  :root[data-pal="latte"] html, :root[data-pal="blush"] html { background: var(--bg); }
-  :root[data-pal="latte"] .pill-solid, :root[data-pal="latte"] .panel .pill-solid, :root[data-pal="latte"] .big-btn.pill-solid { background: #3a2a22 !important; color: #f6efe8 !important; }
-  :root[data-pal="blush"] .pill-solid, :root[data-pal="blush"] .panel .pill-solid, :root[data-pal="blush"] .big-btn.pill-solid { background: #e46f6f !important; color: #fff !important; }
-  :root[data-pal="latte"] .glass, :root[data-pal="latte"] .panel, :root[data-pal="latte"] .gcard, :root[data-pal="latte"] .opt,
-  :root[data-pal="blush"] .glass, :root[data-pal="blush"] .panel, :root[data-pal="blush"] .gcard, :root[data-pal="blush"] .opt { background: rgba(255, 255, 255, .78); }
+:root.touch[data-pal="latte"]:not(.x), :root.touch[data-pal="blush"]:not(.x) {
+  --bg: #f6efe8; --surface: rgba(255, 255, 255, .72); --text: #3a2a22; --muted: rgba(58, 42, 34, .6); --line: rgba(58, 42, 34, .1); --accent: #b86b4b; --on-accent: #fff;
 }
+:root.touch[data-pal="blush"]:not(.x) { --bg: #fbeee9; --text: #4a2c2a; --accent: #e46f6f; }
+:root.touch[data-pal="latte"] body.game, :root.touch[data-pal="latte"] body.mini, :root.touch[data-pal="latte"] .picker,
+:root.touch[data-pal="blush"] body.game, :root.touch[data-pal="blush"] body.mini, :root.touch[data-pal="blush"] .picker {
+  background: radial-gradient(70% 45% at 10% 0%, rgba(244, 183, 154, .35), transparent 70%), radial-gradient(60% 40% at 100% 40%, rgba(242, 182, 195, .3), transparent 70%), var(--bg); }
+:root.touch[data-pal="latte"], :root.touch[data-pal="blush"] { background: var(--bg); }
+:root.touch[data-pal="latte"] .pill-solid, :root.touch[data-pal="latte"] .panel .pill-solid, :root.touch[data-pal="latte"] .big-btn.pill-solid { background: #3a2a22 !important; color: #f6efe8 !important; }
+:root.touch[data-pal="blush"] .pill-solid, :root.touch[data-pal="blush"] .panel .pill-solid, :root.touch[data-pal="blush"] .big-btn.pill-solid { background: #e46f6f !important; color: #fff !important; }
+:root.touch[data-pal="latte"] .glass, :root.touch[data-pal="latte"] .panel, :root.touch[data-pal="latte"] .gcard, :root.touch[data-pal="latte"] .opt,
+:root.touch[data-pal="blush"] .glass, :root.touch[data-pal="blush"] .panel, :root.touch[data-pal="blush"] .gcard, :root.touch[data-pal="blush"] .opt { background: rgba(255, 255, 255, .78); }

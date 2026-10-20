@@ -74,6 +74,10 @@
     .gcard .tag { display: inline-block; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-bottom: 2px; }
   </style>
   <!-- The mini games are open to everyone, logged in or not (the login screen's game banner links here). -->
+  <script>
+    // phone or tablet: game pages use the touch look (some Android browsers misreport hover/pointer, so also check touch + mobile)
+    if (self !== top || matchMedia('(display-mode: standalone), (hover: none) and (pointer: coarse)').matches || (navigator.maxTouchPoints > 0 && (/Android|iPhone|iPad|iPod|Mobile|Silk|Kindle|Opera Mini/i.test(navigator.userAgent) || (navigator.userAgentData && navigator.userAgentData.mobile)))) document.documentElement.classList.add('touch');
+  </script>
   <script>var p = 'latte'; try { p = localStorage.getItem('sw-pal') || p; } catch (e) {} document.documentElement.dataset.pal = p;</script>
 </head>
 <body class="mini">

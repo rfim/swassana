@@ -19,6 +19,9 @@ const onHome = !!document.querySelector('[data-tab]');
 // Inside a frame (the phone mockups on preview.html) the app layout is shown too.
 const mq = matchMedia('(display-mode: standalone), (hover: none) and (pointer: coarse)');
 const framed = self !== top;
+// Some Android browsers (Samsung Internet, Firefox, Opera, Mi Browser…) report hover or a fine pointer on a phone,
+// so a touch screen plus a mobile browser also counts as a phone.
+const touchPhone = navigator.maxTouchPoints > 0 && (/Android|iPhone|iPad|iPod|Mobile|Silk|Kindle|Opera Mini/i.test(navigator.userAgent) || !!(navigator.userAgentData && navigator.userAgentData.mobile));
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const root = document.documentElement;
 
@@ -118,7 +121,7 @@ function fromHash() {
 }
 
 function apply() {
-  const app = framed || mq.matches;
+  const app = framed || touchPhone || mq.matches;
   root.classList.toggle('app-mode', app);
   if (app) { const b = document.querySelector('.nav .brand'); if (b && !b.dataset.logo) { b.setAttribute('aria-label', 'Swassana, ke beranda'); makeLogo(b); } }
   if (!onHome) {
